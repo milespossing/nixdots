@@ -1,0 +1,830 @@
+* Package Manager
+
+For this I am using [[https://github.com/progfolio/elpaca][Elpaca]].
+
+#+begin_src emacs-lisp
+  (defvar elpaca-installer-version 0.6)	;
+  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                                :ref nil
+                                :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                                :build (:not elpaca--activate-package)))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+         (build (expand-file-name "elpaca/" elpaca-builds-directory))
+         (order (cdr elpaca-order))
+         (default-directory repo))
+    (add-to-list 'load-path (if (file-exists-p build) build repo))
+    (unless (file-exists-p repo)
+      (make-directory repo t)
+      (when (< emacs-major-version 28) (require 'subr-x))
+      (condition-case-unless-debug err
+          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                   ((zerop (call-process "git" nil buffer t "clone"
+                                         (plist-get order :repo) repo)))
+                   ((zerop (call-process "git" nil buffer t "checkout"
+                                         (or (plist-get order :ref) "--"))))
+                   (emacs (concat invocation-directory invocation-name))
+                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                   ((require 'elpaca))
+                   ((elpaca-generate-autoloads "elpaca" repo)))
+              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+            (error "%s" (with-current-buffer buffer (buffer-string))))
+        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+    (unless (require 'elpaca-autoloads nil t)
+      (require 'elpaca)
+      (elpaca-generate-autoloads "elpaca" repo)
+      (load "./elpaca-autoloads")))
+  (add-hook 'after-init-hook #'elpaca-process-queues)
+  (elpaca `(,@elpaca-order))
+
+  ;; Install use-package support
+  (elpaca elpaca-use-package
+    ;; Enable :elpaca use-package keyword.
+    (elpaca-use-package-mode)
+    ;; Assume :elpaca t unless otherwise specified.
+    (setq elpaca-use-package-by-default t))
+
+  ;; Block until current queue processed.
+  (elpaca-wait)
+#+end_src
+
+#+RESULTS:
+
+
+* General Configuration
+** Leader Bindings
+
+Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
+
+#+begin_src emacs-lisp
+  ;; Install and configure the 'general' package
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer mp/leader-key-map
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    (general-create-definer mp/ctrl-c-keys
+      :prefix "C-c")
+  )
+#+end_src
+
+#+RESULTS:
+** UI
+
+*** Disable some basic elements
+
+#+begin_src emacs-lisp
+
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
+
+(menu-bar-mode -1)          ; Disable the menu bar
+
+;; Set up the visible bell
+(setq visible-bell t)
+#+end_src
+
+*** Fonts
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :font "FiraCode Nerd Font")
+#+end_src
+
+#+RESULTS:
+
+*** Fullscreen
+
+#+begin_src emacs-lisp
+;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
+
+*** Theme
+
+**** Doom Themes
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config
+    (load-theme 'doom-nord t))
+#+end_src
+
+#+RESULTS:
+
+**** Doom Modeline
+
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :config
+    (doom-modeline-mode 1))
+#+end_src
+
+#+RESULTS:
+
+*** Line Numbers
+
+We'll start by adding line numbers to everything, but perhaps we really only want to run them for specific file types.
+
+#+begin_src emacs-lisp
+  (elpaca nil
+    (column-number-mode)
+    (global-display-line-numbers-mode t)
+    (setq display-line-numbers 'relative))
+#+end_src
+
+*** Dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :config
+    (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+    (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+    (dashboard-setup-startup-hook)
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-center-content t))
+#+end_src
+**** TODO Add some bookmarks?
+** Ivy
+
+Ivy + Swiper + Counsel for completion
+
+*** Install
+
+Installing counsel, ivy, ivy-rich
+
+#+begin_src emacs-lisp
+  (use-package counsel)
+  (use-package ivy
+    :config
+    (ivy-mode 1))
+  (use-package ivy-rich
+    :config
+    (ivy-rich-mode 1))
+#+end_src
+
+*** TODO ripgrep?
+
+** [[https://github.com/Wilfred/helpful][Helpful]]
+#+begin_src emacs-lisp
+  (use-package helpful
+    :after counsel
+    :config
+    (setq counsel-describe-function-function #'helpful-callable)
+    (setq counsel-describe-variable-function #'helpful-variable))
+#+end_src
+
+#+RESULTS:
+
+** Reload Configuration
+I don't really know why this is needed, but it seems to be in nix. For some reason whenever I change my
+configuration.org file, configuration.el doesn't change unless I run this:
+
+#+begin_src emacs-lisp
+  (elpaca nil
+    (defun reload-configuration-org ()
+	"Reloads the configuration.org file after deleting the tangled file."
+	(interactive)
+	(let* ((org-file (expand-file-name "configuration.org" user-emacs-directory))
+		     (el-file (concat (file-name-sans-extension org-file) ".el")))
+	  ;; Delete the tangled file if it exists.
+	  (when (file-exists-p el-file)
+	    (delete-file el-file))
+	  ;; Load the org file, which will force re-tangling.
+	  (org-babel-load-file org-file)))
+
+    (mp/leader-key-map
+      "hr" '(reload-configuration-org :which-key "Reload config file")))
+#+end_src
+
+#+RESULTS:
+
+
+** DirEnv
+
+#+begin_src emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode))
+#+end_src
+* Editing
+** Default Tab Width
+#+begin_src emacs-lisp
+  (setq-default tab-width 2)
+  (setq-default evil-shift-width tab-width)
+#+end_src
+
+#+RESULTS:
+: 2
+
+** Use Spaces instead of Tabs
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+#+RESULTS:
+
+** Comments
+#+begin_src emacs-lisp
+  (use-package evil-nerd-commenter
+    :after (evil general)
+    :config
+    (general-define-key
+      :states 'normal
+      "gcc" 'evilnc-comment-or-uncomment-lines)
+        (general-define-key
+          :states '(visual)
+          "gc" 'evilnc-comment-or-uncomment-lines))
+#+end_src
+
+** WSL
+
+   #+begin_src emacs-lisp
+     ;; WSL-specific setup
+     (when (and (eq system-type 'gnu/linux)
+                (getenv "WSLENV"))
+        ;; WSL clipboard
+       (defun copy-selected-text (start end)
+         (interactive "r")
+           (if (use-region-p)
+             (let ((text (buffer-substring-no-properties start end)))
+               (shell-command (concat "echo '" text "' | clip.exe"))))))
+   #+end_src
+
+
+
+** Autosave
+
+#+begin_src emacs-lisp
+(setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
+#+end_src
+
+* Keybinding
+
+** ESC Cancels All
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+#+RESULTS:
+: keyboard-escape-quit
+
+** Rebind C-u
+
+#+begin_src emacs-lisp
+
+  (global-set-key (kbd "C-M-u") 'universal-argument)
+
+#+end_src
+
+#+RESULTS:
+: universal-argument
+
+** Evil
+
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-keybinding nil)
+    :demand t
+    :config
+    (evil-mode 1))
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+#+end_src
+
+#+RESULTS:
+
+** Which Key
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :demand t
+    :config
+    (which-key-mode))
+#+end_src
+
+#+RESULTS:
+
+
+** File
+
+#+begin_src emacs-lisp
+  (elpaca nil
+    (mp/leader-key-map
+      "f"  '(:ignore t :which-key "file")
+      "ff" '(find-file :which-key "file open")))
+#+end_src
+
+#+RESULTS:
+
+** Buffer
+
+#+begin_src emacs-lisp
+  (elpaca nil
+  (mp/leader-key-map
+    "b"  '(:ignore t :which-key "buffer")
+    "bb" '(counsel-switch-buffer :which-key "buffer switch")
+    "bd" '(kill-current-buffer :which-key "buffer delete")))
+#+end_src
+
+#+RESULTS:
+
+** Window
+
+#+begin_src emacs-lisp
+  (elpaca nil
+    (mp/leader-key-map
+      "w"  '(:ignore t :which-key "window")
+      "wj" '(evil-window-down :which-key "move down")
+      "wh" '(evil-window-left :which-key "move left")
+      "wl" '(evil-window-right :which-key "move right")
+      "wk" '(evil-window-up :which-key "move up")
+      "wd" '(evil-window-delete :which-key "delete")
+      "ws" '(evil-window-split :which-key "split horizontal")
+      "wv" '(evil-window-vsplit :which-key "split vertical")))
+#+end_src
+
+#+RESULTS:
+
+** Help
+
+#+begin_src emacs-lisp
+  (defvar mp/emacs-config-path "~/.config/emacs/configuration.org")
+    (elpaca nil
+      (mp/leader-key-map
+        "h" '(:ignore t :which-key "help")
+        "hf" '(counsel-describe-function :which-key "describe/function")
+        "hv" '(counsel-describe-variable :which-key "describe/variable")
+        "hk" '(helpful-key :which-key "describe/key")
+        "hm" '(describe-mode :which-key "describe/mode")
+        "hM" '(info-display-manual :which-key "display manual")
+        "h." '(:ignore t :which-key "dotfiles")
+        "h.c" '((lambda () (interactive) (find-file mp/emacs-config-path)) :which-key "open configuration")))
+#+end_src
+
+#+RESULTS:
+
+** Toggle
+
+#+begin_src emacs-lisp
+  (elpaca nil
+  (mp/leader-key-map
+    "t" '(:ignore t :which-key "toggle")
+    "tw" '(white-space-mode :which-key "toggle whitespace")
+    "tt" '(counsel-load-theme :which-key "load theme")))
+#+end_src
+
+#+RESULTS:
+
+** Misc.
+
+#+begin_src emacs-lisp
+  (elpaca nil
+  (mp/leader-key-map
+    ;; EXECUTE
+    ":"  '(counsel-M-x :which-key "execute")))
+#+end_src
+
+#+RESULTS:
+
+** TODO Help and Describe Keybindings
+
+* General Tools
+
+** Vertico
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :config
+    (vertico-mode))
+#+end_src
+
+#+RESULTS:
+
+** TODO Tree explorer
+
+#+begin_src emacs-lisp
+  (use-package treemacs)
+  (use-package treemacs-evil
+    :after (evil treemacs))
+#+end_src
+
+** Projects: Projectile
+
+*** TODO Find file :keybinding:
+*** TODO Use ivy :integration:
+*** TODO counsel-projectile :package:
+*** TODO ripgrep
+
+*** Install
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :config
+    (projectile-mode +1)
+    (setq projectile-project-search-path '("~/src" "~/scratch"))
+    (mp/leader-key-map
+      "p" '(:ignore t :which-key "project")
+      "pp" '(projectile-switch-project :which-key "switch project")
+      "SPC" '(projectile-find-file :which-key "find file")
+      "pf" '(projectile-find-file :which-key "find file")))
+#+end_src
+
+#+RESULTS:
+
+*** Treemacs Integration
+
+#+begin_src emacs-lisp
+  (use-package treemacs-projectile
+    :after (treemacs projectile))
+#+end_src
+
+#+RESULTS:
+
+** Git: Magit
+
+#+begin_src emacs-lisp
+  (defun +elpaca-unload-seq (e)
+    (and (featurep 'seq) (unload-feature 'seq t))
+    (elpaca--continue-build e))
+
+  ;; You could embed this code directly in the reicpe, I just abstracted it into a function.
+  (defun +elpaca-seq-build-steps ()
+    (append (butlast (if (file-exists-p (expand-file-name "seq" elpaca-builds-directory))
+                         elpaca--pre-built-steps elpaca-build-steps))
+            (list '+elpaca-unload-seq 'elpaca--activate-package)))
+  
+  (elpaca `(seq :build ,(+elpaca-seq-build-steps)))
+  (use-package transient :after seq)
+  (use-package magit
+    :after transient seq
+    :config
+    (mp/leader-key-map
+      "g" '(:ignore t :which-key "git")
+      "gg" '(magit-status :which-key "status")))
+#+end_src
+
+#+RESULTS:
+
+** Folding
+Using Origami for folding
+#+begin_src emacs-lisp
+  
+#+end_src
+*** TODO Keybindings
+
+** Treesitter
+
+Emacs 29+ comes with treesitter installed. I'm going to assume that I'm at 29.1 from now on
+
+I'll still want to configure some grammars though.
+
+#+begin_src emacs-lisp
+(setq treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+#+end_src
+
+
+** TODO Jumping
+
+*** [[https://github.com/hlissner/evil-snipe][Evil Snipe]]
+#+begin_src emacs-lisp
+  (use-package evil-snipe
+    :config
+    (evil-snipe-mode +1)
+    (evil-snipe-override-mode +1))
+#+end_src
+
+*** [[https://github.com/abo-abo/avy][Avy]]
+#+begin_src emacs-lisp
+  (use-package avy
+    :config
+    (general-define-key
+      :states '(normal visual motion)
+      "g s SPC" 'avy-goto-char-timer
+      "gl" 'avy-goto-line
+      "gw" 'avy-goto-word-1-below
+      "gW" 'avy-goto-word-1-above))
+#+end_src
+
+** TODO Searching
+Need some nice search/grep in here
+
+
+*** TODO Key bindings
+
+** TODO Workspaces
+Not sure if this is something I actually need, to be honest
+
+** TODO gpt.el
+** TODO bitwarden
+** TODO hydra
+** vterm
+
+#+begin_src emacs-lisp
+  (use-package vterm)
+#+end_src
+
+* LSP
+Using lsp-mode for this, several packages besides
+
+** lsp-mode
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :init
+    :hook (typescript-ts-mode . lsp)
+           (rust-mode . lsp)
+           (scala-mode . lsp)
+           (lsp-mode . lsp-enable-which-key-integration)
+    :commands lsp)
+#+end_src
+
+** lsp-ui
+#+begin_src emacs-lisp
+  (use-package lsp-ui :commands lsp-ui-mode)
+#+end_src
+** Flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :init (global-flycheck-mode))
+#+end_src
+** Company
+#+begin_src emacs-lisp
+  (use-package company
+    :hook (scala-mode . company-mode)
+    :config
+    (company-mode)
+    (setq company-tooltip-align-notations 1))
+#+end_src
+** lsp-treemacs
+#+begin_src emacs-lisp
+  (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+#+end_src
+** lsp-ivy
+#+begin_src emacs-lisp
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+#+end_src
+** TODO dap-mode
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :config
+    ;; Enabling only some features
+    (setq dap-auto-configure-features '(sessions locals controls tooltip)))
+
+#+end_src
+* Major Modes
+** TODO Org
+*** TODO Tags :keybinding:
+*** Keybindings
+
+#+begin_src emacs-lisp
+  (elpaca nil
+    (mp/leader-key-map
+      "X" 'org-capture)
+    (general-define-key
+      :states '(normal visual motion)
+      :keymaps 'org-mode-map
+      :prefix "SPC m"
+      "t" 'org-todo
+      "a" 'org-agenda
+      "c" 'org-capture
+      "l" 'org-insert-link
+      "e" '(:ignore t :which-key "execute")
+      "eb" '(org-babel-execute-src-block :which-key "block")
+      "eB" '(org-babel-execute-buffer :which-key "buffer")
+      "s" '(:ignore t :which-key "subtree")
+      "sl" '(org-demote-subtree :which-key "demote")
+      "sh" '(org-promote-subtree :which-key "promote")
+      "sj" '(org-move-subtree-down :which-key "move down")
+      "sk" '(org-move-subtree-up :which-key "move up")
+      "sr" '(org-refile :which-key "refile")))
+#+end_src
+
+*** Nice Bullets
+
+#+begin_src emacs-lisp
+  (setq org-pretty-entities t)
+  (use-package org-bullets
+    :ensure t
+    :hook (org-mode . org-bullets-mode))
+#+end_src
+
+#+RESULTS:
+
+*** Header sizes
+
+#+begin_src emacs-lisp
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.15))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.05))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
+#+end_src
+
+*** Indentation
+
+#+begin_src emacs-lisp
+(setq org-startup-indented t)
+#+end_src
+
+*** Line Wrap
+
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'visual-line-mode)
+#+end_src
+
+
+*** gtd
+**** Agenda Files
+#+begin_src emacs-lisp
+  (setq org-agenda-files '("~/org/inbox.org"
+                           ;;"~/org/tickler.org"
+                           "~/org/gtd.org"))
+  (elpaca nil 
+    (mp/leader-key-map
+      "o" '(:ignore t :which-key "org")
+      "o a" 'org-agenda))
+#+end_src
+**** Refiling
+#+begin_src emacs-lisp
+  (setq org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
+                             ("~/org/someday.org" :level . 1)
+                             ;;("~/org/tickler.org" :maxlevel . 2)
+  ))
+#+end_src
+**** Capture Templates
+
+#+begin_src emacs-lisp
+  (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline "~/org/tickler.org" "Tickler")
+                                 "* %i%? \n %U")))
+#+end_src
+**** Todo Keywords
+#+begin_src emacs-lisp
+  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+#+end_src
+
+
+*** Habits
+#+begin_src emacs-lisp
+  (elpaca nil
+    (require 'org-habit)
+    (add-to-list 'org-modules 'org-habit t)
+    (setq org-habit-following-days 3
+          org-habit-preceding-days 14
+          org-habit-graph-column 55
+          org-habit-show-all-today t))
+#+end_src
+
+*** CalDav
+#+begin_src emacs-lisp
+  ;; (use-package org-caldav)
+  ;;   :config
+  ;;   (setq org-caldav-calendars
+  ;;     '((:calendar-id "personal
+#+end_src
+** TODO Org Roam
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+    (setq markdown-command "multimarkdown"))
+#+end_src
+
+#+RESULTS:
+
+** Nix
+
+Basic nix mode for updating my dots
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
+#+end_src
+
+** Clojure
+
+Basic clojure mode
+
+#+begin_src emacs-lisp
+  (use-package clojure-mode
+    :mode "\\.clj\\'"
+    :config
+    (general-define-key
+      :states '(normal)
+      :keymaps 'clojure-mode-map
+      :prefix "SPC m"
+      "l" '(cider-load-buffer)))
+#+end_src
+
+CIDR
+
+#+begin_src emacs-lisp
+  (use-package cider)
+#+end_src
+
+** TODO Rust
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :config
+    ;; Enable rustfmt on save
+    (setq rust-format-on-save t)
+
+    ;; Indentation settings
+    (add-hook 'rust-mode-hook
+              (lambda () (setq indent-tabs-mode nil)))
+
+    ;; Prettify symbols
+    (add-hook 'rust-mode-hook
+              (lambda () (prettify-symbols-mode)))
+    (general-define-key
+      :states '(normal visual modtion)
+      :keymaps 'rust-mode-map
+      :prefix "SPC m"
+      "b" '(:ignore t :which-key "build")
+      "bb" '(rust-compile :which-key "compile")
+      "br" '(rust-run :which-key "run")
+      "bt" '(rust-test :which-key "test")
+      "bc" '(rust-check :which-key "check")
+      "l" '(rust-run-clippy :which-key "lint")))
+  (use-package cargo
+    :after rust-mode
+    :config
+    (add-hook 'rust-mode-hook 'cargo-minor-mode))
+#+end_src
+** TODO Javascript & Typescript
+Seems that javascript is here by default. TS, on the other hand...
+#+begin_src emacs-lisp
+(use-package tide
+  :after (company flycheck)
+  :hook ((typescript-ts-mode . tide-setup)
+         (tsx-ts-mode . tide-setup)
+         (typescript-ts-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+ #+end_src
+** TODO Purescript
+#+begin_src emacs-lisp
+  (use-package purescript-mode)
+#+end_src
+** TODO Deno
+** TODO Chezmoi
+** Scala
+
+*** Scala mode
+
+#+begin_src emacs-lisp
+  (use-package scala-mode
+    :interpreter ("scala" . scala-mode))
+  (use-package sbt-mode
+    :commands sbt-start sbt-command)
+  (use-package lsp-metals)
+  
+#+end_src
+
+*** sbt mode
+
+#+begin_src emacs-lisp
+#+end_src
+
+*** lsp-me
+  
+
+** TODO Python
+** TODO elisp
+* Todo
+** TODO Terminal
+** TODO Rainbow delimiters :package:
+** TODO Autosave
+** TODO Git Gutter
+** TODO Lazy Loading
