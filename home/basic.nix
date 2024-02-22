@@ -18,6 +18,7 @@
     fd
     neofetch
     cbonsai
+    babashka
   ];
 
   home.sessionVariables = {
@@ -31,7 +32,7 @@
     shellAliases = {
       ls = "eza";
       ll = "eza -l";
-      la = "eaz -la";
+      la = "eza -la";
     };
   };
 
