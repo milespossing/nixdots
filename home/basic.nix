@@ -69,6 +69,9 @@
     userName = "Miles Possing";
     userEmail = "no-reply@possing.tech";
     ignores = [ "*~" "*.swp" ];
+    extraConfig = {
+      pull.rebase = false;
+    };
   };
 
   programs.lazygit = {
