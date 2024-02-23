@@ -1,20 +1,16 @@
 { pkgs, ... }:
 {
-  #####################
-  # Bash Only for now #
-  #####################
-
   imports = [
     ./dir-colors.nix
     ./starship.nix
   ];
 
   home.packages = with pkgs; [
-	  vim
-    pass
+    vim
     neovim
-	  wget
-	  curl
+    pass
+    wget
+    curl
     fd
     neofetch
     cbonsai
@@ -36,9 +32,17 @@
     };
   };
 
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      ls = "eza";
+      ll = "eza -l";
+      la = "eza -la";
+    };
+  };
+
   programs.nushell = {
     enable = true;
-
   };
 
   programs.bat = {
