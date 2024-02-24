@@ -15,6 +15,7 @@
     neofetch
     cbonsai
     babashka
+    cmake
   ];
 
   home.sessionVariables = {
