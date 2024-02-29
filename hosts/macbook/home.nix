@@ -1,7 +1,7 @@
 { config, pkgs, outputs, inputs, ... }:
 {
   imports = [
-    ../../home/basic.nix
+    # ../../home/basic.nix
   ];
 
   home.username = "miles";

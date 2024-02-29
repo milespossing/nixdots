@@ -61,6 +61,7 @@
             home-manager.darwinModules.home-manager
             {
               home-manager = {
+                extraSpecialArgs = { inherit inputs; };
                 # extraSpecialArgs = localInherits;
                 # useGlobalPkgs = true;
                 # useUserPackages = true;
