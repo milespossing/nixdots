@@ -20,10 +20,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, darwin, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      userName = "miles";
 
       sharedOptions = { lib, ... }: {
         options.myConfig = {
@@ -56,8 +57,16 @@
             inherit inputs sharedOptions;
           };
           modules = [
-            ./hosts/macbook/configuration.nix
-            # inputs.home-manager.nixosModules.default
+            inputs.home-manager.nixosModules.default
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                # extraSpecialArgs = localInherits;
+                # useGlobalPkgs = true;
+                # useUserPackages = true;
+                users.${userName}.imports = [ ./hosts/macbook/home.nix ];
+              };
+            }
           ];
         };
     };
