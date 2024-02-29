@@ -14,14 +14,18 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      sharedOptions = { lib, ...}: {
+      sharedOptions = { lib, ... }: {
         options.myConfig = {
           useHyprland = lib.mkOption {
             type = lib.types.bool;
@@ -34,12 +38,27 @@
     {
       nixosConfigurations = {
         default = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs sharedOptions;};
-          modules = [ 
+          specialArgs = { inherit inputs sharedOptions; };
+          modules = [
             ./hosts/default/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };
       };
+      darwinConfigurations."macbook" =
+        let
+          system = "aarch64-darwin";
+          # pkgs-unstable = import nixpkgs-unstable { inherit system; };
+        in
+        darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs sharedOptions;
+          };
+          modules = [
+            ./hosts/macbook/configuration.nix
+            # inputs.home-manager.nixosModules.default
+          ];
+        };
     };
 }
