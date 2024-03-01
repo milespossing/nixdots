@@ -1,4 +1,16 @@
 { pkgs, ... }:
+let
+  posixAliases = {
+    ls = "eza";
+    ll = "eza -l";
+    la = "eza -la";
+  };
+  posixInitExtra = ''
+    for script in $(find ~/.posix_functions -type f -name "*.sh"); do
+      source $script
+    done
+  '';
+in
 {
   imports = [
     ./dir-colors.nix
@@ -6,16 +18,17 @@
   ];
 
   home.packages = with pkgs; [
-    vim
-    neovim
-    pass
-    wget
+    babashka
+    cbonsai
+    cmake
     curl
     fd
     neofetch
-    cbonsai
-    babashka
-    cmake
+    neovim
+    pass
+    rlwrap
+    vim
+    wget
   ];
 
   home.sessionVariables = {
@@ -23,23 +36,22 @@
     VISUAL = "nvim";
   };
 
+  home.file.".posix_functions" = {
+    source = ./scripts;
+    recursive = true;
+  };
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l";
-      la = "eza -la";
-    };
+    shellAliases = posixAliases;
+    initExtra = posixInitExtra;
   };
 
   programs.zsh = {
     enable = true;
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l";
-      la = "eza -la";
-    };
+    shellAliases = posixAliases;
+    initExtra = posixInitExtra;
   };
 
   programs.nushell = {
@@ -61,6 +73,9 @@
 
   programs.fzf = {
     enable = true;
+    defaultCommand = "fd --type f";
+    enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
@@ -87,18 +102,31 @@
     enable = true;
     keyMode = "vi";
     prefix = "C-b";
+    clock24 = true;
+    newSession = true;
+    extraConfig = ''
+      bind - split-window -v
+      bind | split-window -h
+    '';
     plugins = with pkgs; [
       {
         plugin = tmuxPlugins.nord;
       }
       {
-        plugin = tmuxPlugins.sensible;
+        plugin = tmuxPlugins.yank;
       }
       {
         plugin = tmuxPlugins.jump;
       }
       {
         plugin = tmuxPlugins.better-mouse-mode;
+      }
+      {
+        plugin = tmuxPlugins.fuzzback;
+      }
+      {
+        plugin = tmuxPlugins.better-mouse-mode;
+        extraConfig = "set -g mouse";
       }
     ];
   };

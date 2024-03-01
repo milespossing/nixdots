@@ -433,7 +433,7 @@ configuration.org file, configuration.el doesn't change unless I run this:
   (use-package projectile
     :config
     (projectile-mode +1)
-    (setq projectile-project-search-path '("~/src" "~/scratch"))
+    (setq projectile-project-search-path '("~/src"))
     (mp/leader-key-map
       "p" '(:ignore t :which-key "project")
       "pp" '(projectile-switch-project :which-key "switch project")
