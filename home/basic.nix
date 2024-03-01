@@ -37,7 +37,7 @@ in
   };
 
   home.file.".posix_functions" = {
-    source = ./scripts;
+    source = ./scripts/posix;
     recursive = true;
   };
 
