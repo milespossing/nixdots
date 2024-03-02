@@ -19,6 +19,7 @@ in
 
   home.packages = with pkgs; [
     babashka
+    bitwarden-cli
     cbonsai
     cmake
     curl
