@@ -6,7 +6,7 @@ let
     la = "eza -la";
   };
   posixInitExtra = ''
-    for script in $(find ~/.posix_functions -type f -name "*.sh"); do
+    for script in $(fd -g *.sh $HOME/.posix_functions); do
       source $script
     done
   '';
@@ -24,6 +24,7 @@ in
     cmake
     curl
     fd
+    lsof
     neofetch
     neovim
     pass
@@ -77,6 +78,10 @@ in
     defaultCommand = "fd --type f";
     enableBashIntegration = true;
     enableZshIntegration = true;
+  };
+
+  programs.jq = {
+    enable = true;
   };
 
   programs.zoxide = {
