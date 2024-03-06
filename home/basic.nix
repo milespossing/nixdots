@@ -97,6 +97,15 @@ in
     ignores = [ "*~" "*.swp" ];
     extraConfig = {
       pull.rebase = false;
+      diff.tool = "nvimdiff";
+      merge.tool = "nvimdiff";
+      mergetool = {
+        keepBackup = false;
+      };
+      core = {
+        editor = "nvim";
+        pager = "bat";
+      };
     };
   };
 

@@ -15,7 +15,7 @@
         };
       in
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        baseDir="$HOME/Applications/Home Manager Apps"
+        baseDir="$HOME/Applications/hm-apps"
         if [ -d "$baseDir" ]; then
           rm -rf "$baseDir"
         fi
