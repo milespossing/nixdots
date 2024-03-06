@@ -16,14 +16,14 @@
     thunderbird
     protonmail-bridge
     discord
-    slurp
+    element-desktop
     grim
-    racket
-    emacs29
-    spotify
-	  swww
 	  nwg-drawer
+    racket
+    spotify
+    slurp
 	  swayosd
+	  swww
     wl-clipboard
     wlogout
   ];
@@ -42,11 +42,6 @@
 
   programs.waybar = {
     enable = true;
-    ### TODO: Update this
-    # settings = {
-    #   position = "top";
-    #   height = 5;
-    # };
   };
 
   programs.eww = {
@@ -90,6 +85,15 @@
         blur = true;
       };
     };
+  };
+
+  programs.emacs = {
+    enable = true;
+    package = pkgs.emacs29;
+  };
+
+  services.emacs = {
+    enable = true;
   };
 
   systemd.user.services.protonmail-bridge = {
