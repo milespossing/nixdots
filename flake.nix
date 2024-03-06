@@ -57,17 +57,8 @@
             inherit inputs sharedOptions;
           };
           modules = [
-            inputs.home-manager.nixosModules.default
+            ./hosts/macbook/configuration.nix
             home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                extraSpecialArgs = { inherit inputs; };
-                # extraSpecialArgs = localInherits;
-                # useGlobalPkgs = true;
-                # useUserPackages = true;
-                users.${userName}.imports = [ ./hosts/macbook/home.nix ];
-              };
-            }
           ];
         };
     };
