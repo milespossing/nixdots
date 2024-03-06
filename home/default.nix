@@ -2,7 +2,6 @@
 {
   imports = [
     ./basic.nix
-    ./user-space.nix
     ./alacritty-nord.nix
   ];
 
@@ -13,12 +12,18 @@
     ];
 
   home.packages = with pkgs; [
+    firefox
+    thunderbird
     protonmail-bridge
-    slurp
+    discord
+    element-desktop
     grim
-    swww
-    nwg-drawer
-    swayosd
+	  nwg-drawer
+    racket
+    spotify
+    slurp
+	  swayosd
+	  swww
     wl-clipboard
     wlogout
   ];
@@ -30,13 +35,13 @@
     };
   };
 
+  home.file.".config/emacs" = {
+    source = ./dots/emacs;
+    recursive = true;
+  };
+
   programs.waybar = {
     enable = true;
-    ### TODO: Update this
-    # settings = {
-    #   position = "top";
-    #   height = 5;
-    # };
   };
 
   programs.eww = {
@@ -57,15 +62,38 @@
     package = pkgs.rofi-wayland;
     theme = "Arc-Dark";
     extraConfig = {
-      modes = "window,drun,run,ssh,combi";
-      combi-modes = "run,window";
-      combi-hide-mode-prefix = false;
+	    modes = "window,drun,run,ssh,combi";
+	    combi-modes = "run,window";
+	    combi-hide-mode-prefix = false;
     };
     plugins = with pkgs; [
       rofimoji
       rofi-rbw-wayland
       rofi-calc
     ];
+  };
+
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font = {
+        size = 13;
+        normal.family = "FiraCode Nerd Font Mono";
+      };
+      window = {
+        opacity = 0.9;
+        blur = true;
+      };
+    };
+  };
+
+  programs.emacs = {
+    enable = true;
+    package = pkgs.emacs29;
+  };
+
+  services.emacs = {
+    enable = true;
   };
 
   systemd.user.services.protonmail-bridge = {

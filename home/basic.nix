@@ -1,4 +1,16 @@
 { pkgs, ... }:
+let
+  posixAliases = {
+    ls = "eza";
+    ll = "eza -l";
+    la = "eza -la";
+  };
+  posixInitExtra = ''
+    for script in $(fd -g *.sh $HOME/.posix_functions); do
+      source $script
+    done
+  '';
+in
 {
   imports = [
     ./dir-colors.nix
@@ -6,15 +18,19 @@
   ];
 
   home.packages = with pkgs; [
-    vim
-    neovim
-    pass
-    wget
+    babashka
+    bitwarden-cli
+    cbonsai
+    cmake
     curl
     fd
+    lsof
     neofetch
-    cbonsai
-    babashka
+    neovim
+    pass
+    rlwrap
+    vim
+    wget
   ];
 
   home.sessionVariables = {
@@ -22,23 +38,22 @@
     VISUAL = "nvim";
   };
 
+  home.file.".posix_functions" = {
+    source = ./scripts/posix;
+    recursive = true;
+  };
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l";
-      la = "eza -la";
-    };
+    shellAliases = posixAliases;
+    initExtra = posixInitExtra;
   };
 
   programs.zsh = {
     enable = true;
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l";
-      la = "eza -la";
-    };
+    shellAliases = posixAliases;
+    initExtra = posixInitExtra;
   };
 
   programs.nushell = {
@@ -59,6 +74,13 @@
   };
 
   programs.fzf = {
+    enable = true;
+    defaultCommand = "fd --type f";
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+  };
+
+  programs.jq = {
     enable = true;
   };
 
@@ -86,18 +108,31 @@
     enable = true;
     keyMode = "vi";
     prefix = "C-b";
+    clock24 = true;
+    newSession = true;
+    extraConfig = ''
+      bind - split-window -v
+      bind | split-window -h
+    '';
     plugins = with pkgs; [
       {
         plugin = tmuxPlugins.nord;
       }
       {
-        plugin = tmuxPlugins.sensible;
+        plugin = tmuxPlugins.yank;
       }
       {
         plugin = tmuxPlugins.jump;
       }
       {
         plugin = tmuxPlugins.better-mouse-mode;
+      }
+      {
+        plugin = tmuxPlugins.fuzzback;
+      }
+      {
+        plugin = tmuxPlugins.better-mouse-mode;
+        extraConfig = "set -g mouse";
       }
     ];
   };

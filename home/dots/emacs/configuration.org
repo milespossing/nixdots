@@ -291,16 +291,18 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Evil
 
 #+begin_src emacs-lisp
-  (use-package evil
-    :init
-    (setq evil-want-keybinding nil)
-    :demand t
-    :config
-    (evil-mode 1))
-  (use-package evil-collection
-    :after evil
-    :config
-    (evil-collection-init))
+    (use-package evil
+      :init
+      (setq evil-want-keybinding nil)
+      :demand t
+      :config
+      (evil-mode 1)
+  (setq evil-buffer-regexps '(("^ \\*load\\*")
+ ("^\\*Org Src .*\\*$"))))
+    (use-package evil-collection
+      :after evil
+      :config
+      (evil-collection-init))
 #+end_src
 
 #+RESULTS:
@@ -433,7 +435,7 @@ configuration.org file, configuration.el doesn't change unless I run this:
   (use-package projectile
     :config
     (projectile-mode +1)
-    (setq projectile-project-search-path '("~/src" "~/scratch"))
+    (setq projectile-project-search-path '("~/src"))
     (mp/leader-key-map
       "p" '(:ignore t :which-key "project")
       "pp" '(projectile-switch-project :which-key "switch project")
@@ -546,8 +548,16 @@ Not sure if this is something I actually need, to be honest
 ** TODO hydra
 ** vterm
 
+Having trouble compiling this in nixos for now
+
 #+begin_src emacs-lisp
-  (use-package vterm)
+  ;(use-package vterm)
+#+end_src
+
+** eshell
+
+#+begin_src emacs-lisp
+  (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color"))) 
 #+end_src
 
 * LSP
@@ -799,26 +809,30 @@ Seems that javascript is here by default. TS, on the other hand...
 #+end_src
 ** TODO Deno
 ** TODO Chezmoi
+** Typst
+
+#+begin_src emacs-lisp
+  ;; (use-package typst-ts-mode
+  ;;   :elpaca (:type git :host sourcehut :repo "meow_king/typst-ts-mode")
+  ;;   :custom
+  ;;   ;; don't add "--open" if you'd like `watch` to be an error detector
+  ;;   (typst-ts-mode-watch-options "--open"))
+#+end_src
 ** Scala
 
 *** Scala mode
+
+Having trouble with scala metals right now
 
 #+begin_src emacs-lisp
   (use-package scala-mode
     :interpreter ("scala" . scala-mode))
   (use-package sbt-mode
     :commands sbt-start sbt-command)
-  (use-package lsp-metals)
+  ;; (use-package lsp-metals)
   
 #+end_src
 
-*** sbt mode
-
-#+begin_src emacs-lisp
-#+end_src
-
-*** lsp-me
-  
 
 ** TODO Python
 ** TODO elisp
