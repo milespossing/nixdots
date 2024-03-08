@@ -87,6 +87,7 @@ in
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     enableNushellIntegration = true;
   };
 
@@ -97,6 +98,15 @@ in
     ignores = [ "*~" "*.swp" ];
     extraConfig = {
       pull.rebase = false;
+      diff.tool = "nvimdiff";
+      merge.tool = "nvimdiff";
+      mergetool = {
+        keepBackup = false;
+      };
+      core = {
+        editor = "nvim";
+        pager = "bat";
+      };
     };
   };
 
