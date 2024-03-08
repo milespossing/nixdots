@@ -4,11 +4,17 @@
 {
   imports = [
     ./basic.nix
+    ./user-space.nix
   ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
+
+  home.packages = with pkgs; [
+    clojure
+    leiningen
+  ];
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
