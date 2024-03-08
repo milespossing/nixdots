@@ -6,9 +6,7 @@ let
     la = "eza -la";
   };
   posixInitExtra = ''
-    for script in $(fd -g *.sh $HOME/.posix_functions); do
-      source $script
-    done
+    . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
   '';
 in
 {
@@ -18,6 +16,7 @@ in
   ];
 
   home.packages = with pkgs; [
+    asdf-vm # somethings just are easier with asdf
     babashka
     bitwarden-cli
     cbonsai
@@ -47,7 +46,9 @@ in
     enable = true;
     enableCompletion = true;
     shellAliases = posixAliases;
-    initExtra = posixInitExtra;
+    initExtra = posixInitExtra + ''
+    . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+    '';
   };
 
   programs.zsh = {
