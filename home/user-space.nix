@@ -1,0 +1,39 @@
+{ pkgs, ... }:
+{
+  imports = [
+    ./alacritty-nord.nix
+  ];
+  # nixpkgs.config.allowUnfreePredicate = pkg:
+  #   builtins.elem (lib.getName pkg) [
+  #     "discord"
+  #     "spotify"
+  #   ];
+
+  home.packages = with pkgs; [
+    # firefox
+    # thunderbird
+    # discord
+    racket
+    emacs29
+    # spotify
+  ];
+
+  home.file.".config/emacs" = {
+    source = ./dots/emacs;
+    recursive = true;
+  };
+
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font = {
+        size = 13;
+        normal.family = "FiraCode Nerd Font Mono";
+      };
+      window = {
+        opacity = 0.7;
+        blur = true;
+      };
+    };
+  };
+}

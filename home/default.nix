@@ -2,7 +2,7 @@
 {
   imports = [
     ./basic.nix
-    ./alacritty-nord.nix
+    ./user-space.nix
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -18,12 +18,12 @@
     discord
     element-desktop
     grim
-	  nwg-drawer
+    nwg-drawer
     racket
     spotify
     slurp
-	  swayosd
-	  swww
+    swayosd
+    swww
     wl-clipboard
     wlogout
   ];
@@ -62,9 +62,9 @@
     package = pkgs.rofi-wayland;
     theme = "Arc-Dark";
     extraConfig = {
-	    modes = "window,drun,run,ssh,combi";
-	    combi-modes = "run,window";
-	    combi-hide-mode-prefix = false;
+      modes = "window,drun,run,ssh,combi";
+      combi-modes = "run,window";
+      combi-hide-mode-prefix = false;
     };
     plugins = with pkgs; [
       rofimoji
