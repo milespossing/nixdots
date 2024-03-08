@@ -20,9 +20,11 @@ in
     babashka
     bitwarden-cli
     cbonsai
+    clojure
     cmake
     curl
     fd
+    leiningen
     lsof
     neofetch
     neovim
