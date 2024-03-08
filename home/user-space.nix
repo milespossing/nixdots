@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  imports = [
+    ./alacritty-nord.nix
+  ];
   # nixpkgs.config.allowUnfreePredicate = pkg:
   #   builtins.elem (lib.getName pkg) [
   #     "discord"
@@ -28,7 +31,7 @@
         normal.family = "FiraCode Nerd Font Mono";
       };
       window = {
-        opacity = 0.9;
+        opacity = 0.7;
         blur = true;
       };
     };
