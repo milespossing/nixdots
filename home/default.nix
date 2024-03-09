@@ -72,39 +72,4 @@
       rofi-calc
     ];
   };
-
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font = {
-        size = 13;
-        normal.family = "FiraCode Nerd Font Mono";
-      };
-      window = {
-        opacity = 0.9;
-        blur = true;
-      };
-    };
-  };
-
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs29;
-  };
-
-  services.emacs = {
-    enable = true;
-  };
-
-  systemd.user.services.protonmail-bridge = {
-    Unit = {
-      Description = "Proton Mail Bridge";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Restart = "always";
-      ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
 }
