@@ -44,6 +44,11 @@ in
     recursive = true;
   };
 
+  home.file.".config/nvim" = {
+    source = ./dots/nvim;
+    recursive = true;
+  };
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
