@@ -15,5 +15,9 @@ require("lazy").setup({
   spec = {
     -- import LazyVim plugins
     { import = "plugins" },
-  }
+  },
+  defaults = {
+    lazy = true,
+  },
 })
+

@@ -13,6 +13,7 @@ in
   imports = [
     ./dir-colors.nix
     ./starship.nix
+    ./lsp.nix
   ];
 
   home.packages = with pkgs; [
