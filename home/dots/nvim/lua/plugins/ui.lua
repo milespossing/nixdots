@@ -8,7 +8,8 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" } 
+      { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" }
     },
   },
+  { 'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons' }
 }
