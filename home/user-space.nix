@@ -31,7 +31,7 @@
         normal.family = "FiraCode Nerd Font Mono";
       };
       window = {
-        opacity = 0.7;
+        opacity = 0.9;
         blur = true;
       };
     };
