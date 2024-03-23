@@ -116,6 +116,9 @@ in
         editor = "nvim";
         pager = "bat";
       };
+      init = {
+        defaultBranch = "main";
+      };
     };
   };
 

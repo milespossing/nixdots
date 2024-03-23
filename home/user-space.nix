@@ -16,7 +16,10 @@
     racket
     emacs29
     # spotify
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
+
+  fonts.fontconfig.enable = true;
 
   home.file.".config/emacs" = {
     source = ./dots/emacs;
