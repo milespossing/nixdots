@@ -16,4 +16,14 @@ return {
 	require'leap'.create_default_mappings()
       end,
     },
+    {
+      "lukas-reineke/indent-blankline.nvim",
+      main = "ibl",
+      opts = {},
+      config = function()
+        require('ibl').setup{
+		indent = { char = " " }
+	}
+      end
+    },
 }
