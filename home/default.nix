@@ -9,6 +9,7 @@
     builtins.elem (lib.getName pkg) [
       "discord"
       "spotify"
+      "tetrio-desktop"
     ];
 
   home.packages = with pkgs; [
