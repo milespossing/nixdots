@@ -14,6 +14,7 @@ in
     ./dir-colors.nix
     ./starship.nix
     ./lsp.nix
+    ./git.nix
   ];
 
   home.packages = with pkgs; [
@@ -100,24 +101,7 @@ in
     enableNushellIntegration = true;
   };
 
-  programs.git = {
-    enable = true;
-    userName = "Miles Possing";
-    userEmail = "no-reply@possing.tech";
-    ignores = [ "*~" "*.swp" ];
-    extraConfig = {
-      pull.rebase = false;
-      diff.tool = "nvimdiff";
-      merge.tool = "nvimdiff";
-      mergetool = {
-        keepBackup = false;
-      };
-      core = {
-        editor = "nvim";
-        pager = "bat";
-      };
-    };
-  };
+  mp.programs.git.enable = true;
 
   programs.lazygit = {
     enable = true;

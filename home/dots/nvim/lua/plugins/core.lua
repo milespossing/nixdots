@@ -1,11 +1,6 @@
 
 return {
     {
-      'echasnovski/mini.nvim',
-      version = '*',
-      lazy = false,
-    },
-    {
       'shaunsingh/nord.nvim',
       config = function()
           vim.cmd[[colorscheme nord]]
