@@ -9,4 +9,21 @@ return {
 	{ "<leader>bb", "<cmb>Telescope buffers<cr>", desc = "Find Buffer" },
       },
     },
+    {
+      'ggandor/leap.nvim',
+      lazy = false,
+      config = function()
+	require'leap'.create_default_mappings()
+      end,
+    },
+    {
+      "lukas-reineke/indent-blankline.nvim",
+      main = "ibl",
+      opts = {},
+      config = function()
+        require('ibl').setup{
+		indent = { char = " " }
+	}
+      end
+    },
 }
