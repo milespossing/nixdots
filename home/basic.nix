@@ -31,6 +31,7 @@ in
     rlwrap
     vim
     wget
+    zulu
   ];
 
   home.sessionVariables = {
