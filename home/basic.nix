@@ -11,10 +11,10 @@ let
 in
 {
   imports = [
+    ./modules
     ./dir-colors.nix
     ./starship.nix
     ./lsp.nix
-    ./git.nix
   ];
 
   home.packages = with pkgs; [
@@ -103,42 +103,10 @@ in
   };
 
   mp.programs.git.enable = true;
+  mp.programs.tmux.enable = true;
 
   programs.lazygit = {
     enable = true;
-  };
-
-  programs.tmux = {
-    enable = true;
-    keyMode = "vi";
-    prefix = "C-b";
-    clock24 = true;
-    newSession = true;
-    extraConfig = ''
-      bind - split-window -v
-      bind | split-window -h
-    '';
-    plugins = with pkgs; [
-      {
-        plugin = tmuxPlugins.nord;
-      }
-      {
-        plugin = tmuxPlugins.yank;
-      }
-      {
-        plugin = tmuxPlugins.jump;
-      }
-      {
-        plugin = tmuxPlugins.better-mouse-mode;
-      }
-      {
-        plugin = tmuxPlugins.fuzzback;
-      }
-      {
-        plugin = tmuxPlugins.better-mouse-mode;
-        extraConfig = "set -g mouse";
-      }
-    ];
   };
 
   programs.eza = {
