@@ -6,24 +6,27 @@ let
     la = "eza -la";
   };
   posixInitExtra = ''
-    for script in $(fd -g *.sh $HOME/.posix_functions); do
-      source $script
-    done
+    . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
   '';
 in
 {
   imports = [
     ./dir-colors.nix
     ./starship.nix
+    ./lsp.nix
+    ./git.nix
   ];
 
   home.packages = with pkgs; [
+    asdf-vm # somethings just are easier with asdf
     babashka
     bitwarden-cli
     cbonsai
+    clojure
     cmake
     curl
     fd
+    leiningen
     lsof
     neofetch
     neovim
@@ -44,11 +47,18 @@ in
     recursive = true;
   };
 
+  home.file.".config/nvim" = {
+    source = ./dots/nvim;
+    recursive = true;
+  };
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
     shellAliases = posixAliases;
-    initExtra = posixInitExtra;
+    initExtra = posixInitExtra + ''
+    . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+    '';
   };
 
   programs.zsh = {
@@ -88,18 +98,11 @@ in
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     enableNushellIntegration = true;
   };
 
-  programs.git = {
-    enable = true;
-    userName = "Miles Possing";
-    userEmail = "no-reply@possing.tech";
-    ignores = [ "*~" "*.swp" ];
-    extraConfig = {
-      pull.rebase = false;
-    };
-  };
+  mp.programs.git.enable = true;
 
   programs.lazygit = {
     enable = true;

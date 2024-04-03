@@ -2,13 +2,14 @@
 {
   imports = [
     ./basic.nix
-    ./alacritty-nord.nix
+    ./user-space.nix
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
       "discord"
       "spotify"
+      "tetrio-desktop"
     ];
 
   home.packages = with pkgs; [
@@ -18,12 +19,12 @@
     discord
     element-desktop
     grim
-	  nwg-drawer
+    nwg-drawer
     racket
     spotify
     slurp
-	  swayosd
-	  swww
+    swayosd
+    swww
     wl-clipboard
     wlogout
   ];
@@ -62,49 +63,14 @@
     package = pkgs.rofi-wayland;
     theme = "Arc-Dark";
     extraConfig = {
-	    modes = "window,drun,run,ssh,combi";
-	    combi-modes = "run,window";
-	    combi-hide-mode-prefix = false;
+      modes = "window,drun,run,ssh,combi";
+      combi-modes = "run,window";
+      combi-hide-mode-prefix = false;
     };
     plugins = with pkgs; [
       rofimoji
       rofi-rbw-wayland
       rofi-calc
     ];
-  };
-
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font = {
-        size = 13;
-        normal.family = "FiraCode Nerd Font Mono";
-      };
-      window = {
-        opacity = 0.9;
-        blur = true;
-      };
-    };
-  };
-
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs29;
-  };
-
-  services.emacs = {
-    enable = true;
-  };
-
-  systemd.user.services.protonmail-bridge = {
-    Unit = {
-      Description = "Proton Mail Bridge";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Restart = "always";
-      ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive";
-    };
-    Install.WantedBy = [ "default.target" ];
   };
 }

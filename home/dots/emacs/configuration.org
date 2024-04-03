@@ -258,14 +258,6 @@ configuration.org file, configuration.el doesn't change unless I run this:
                (shell-command (concat "echo '" text "' | clip.exe"))))))
    #+end_src
 
-
-
-** Autosave
-
-#+begin_src emacs-lisp
-(setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
-#+end_src
-
 * Keybinding
 
 ** ESC Cancels All
@@ -466,7 +458,11 @@ configuration.org file, configuration.el doesn't change unless I run this:
     (append (butlast (if (file-exists-p (expand-file-name "seq" elpaca-builds-directory))
                          elpaca--pre-built-steps elpaca-build-steps))
             (list '+elpaca-unload-seq 'elpaca--activate-package)))
-  
+
+  ;; this needs to be here to make sure that the server starts just right.
+  (server-start)
+  (setq-default with-editor-emacsclient-executable "emacsclient")
+
   (elpaca `(seq :build ,(+elpaca-seq-build-steps)))
   (use-package transient :after seq)
   (use-package magit
