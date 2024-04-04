@@ -4,12 +4,15 @@
 {
   imports = [
     ./basic.nix
-    ./user-space.nix
+    ./modules
   ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
+
+
+  mp.programs.emacs.enable = true;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
