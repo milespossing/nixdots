@@ -5,7 +5,6 @@ let
     ll = "eza -l";
     la = "eza -la";
   };
-  # TODO: it would be good if this were a config value
   posixInitExtra = ''
     . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
     export PATH="$PATH:/usr/local/bin"
@@ -13,6 +12,7 @@ let
 in
 {
   imports = [
+    ./modules
     ./dir-colors.nix
     ./starship.nix
     ./lsp.nix
@@ -36,6 +36,7 @@ in
     rustup
     vim
     wget
+    zulu
   ];
 
   home.sessionVariables = {
@@ -103,61 +104,11 @@ in
     enableNushellIntegration = true;
   };
 
-  programs.git = {
-    enable = true;
-    userName = "Miles Possing";
-    userEmail = "no-reply@possing.tech";
-    ignores = [ "*~" "*.swp" ];
-    extraConfig = {
-      pull.rebase = false;
-      diff.tool = "nvimdiff";
-      merge.tool = "nvimdiff";
-      mergetool = {
-        keepBackup = false;
-      };
-      core = {
-        editor = "nvim";
-        pager = "bat";
-      };
-    };
-  };
+  mp.programs.git.enable = true;
+  mp.programs.tmux.enable = true;
 
   programs.lazygit = {
     enable = true;
-  };
-
-  programs.tmux = {
-    enable = true;
-    keyMode = "vi";
-    prefix = "C-b";
-    clock24 = true;
-    newSession = true;
-    extraConfig = ''
-      bind - split-window -v
-      bind | split-window -h
-      bind c new-window -c "#{pane_current_path}"
-    '';
-    plugins = with pkgs; [
-      {
-        plugin = tmuxPlugins.nord;
-      }
-      {
-        plugin = tmuxPlugins.yank;
-      }
-      {
-        plugin = tmuxPlugins.jump;
-      }
-      {
-        plugin = tmuxPlugins.better-mouse-mode;
-      }
-      {
-        plugin = tmuxPlugins.fuzzback;
-      }
-      {
-        plugin = tmuxPlugins.better-mouse-mode;
-        extraConfig = "set -g mouse";
-      }
-    ];
   };
 
   programs.eza = {
