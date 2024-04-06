@@ -5,8 +5,10 @@ let
     ll = "eza -l";
     la = "eza -la";
   };
+  # TODO: it would be good if this were a config value
   posixInitExtra = ''
     . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+    export PATH="$PATH:/usr/local/bin"
   '';
 in
 {
@@ -31,6 +33,7 @@ in
     neovim
     pass
     rlwrap
+    rustup
     vim
     wget
   ];
@@ -132,6 +135,7 @@ in
     extraConfig = ''
       bind - split-window -v
       bind | split-window -h
+      bind c new-window -c "#{pane_current_path}"
     '';
     plugins = with pkgs; [
       {
