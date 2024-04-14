@@ -25,7 +25,7 @@ in {
     enable = true;
     userName = cfg.user;
     userEmail = cfg.email;
-    ignores = [ "*~" "*.swp" ];
+    ignores = [ "*~" "*.swp" "#*#" ];
     extraConfig = {
       pull.rebase = false;
       diff.tool = "nvimdiff";
