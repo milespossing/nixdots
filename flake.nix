@@ -24,7 +24,6 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      userName = "miles";
 
       sharedOptions = { lib, ... }: {
         options.myConfig = {
@@ -33,6 +32,11 @@
             default = false;
             description = "Whether to use Hyprland.";
           };
+        };
+	config.userName = lib.mkOption {
+	  type = lib.types.str;
+	  default = "miles";
+	  description = "Username";
         };
       };
     in
