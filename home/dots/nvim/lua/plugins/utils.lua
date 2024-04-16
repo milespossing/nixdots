@@ -5,17 +5,11 @@ return {
       dependencies = { 'nvim-lua/plenary.nvim' },
       lazy = false,
       keys = {
-	{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find File" },
-	{ "<leader>bb", "<cmb>Telescope buffers<cr>", desc = "Find Buffer" },
+        { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find File" },
+	    { "<leader>bb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Find Buffer" },
+        { "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch Buffer" },
       },
     },
-    -- {
-    --   'ggandor/leap.nvim',
-    --   lazy = false,
-    --   config = function()
-	--     require'leap'.create_default_mappings()
-    --   end,
-    -- },
     {
       "lukas-reineke/indent-blankline.nvim",
       main = "ibl",
