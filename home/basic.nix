@@ -7,6 +7,7 @@ let
   };
   posixInitExtra = ''
     . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+    export PATH="$PATH:/usr/local/bin"
   '';
 in
 {
@@ -32,6 +33,7 @@ in
     neovim
     pass
     rlwrap
+    rustup
     vim
     wget
     zulu

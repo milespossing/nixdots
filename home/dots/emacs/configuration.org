@@ -2,6 +2,8 @@
 
 For this I am using [[https://github.com/progfolio/elpaca][Elpaca]].
 
+** Elpaca Installer
+
 #+begin_src emacs-lisp
   (defvar elpaca-installer-version 0.7)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -41,7 +43,11 @@ For this I am using [[https://github.com/progfolio/elpaca][Elpaca]].
       (load "./elpaca-autoloads")))
   (add-hook 'after-init-hook #'elpaca-process-queues)
   (elpaca `(,@elpaca-order))
+#+end_src
 
+** Elpaca use-package
+
+#+begin_src emacs-lisp
   ;; Install use-package support
   (elpaca elpaca-use-package
     ;; Enable :elpaca use-package keyword.
@@ -52,6 +58,7 @@ For this I am using [[https://github.com/progfolio/elpaca][Elpaca]].
   ;; Block until current queue processed.
   (elpaca-wait)
 #+end_src
+
 * General Configuration
 ** Leader Bindings
 
