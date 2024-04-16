@@ -12,6 +12,7 @@ in {
     prefix = "C-b";
     clock24 = true;
     newSession = true;
+    historyLimit = 10000;
     extraConfig = ''
       bind - split-window -v -c "#{pane_current_path}"
       bind \ split-window -v -c "#{pane_current_path}"

@@ -14,11 +14,6 @@ in {
       default = "git@possing.tech";
       description = "Email to use for git";
     };
-    useWslAuthHelper = mkOption {
-      type = types.bool;
-      default = false;
-      description = "TODO: Whether to use the windows git auth helper";
-    };
   };
 
   config.programs.git = mkIf cfg.enable {
