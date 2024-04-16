@@ -11,8 +11,9 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
-
   mp.programs.emacs.enable = true;
+  mp.programs.git.email = "milespossing@microsoft.com";
+  mp.sdev.dotnet.enable = true;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
