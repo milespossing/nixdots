@@ -6,6 +6,7 @@
     ./git.nix
     ./hyprland.nix
     ./rofi.nix
+    ./user-space.nix
     ./tmux.nix
   ];
 }

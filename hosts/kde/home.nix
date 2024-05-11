@@ -10,7 +10,7 @@
   home.homeDirectory = "/home/miles";
 
   mp.hyprland.enable = true;
-  mp.rofi.enable = true;
+  mp.user-space.enable = true;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

@@ -3,7 +3,6 @@
   imports = [
     ./modules
     ./basic.nix
-    ./user-space.nix
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
