@@ -49,6 +49,13 @@
             inputs.home-manager.nixosModules.default
           ];
         };
+        kde = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs sharedOptions; };
+          modules = [
+            ./hosts/kde/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
