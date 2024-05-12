@@ -3,8 +3,9 @@
   imports = [
     ./dotnet.nix
     ./emacs.nix
+    ./eww
     ./git.nix
-    ./hyprland.nix
+    ./hyprland
     ./rofi.nix
     ./user-space.nix
     ./tmux.nix

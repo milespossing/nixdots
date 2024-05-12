@@ -14,17 +14,12 @@ in {
     ];
 
     home.file.".config/hypr" = {
-      source = ../dots/hyprland;
+      source = ../../dots/hyprland;
       recursive = true;
     };
 
     programs = {
       waybar.enable = true;
-      eww = {
-        enable = true;
-        package = pkgs.eww-wayland;
-        configDir = ../dots/eww;
-      };
     };
   };
 }

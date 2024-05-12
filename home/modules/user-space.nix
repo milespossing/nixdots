@@ -6,9 +6,13 @@ in {
 
   config = mkIf cfg.enable {
     mp.rofi.enable = true;
+    mp.programs.emacs.enable = true;
 
     home.packages = with pkgs; [
       firefox
+      chromium
+      vivaldi
+      vivaldi-ffmpeg-codecs
       thunderbird
       protonmail-bridge
       discord
@@ -18,7 +22,6 @@ in {
       racket
       spotify
       racket
-      emacs29
       (nerdfonts.override { fonts = [ "FiraCode" ]; })
     ];
 

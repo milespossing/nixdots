@@ -45,14 +45,7 @@
         default = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs sharedOptions; };
           modules = [
-            ./hosts/default/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
-        };
-        kde = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs sharedOptions; };
-          modules = [
-            ./hosts/kde/configuration.nix
+            ./hosts/new-default/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };
