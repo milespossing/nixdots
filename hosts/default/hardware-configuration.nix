@@ -12,29 +12,19 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
-  environment.systemPackages = with pkgs; [
-    ntfs3g
-  ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/4632d945-80b7-4c65-bce8-d5bc930704f6";
+    { device = "/dev/disk/by-uuid/e57deb0b-7e11-43b4-80d9-3e8e6f6d6dc9";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/7CCD-9860";
+    { device = "/dev/disk/by-uuid/4484-F17A";
       fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/db116faf-1228-45d0-83c9-f1a26f1ff394"; }
-    ];
-
-  # fileSystems."/mnt/game-disk" = {
-  #   device = "/dev/sda2";
-  #   fsType = "ntfs-3g";
-  #   options = [ "rw" "uid=1000" "gid=1000" ];
-  # };
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -45,20 +35,4 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  hardware.opengl.enable = true;
-  hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    powerManagement = {
-      enable = true;
-      finegrained = true;
-    };
-    prime = {
-      offload.enable = true;
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
-  };
-  services.xserver.videoDrivers = ["nvidia"];
 }

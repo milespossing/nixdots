@@ -1,4 +1,3 @@
-
 { config, lib, pkgs, inputs, ... }:
 with lib;
 let cfg = config.mp.wm.hyprland;
