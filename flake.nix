@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -20,7 +21,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home-manager, nixos-wsl, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -49,6 +50,15 @@
             inputs.home-manager.nixosModules.default
           ];
         };
+	wsl = nixpkgs.lib.nixosSystem {
+	  specialArgs = { inherit inputs sharedOptions; };
+	  system = "x86_64-linux";
+	  modules = [
+	    nixos-wsl.nixosModules.default
+	    ./hosts/wsl/configuration.nix
+            inputs.home-manager.nixosModules.default
+	  ];
+	};
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
