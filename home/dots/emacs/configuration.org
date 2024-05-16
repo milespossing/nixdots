@@ -67,6 +67,7 @@ Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
 #+begin_src emacs-lisp
   ;; Install and configure the 'general' package
   (use-package general
+    :ensure (:wait t)
     :config
     (general-evil-setup t)
 
@@ -76,8 +77,7 @@ Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
       :global-prefix "C-SPC")
 
     (general-create-definer mp/ctrl-c-keys
-      :prefix "C-c")
-  )
+      :prefix "C-c"))
 #+end_src
 
 #+RESULTS:
@@ -100,8 +100,9 @@ Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
 #+end_src
 
 *** Fonts
+
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil :font "FiraCode Nerd Font")
+  (set-face-attribute 'default nil :font "FiraCode Nerd Font")
 #+end_src
 
 #+RESULTS:
@@ -140,10 +141,9 @@ Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
 We'll start by adding line numbers to everything, but perhaps we really only want to run them for specific file types.
 
 #+begin_src emacs-lisp
-  (elpaca nil
-    (column-number-mode)
-    (global-display-line-numbers-mode t)
-    (setq display-line-numbers 'relative))
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+  (setq display-line-numbers 'relative)
 #+end_src
 
 *** Dashboard
@@ -193,8 +193,7 @@ I don't really know why this is needed, but it seems to be in nix. For some reas
 configuration.org file, configuration.el doesn't change unless I run this:
 
 #+begin_src emacs-lisp
-  (elpaca nil
-    (defun reload-configuration-org ()
+  (defun reload-configuration-org ()
 	"Reloads the configuration.org file after deleting the tangled file."
 	(interactive)
 	(let* ((org-file (expand-file-name "configuration.org" user-emacs-directory))
@@ -205,8 +204,8 @@ configuration.org file, configuration.el doesn't change unless I run this:
 	  ;; Load the org file, which will force re-tangling.
 	  (org-babel-load-file org-file)))
 
-    (mp/leader-key-map
-      "hr" '(reload-configuration-org :which-key "Reload config file")))
+  (mp/leader-key-map
+    "hr" '(reload-configuration-org :which-key "Reload config file"))
 #+end_src
 
 #+RESULTS:
@@ -308,6 +307,7 @@ configuration.org file, configuration.el doesn't change unless I run this:
 
 #+begin_src emacs-lisp
   (use-package which-key
+    :ensure (:wait t)
     :demand t
     :config
     (which-key-mode))
@@ -319,10 +319,9 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** File
 
 #+begin_src emacs-lisp
-  (elpaca nil
-    (mp/leader-key-map
-      "f"  '(:ignore t :which-key "file")
-      "ff" '(find-file :which-key "file open")))
+  (mp/leader-key-map
+    "f"  '(:ignore t :which-key "file")
+    "ff" '(find-file :which-key "file open"))
 #+end_src
 
 #+RESULTS:
@@ -330,11 +329,10 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Buffer
 
 #+begin_src emacs-lisp
-  (elpaca nil
   (mp/leader-key-map
     "b"  '(:ignore t :which-key "buffer")
     "bb" '(counsel-switch-buffer :which-key "buffer switch")
-    "bd" '(kill-current-buffer :which-key "buffer delete")))
+    "bd" '(kill-current-buffer :which-key "buffer delete"))
 #+end_src
 
 #+RESULTS:
@@ -342,7 +340,6 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Window
 
 #+begin_src emacs-lisp
-  (elpaca nil
     (mp/leader-key-map
       "w"  '(:ignore t :which-key "window")
       "wj" '(evil-window-down :which-key "move down")
@@ -351,7 +348,7 @@ configuration.org file, configuration.el doesn't change unless I run this:
       "wk" '(evil-window-up :which-key "move up")
       "wd" '(evil-window-delete :which-key "delete")
       "ws" '(evil-window-split :which-key "split horizontal")
-      "wv" '(evil-window-vsplit :which-key "split vertical")))
+      "wv" '(evil-window-vsplit :which-key "split vertical"))
 #+end_src
 
 #+RESULTS:
@@ -360,16 +357,15 @@ configuration.org file, configuration.el doesn't change unless I run this:
 
 #+begin_src emacs-lisp
   (defvar mp/emacs-config-path "~/.config/emacs/configuration.org")
-    (elpaca nil
-      (mp/leader-key-map
-        "h" '(:ignore t :which-key "help")
-        "hf" '(counsel-describe-function :which-key "describe/function")
-        "hv" '(counsel-describe-variable :which-key "describe/variable")
-        "hk" '(helpful-key :which-key "describe/key")
-        "hm" '(describe-mode :which-key "describe/mode")
-        "hM" '(info-display-manual :which-key "display manual")
-        "h." '(:ignore t :which-key "dotfiles")
-        "h.c" '((lambda () (interactive) (find-file mp/emacs-config-path)) :which-key "open configuration")))
+  (mp/leader-key-map
+    "h" '(:ignore t :which-key "help")
+    "hf" '(counsel-describe-function :which-key "describe/function")
+    "hv" '(counsel-describe-variable :which-key "describe/variable")
+    "hk" '(helpful-key :which-key "describe/key")
+    "hm" '(describe-mode :which-key "describe/mode")
+    "hM" '(info-display-manual :which-key "display manual")
+    "h." '(:ignore t :which-key "dotfiles")
+    "h.c" '((lambda () (interactive) (find-file mp/emacs-config-path)) :which-key "open configuration"))
 #+end_src
 
 #+RESULTS:
@@ -377,11 +373,10 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Toggle
 
 #+begin_src emacs-lisp
-  (elpaca nil
   (mp/leader-key-map
     "t" '(:ignore t :which-key "toggle")
     "tw" '(white-space-mode :which-key "toggle whitespace")
-    "tt" '(counsel-load-theme :which-key "load theme")))
+    "tt" '(counsel-load-theme :which-key "load theme"))
 #+end_src
 
 #+RESULTS:
@@ -389,10 +384,9 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Misc.
 
 #+begin_src emacs-lisp
-  (elpaca nil
   (mp/leader-key-map
     ;; EXECUTE
-    ":"  '(counsel-M-x :which-key "execute")))
+    ":"  '(counsel-M-x :which-key "execute"))
 #+end_src
 
 #+RESULTS:
@@ -614,26 +608,25 @@ Using lsp-mode for this, several packages besides
 *** Keybindings
 
 #+begin_src emacs-lisp
-  (elpaca nil
-    (mp/leader-key-map
-      "X" 'org-capture)
-    (general-define-key
-      :states '(normal visual motion)
-      :keymaps 'org-mode-map
-      :prefix "SPC m"
-      "t" 'org-todo
-      "a" 'org-agenda
-      "c" 'org-capture
-      "l" 'org-insert-link
-      "e" '(:ignore t :which-key "execute")
-      "eb" '(org-babel-execute-src-block :which-key "block")
-      "eB" '(org-babel-execute-buffer :which-key "buffer")
-      "s" '(:ignore t :which-key "subtree")
-      "sl" '(org-demote-subtree :which-key "demote")
-      "sh" '(org-promote-subtree :which-key "promote")
-      "sj" '(org-move-subtree-down :which-key "move down")
-      "sk" '(org-move-subtree-up :which-key "move up")
-      "sr" '(org-refile :which-key "refile")))
+  (mp/leader-key-map
+    "X" 'org-capture)
+  (general-define-key
+    :states '(normal visual motion)
+    :keymaps 'org-mode-map
+    :prefix "SPC m"
+    "t" 'org-todo
+    "a" 'org-agenda
+    "c" 'org-capture
+    "l" 'org-insert-link
+    "e" '(:ignore t :which-key "execute")
+    "eb" '(org-babel-execute-src-block :which-key "block")
+    "eB" '(org-babel-execute-buffer :which-key "buffer")
+    "s" '(:ignore t :which-key "subtree")
+    "sl" '(org-demote-subtree :which-key "demote")
+    "sh" '(org-promote-subtree :which-key "promote")
+    "sj" '(org-move-subtree-down :which-key "move down")
+    "sk" '(org-move-subtree-up :which-key "move up")
+    "sr" '(org-refile :which-key "refile"))
 #+end_src
 
 *** Nice Bullets
@@ -644,8 +637,6 @@ Using lsp-mode for this, several packages besides
     :ensure t
     :hook (org-mode . org-bullets-mode))
 #+end_src
-
-#+RESULTS:
 
 *** Header sizes
 
@@ -661,13 +652,13 @@ Using lsp-mode for this, several packages besides
 *** Indentation
 
 #+begin_src emacs-lisp
-(setq org-startup-indented t)
+  (setq org-startup-indented t)
 #+end_src
 
 *** Line Wrap
 
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook 'visual-line-mode)
 #+end_src
 
 
@@ -677,10 +668,9 @@ Using lsp-mode for this, several packages besides
   (setq org-agenda-files '("~/org/inbox.org"
                            ;;"~/org/tickler.org"
                            "~/org/gtd.org"))
-  (elpaca nil 
-    (mp/leader-key-map
-      "o" '(:ignore t :which-key "org")
-      "o a" 'org-agenda))
+  (mp/leader-key-map
+    "o" '(:ignore t :which-key "org")
+    "o a" 'org-agenda)
 #+end_src
 **** Refiling
 #+begin_src emacs-lisp
@@ -707,13 +697,12 @@ Using lsp-mode for this, several packages besides
 
 *** Habits
 #+begin_src emacs-lisp
-  (elpaca nil
-    (require 'org-habit)
-    (add-to-list 'org-modules 'org-habit t)
-    (setq org-habit-following-days 3
-          org-habit-preceding-days 14
-          org-habit-graph-column 55
-          org-habit-show-all-today t))
+  (require 'org-habit)
+  (add-to-list 'org-modules 'org-habit t)
+  (setq org-habit-following-days 3
+        org-habit-preceding-days 14
+        org-habit-graph-column 55
+        org-habit-show-all-today t)
 #+end_src
 
 *** CalDav
@@ -838,11 +827,11 @@ Seems that javascript is here by default. TS, on the other hand...
 Having trouble with scala metals right now
 
 #+begin_src emacs-lisp
-  (use-package scala-mode
-    :interpreter ("scala" . scala-mode))
-  (use-package sbt-mode
-    :commands sbt-start sbt-command)
-  ;; (use-package lsp-metals)
+;;  (use-package scala-mode
+;;    :interpreter ("scala" . scala-mode))
+;;  (use-package sbt-mode
+;;    :commands sbt-start sbt-command)
+;;  ;; (use-package lsp-metals)
   
 #+end_src
 
