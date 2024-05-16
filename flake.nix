@@ -42,10 +42,10 @@
     in
     {
       nixosConfigurations = {
-        default = nixpkgs.lib.nixosSystem {
+        euler = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs sharedOptions; };
           modules = [
-            ./hosts/new-default/configuration.nix
+            ./hosts/euler/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };

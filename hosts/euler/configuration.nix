@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports =
@@ -12,10 +12,18 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+    };
+    grub = {
+      efiSupport = true;
+      device = "nodev";
+    };
+    systemd-boot.enable = true;
+  };
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "euler"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -46,13 +54,24 @@
   # enable gnome
   mp.wm.gnome.enable = true;
 
+  # enable steam
+  mp.steam.enable = true;
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    qemu
+    (quickemu.override { qemu = qemu_full; })
+  ];
 
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  services.samba = {
+    enable = true;
+  };
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -83,9 +102,12 @@
     };
   };
 
+  mp.virtualization.enable = true;
 
-  # Install firefox.
-  programs.firefox.enable = true;
+  fileSystems."/mnt/media" = {
+    device = "10.0.10.2:/mnt/neumann/media";
+    fsType = "nfs";
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

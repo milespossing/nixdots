@@ -22,6 +22,7 @@ in {
       racket
       spotify
       racket
+      vlc
       (nerdfonts.override { fonts = [ "FiraCode" ]; })
     ];
 
