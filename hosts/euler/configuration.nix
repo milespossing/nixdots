@@ -51,8 +51,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # enable gnome
-  mp.wm.gnome.enable = true;
+  mp.wm.kde.enable = true;
 
   # enable steam
   mp.steam.enable = true;
