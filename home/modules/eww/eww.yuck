@@ -3,8 +3,8 @@
 	:geometry (geometry :x "0" 
 						:y "0" 
 						:height "100%" 
-						:width "47px")
-	:monitor 0
+						:width "80px")
+	:monitor 1
 	:reserve (struts :distance "35px" 
 					 :side "left")
 	:wm-ignore false
@@ -13,7 +13,7 @@
   (bar))
 
 (defwidget bar []
-  (box :class "eww_bar"
+  (box :class "main-bar"
     (time)))
 
 (defwidget time []

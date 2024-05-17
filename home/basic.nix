@@ -12,7 +12,6 @@ let
 in
 {
   imports = [
-    ./modules
     ./dir-colors.nix
     ./starship.nix
     ./lsp.nix

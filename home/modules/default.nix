@@ -1,9 +1,13 @@
 { ... }:
 {
   imports = [
-    ./emacs.nix
-    ./git.nix
-    ./tmux.nix
     ./dotnet.nix
+    ./emacs.nix
+    ./eww
+    ./git.nix
+    ./hyprland
+    ./rofi.nix
+    ./user-space.nix
+    ./tmux.nix
   ];
 }

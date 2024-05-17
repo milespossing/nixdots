@@ -2,23 +2,29 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
+      ../../modules
       ./hardware-configuration.nix
     ];
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-  };
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+    };
+    grub = {
+      efiSupport = true;
+      device = "nodev";
+    };
+    systemd-boot.enable = true;
+  };
 
-  networking.hostName = "nix-tower"; # Define your hostname.
+  networking.hostName = "euler"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -27,10 +33,6 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-
-  services.openssh = {
-    enable = true;
-  };
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -50,13 +52,26 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  mp.wm.kde.enable = true;
+
+  # enable steam
+  mp.steam.enable = true;
+
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    qemu
+    (quickemu.override { qemu = qemu_full; })
+  ];
 
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  services.samba = {
+    enable = true;
+  };
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -70,82 +85,51 @@
     #media-session.enable = true;
   };
 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  };
-
-  programs.nm-applet.enable = true;
-
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    displayManager = {
-      sddm.enable = true;
-      defaultSession = "hyprland";
-    };
-    # misc.
-    xkb.layout = "us";
-    xkb.variant = "";
-  };
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.miles = {
     isNormalUser = true;
     description = "miles";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-      kate
-    ];
+    extraGroups = [ "networkmanager" "wheel" ];
   };
-
-  programs.steam.enable = true;
 
   home-manager = {
-     extraSpecialArgs = {inherit inputs;};
-     users = {
-       "miles" = import ./home.nix;
-     };
+    extraSpecialArgs = {inherit inputs;};
+    users = {
+      "miles" = import ./home.nix;
+    };
   };
 
-  # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "miles";
+  mp.virtualization.enable = true;
+
+  fileSystems."/mnt/media" = {
+    device = "10.0.10.2:/mnt/neumann/media";
+    fsType = "nfs";
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-	  gcc
-    pinentry-qt
-	  pinentry-curses
-    python3
-  ];
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
 
-  virtualisation.docker.enable = true;
+  # List services that you want to enable:
 
-  environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1";
-    NIXOS_OZONE_WL = "1";
-  };
+  # Enable the OpenSSH daemon.
+  # services.openssh.enable = true;
 
-  # Fonts
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
-  ];
-
-  services.gnome.gnome-keyring.enable = true;
-    systemd.user.services.protonmail-bridge = {
-    description = "Protonmail Bridge";
-    enable = true;
-    script = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --noninteractive --log-level info";
-    path = [ pkgs.gnome3.gnome-keyring ]; # HACK: https://github.com/ProtonMail/proton-bridge/issues/176
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-  };
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
