@@ -82,7 +82,6 @@ in
 
   programs.navi = {
     enable = true;
-    enableBashIntegration = true;
   };
 
   programs.fzf = {
