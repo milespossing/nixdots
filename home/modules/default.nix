@@ -10,5 +10,6 @@
     ./shells
     ./tmux.nix
     ./user-space.nix
+    ./wsl.nix
   ];
 }

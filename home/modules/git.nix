@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 with lib;
 let cfg = config.mp.programs.git;
 in {
@@ -13,6 +13,14 @@ in {
       type = types.str;
       default = "git@possing.tech";
       description = "Email to use for git";
+    };
+    gcmCoreIntegration = {
+      enable = mkEnableOption "Uses GCM";
+      location = mkOption {
+        type = types.str;
+        default = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+        description = "Where is the gcm located";
+      };
     };
   };
 
@@ -36,6 +44,10 @@ in {
       core = {
         editor = "nvim";
         pager = "bat";
+      };
+      credential = mkIf cfg.gcmCoreIntegration.enable {
+        helper = cfg.gcmCoreIntegration.location;
+        useHttpPath = true;
       };
     };
   };

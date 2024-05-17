@@ -16,6 +16,8 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
+  mp.wsl.enable = true;
+
   mp.programs.emacs.enable = true;
   mp.programs.git.email = "milespossing@microsoft.com";
   mp.sdev.dotnet.enable = true;
