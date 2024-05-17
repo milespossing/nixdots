@@ -3,7 +3,11 @@ local wk = require("which-key")
 
 wk.register({
   f = { name = "file" },
-  b = { name = "buffer" },
+  b = {
+    name = "buffer",
+    n = { ":set number<cr>", "Set Number" },
+    r = { ":set relativenumber<cr>", "Set Relative" },
+  },
   w = {
     name = "window",
     h = { "<C-w>h", "Move point left" },

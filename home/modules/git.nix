@@ -21,6 +21,11 @@ in {
     userName = cfg.user;
     userEmail = cfg.email;
     ignores = [ "*~" "*.swp" "#*#" "venv/" ".direnv" ".envrc" ];
+    aliases = {
+      s = "status";
+      c = "checkout";
+      d = "diff";
+    };
     extraConfig = {
       pull.rebase = false;
       diff.tool = "nvimdiff";

@@ -5,6 +5,10 @@
     ../../home/user-space.nix
   ];
 
+  home.packages = with pkgs; [
+    zip
+  ]p
+
   home.username = "miles";
   home.homeDirectory = "/Users/miles";
 
