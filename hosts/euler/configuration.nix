@@ -62,6 +62,7 @@
 
   environment.systemPackages = with pkgs; [
     qemu
+    quickgui
     (quickemu.override { qemu = qemu_full; })
   ];
 
