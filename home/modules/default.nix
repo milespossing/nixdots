@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./dotnet.nix
@@ -7,7 +7,8 @@
     ./git.nix
     ./hyprland
     ./rofi.nix
-    ./user-space.nix
+    ./shells
     ./tmux.nix
+    ./user-space.nix
   ];
 }

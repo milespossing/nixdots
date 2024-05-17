@@ -2,7 +2,9 @@
 {
   imports = [
     ./modules
-    ./basic.nix
+    ./dir-colors.nix
+    ./lsp.nix
+    ./starship.nix
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -12,4 +14,89 @@
       "spotify"
       "tetrio-desktop"
     ];
+
+  home.packages = with pkgs; [
+    asdf-vm # somethings just are easier with asdf
+    babashka
+    bitwarden-cli
+    cbonsai
+    clojure
+    cmake
+    curl
+    fd
+    leiningen
+    lsof
+    neofetch
+    neovim
+    pass
+    rlwrap
+    rustup
+    vim
+    wget
+    zulu
+  ];
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+  };
+
+  home.file.".config/nvim" = {
+    source = ./dots/nvim;
+    recursive = true;
+  };
+
+  programs.bat = {
+    enable = true;
+  };
+
+  programs.ripgrep = {
+    enable = true;
+  };
+
+  programs.navi = {
+    enable = true;
+  };
+
+  programs.fzf = {
+    enable = true;
+    defaultCommand = "fd --type f";
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+  };
+
+  programs.jq = {
+    enable = true;
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+    enableNushellIntegration = true;
+  };
+
+  mp.programs.git.enable = true;
+  mp.programs.tmux.enable = true;
+
+  programs.lazygit = {
+    enable = true;
+  };
+
+  programs.eza = {
+    enable = true;
+    icons = true;
+    git = true;
+  };
+
+  programs.gpg = {
+    enable = true;
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    enableNushellIntegration = true;
+    nix-direnv.enable = true;
+  };
 }
