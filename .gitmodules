@@ -1,0 +1,3 @@
+[submodule "home/submodules/fzf-git.sh"]
+	path = home/submodules/fzf-git.sh
+	url = https://github.com/junegunn/fzf-git.sh.git
