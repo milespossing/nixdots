@@ -60,11 +60,6 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    qemu
-    quickgui
-    (quickemu.override { qemu = qemu_full; })
-  ];
 
   # Enable sound with pipewire.
   sound.enable = true;
