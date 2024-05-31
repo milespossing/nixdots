@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 let cfg = config.mp.programs.git;
 in {
@@ -45,9 +45,15 @@ in {
         editor = "nvim";
         pager = "bat";
       };
-      credential = mkIf cfg.gcmCoreIntegration.enable {
-        helper = cfg.gcmCoreIntegration.location;
-        useHttpPath = true;
+      credential = {
+        helper = mkIf cfg.gcmCoreIntegration.enable cfg.gcmCoreIntegration.location;
+        useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
+        "https://github.com" = {
+          helper = "!${pkgs.gh}/bin/gh auth git-credential";
+        };
+        "https://gist.github.com" = {
+          helper = "!${pkgs.gh}/bin/gh auth git-credential";
+        };
       };
     };
   };

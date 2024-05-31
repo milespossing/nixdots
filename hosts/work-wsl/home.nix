@@ -3,8 +3,7 @@
 
 {
   imports = [
-    ./basic.nix
-    ./modules
+    ../../home
   ];
 
   nix = {
