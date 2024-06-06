@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ./dotnet.nix
+    ./development
     ./emacs.nix
     ./eww
     ./git.nix
