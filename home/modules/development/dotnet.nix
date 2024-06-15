@@ -4,16 +4,16 @@ let cfg = config.mp.sdev.dotnet;
 in {
   options.mp.sdev.dotnet = {
     enable = mkEnableOption "Enables dotnet";
-    extraPackages = mkOption {
-      type = types.listOf types.package;
+    version = mkOption {
+      type = types.package;
       description = "Extra dotnet versions to install";
-      default = [];
+      default = pkgs.dotnet-sdk;
     };
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      dotnet-sdk
-    ] ++ cfg.extraPackages;
+    home.packages = [
+      cfg.version
+    ];
   };
 }

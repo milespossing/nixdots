@@ -1,10 +1,9 @@
 
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
-    ./basic.nix
-    ./modules
+    ../../home
   ];
 
   nix = {
@@ -16,9 +15,12 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
+  mp.wsl.enable = true;
+
   mp.programs.emacs.enable = true;
   mp.programs.git.email = "milespossing@microsoft.com";
-  mp.sdev.dotnet.enable = true;
+  mp.sdev.all = true;
+  mp.sdev.dotnet.version = pkgs.dotnet-sdk_8;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

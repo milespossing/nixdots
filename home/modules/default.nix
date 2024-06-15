@@ -1,13 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
-    ./dotnet.nix
+    ./development
     ./emacs.nix
     ./eww
     ./git.nix
     ./hyprland
     ./rofi.nix
-    ./user-space.nix
+    ./shells
     ./tmux.nix
+    ./user-space.nix
+    ./wsl.nix
   ];
 }
