@@ -12,6 +12,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "ntfs" ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/e57deb0b-7e11-43b4-80d9-3e8e6f6d6dc9";
@@ -24,9 +25,25 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
+  fileSystems."/mnt/media" = {
+    device = "10.0.10.2:/mnt/neumann/media";
+    fsType = "nfs";
+  };
+
+  fileSystems."/mnt/gamedisk" = {
+    device = "/dev/disk/by-uuid/7A00BE8100BE43C3";
+    fsType = "ntfs-3g";
+    options = [ "rw" "user" "exec" "uid=1000" "gid=100" "umask=000" ];
+  };
+
   swapDevices = [ ];
 
   hardware.bluetooth.enable = true;
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -37,4 +54,10 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    nvidiaSettings = true;
+  };
 }

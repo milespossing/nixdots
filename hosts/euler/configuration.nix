@@ -10,6 +10,7 @@
       ../../modules
       ./hardware-configuration.nix
     ];
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Bootloader.
@@ -53,6 +54,7 @@
   };
 
   mp.wm.kde.enable = true;
+  # mp.wm.kde.version6 = true;
 
   # enable steam
   mp.steam.enable = true;
@@ -99,11 +101,6 @@
   };
 
   mp.virtualization.enable = true;
-
-  fileSystems."/mnt/media" = {
-    device = "10.0.10.2:/mnt/neumann/media";
-    fsType = "nfs";
-  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
