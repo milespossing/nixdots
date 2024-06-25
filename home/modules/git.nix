@@ -35,6 +35,7 @@ in {
       d = "diff";
     };
     extraConfig = {
+      init.defaultBranch = "main";
       pull.rebase = false;
       diff.tool = "nvimdiff";
       merge.tool = "nvimdiff";

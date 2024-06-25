@@ -225,9 +225,6 @@ configuration.org file, configuration.el doesn't change unless I run this:
   (setq-default evil-shift-width tab-width)
 #+end_src
 
-#+RESULTS:
-: 2
-
 ** Use Spaces instead of Tabs
 #+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
@@ -405,10 +402,13 @@ configuration.org file, configuration.el doesn't change unless I run this:
 
 #+RESULTS:
 
-** TODO Tree explorer
+** Tree explorer
 
 #+begin_src emacs-lisp
-  (use-package treemacs)
+  (use-package treemacs
+    :config
+    (mp/leader-key-map
+      "e" '(treemacs :which-key "treemacs")))
   (use-package treemacs-evil
     :after (evil treemacs))
 #+end_src
@@ -652,7 +652,9 @@ Using lsp-mode for this, several packages besides
 *** Indentation
 
 #+begin_src emacs-lisp
-  (setq org-startup-indented t)
+(setq org-startup-indented t)
+(add-hook 'org-src-mode-hook
+  (lambda () (electric-indent-local-mode -1)))
 #+end_src
 
 *** Line Wrap
@@ -675,9 +677,7 @@ Using lsp-mode for this, several packages besides
 **** Refiling
 #+begin_src emacs-lisp
   (setq org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
-                             ("~/org/someday.org" :level . 1)
-                             ;;("~/org/tickler.org" :maxlevel . 2)
-  ))
+                             ("~/org/someday.org" :level . 1)))
 #+end_src
 **** Capture Templates
 
@@ -748,14 +748,15 @@ Basic lisp utils
 Basic clojure mode
 
 #+begin_src emacs-lisp
-  (use-package clojure-mode
-    :mode "\\.clj\\'"
-    :config
-    (general-define-key
-      :states '(normal)
-      :keymaps 'clojure-mode-map
-      :prefix "SPC m"
-      "l" '(cider-load-buffer)))
+    (use-package clojure-mode
+      :mode "\\.clj\\'"
+      :config
+      (general-define-key
+        :states '(normal)
+        :keymaps 'clojure-mode-map
+        :prefix "SPC m"
+        "l" '(cider-load-buffer))
+      (g)
 #+end_src
 
 CIDR

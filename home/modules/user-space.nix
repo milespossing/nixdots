@@ -11,8 +11,10 @@ in {
     home.packages = with pkgs; [
       firefox
       chromium
-      vivaldi
-      vivaldi-ffmpeg-codecs
+      (vivaldi.override {
+        proprietaryCodecs = true;
+        enableWidevine = false;
+      })
       thunderbird
       protonmail-bridge
       discord
