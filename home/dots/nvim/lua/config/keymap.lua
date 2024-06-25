@@ -15,5 +15,11 @@ wk.register({
     l = { "<C-w>l", "Move point right" },
     k = { "<C-w>k", "Move point up" },
   },
+  t = {
+    name = "term",
+  },
+  g = {
+    name = "git",
+  },
 }, { prefix = "<leader>" })
 
