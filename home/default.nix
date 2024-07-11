@@ -24,6 +24,7 @@
     cmake
     curl
     fd
+    gcc
     leiningen
     lsof
     neofetch
@@ -31,6 +32,7 @@
     pass
     rlwrap
     rustup
+    unzip
     vim
     wget
     zulu
