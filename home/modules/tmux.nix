@@ -17,6 +17,7 @@ in {
       bind - split-window -v -c "#{pane_current_path}"
       bind | split-window -h -c "#{pane_current_path}"
       bind c new-window -c "#{pane_current_path}"
+      set -s command-alias nd="new -d"
     '';
     plugins = with pkgs; [
       {
