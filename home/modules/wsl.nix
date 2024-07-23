@@ -8,7 +8,7 @@ in {
     mp.programs.git.gcmCoreIntegration.enable = true;
 
     home.packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" "Meslo" ]; })
     ];
 
     fonts.fontconfig.enable = true;
