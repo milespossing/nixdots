@@ -757,21 +757,7 @@ Basic lisp utils
 
 ** Clojure
 
-Basic clojure mode
-
-#+begin_src emacs-lisp
-;    (use-package clojure-mode
-;      :mode "\\.clj\\'"
-;      :config
-;      (general-define-key
-;        :states '(normal)
-;        :keymaps 'clojure-mode-map
-;        :prefix "SPC m"
-;        "l" '(cider-load-buffer))
-;      (g)
-#+end_src
-
-CIDR
+*** CIDR
 
 #+begin_src emacs-lisp
   (use-package cider
