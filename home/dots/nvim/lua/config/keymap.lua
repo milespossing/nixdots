@@ -1,25 +1,17 @@
 
 local wk = require("which-key")
 
-wk.register({
-  f = { name = "file" },
-  b = {
-    name = "buffer",
-    n = { ":set number<cr>", "Set Number" },
-    r = { ":set relativenumber<cr>", "Set Relative" },
-  },
-  w = {
-    name = "window",
-    h = { "<C-w>h", "Move point left" },
-    j = { "<C-w>j", "Move point down" },
-    l = { "<C-w>l", "Move point right" },
-    k = { "<C-w>k", "Move point up" },
-  },
-  t = {
-    name = "term",
-  },
-  g = {
-    name = "git",
-  },
-}, { prefix = "<leader>" })
+wk.add({
+  { "<leader>b", group = "buffer" },
+  { "<leader>bn", ":set number<cr>", desc = "Set Number" },
+  { "<leader>br", ":set relativenumber<cr>", desc = "Set Relative" },
+  { "<leader>f", group = "file" },
+  { "<leader>g", group = "git" },
+  { "<leader>t", group = "term" },
+  { "<leader>w", group = "window" },
+  { "<leader>wh", "<C-w>h", desc = "Move point left" },
+  { "<leader>wj", "<C-w>j", desc = "Move point down" },
+  { "<leader>wk", "<C-w>k", desc = "Move point up" },
+  { "<leader>wl", "<C-w>l", desc = "Move point right" },
+})
 
