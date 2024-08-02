@@ -102,10 +102,17 @@ Set up leader bindings with [[https://github.com/noctuid/general.el][General]].
 *** Fonts
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "FiraCode Nerd Font")
+  (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font")
 #+end_src
 
-#+RESULTS:
+**** Font Size
+
+Sometimes it's nice to change the size of fonts
+
+#+begin_src emacs-lisp
+  (defun set-font-height (height)
+    (set-face-attribute 'default nil :height height))
+#+end_src
 
 *** Fullscreen
 
@@ -753,15 +760,15 @@ Basic lisp utils
 Basic clojure mode
 
 #+begin_src emacs-lisp
-    (use-package clojure-mode
-      :mode "\\.clj\\'"
-      :config
-      (general-define-key
-        :states '(normal)
-        :keymaps 'clojure-mode-map
-        :prefix "SPC m"
-        "l" '(cider-load-buffer))
-      (g)
+;    (use-package clojure-mode
+;      :mode "\\.clj\\'"
+;      :config
+;      (general-define-key
+;        :states '(normal)
+;        :keymaps 'clojure-mode-map
+;        :prefix "SPC m"
+;        "l" '(cider-load-buffer))
+;      (g)
 #+end_src
 
 CIDR

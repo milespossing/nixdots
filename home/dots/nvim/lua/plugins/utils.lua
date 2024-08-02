@@ -16,8 +16,22 @@ return {
       opts = {},
       config = function()
         require('ibl').setup{
-		indent = { char = " " }
-	}
+		  indent = { char = " " }
+	    }
       end
     },
+    {
+      "voldikss/vim-floaterm",
+      keys = {
+        { "<leader>tf", "<cmd>FloatermNew<cr>", desc = "New Floaterm" },
+        { "<leader>gg", "<cmd>FloatermNew lazygit<cr>", desc = "lazygit" },
+      },
+    },
+    -- {
+    --   "lewis6991/gitsigns.nvim",
+    --   event = "LazyFile",
+    --   config = function()
+    --     require('gitsigns').setup()
+    --   end,
+    -- },
 }

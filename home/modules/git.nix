@@ -42,6 +42,7 @@ in {
       mergetool = {
         keepBackup = false;
       };
+      push.autoSetupRemote = true;
       core = {
         editor = "nvim";
         pager = "bat";

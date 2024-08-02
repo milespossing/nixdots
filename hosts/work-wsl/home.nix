@@ -22,6 +22,11 @@
   mp.sdev.all = true;
   mp.sdev.dotnet.version = pkgs.dotnet-sdk_8;
 
+  home.packages = with pkgs; [
+    multimarkdown
+    mermaid-cli
+  ];
+
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
   # introduces backwards incompatible changes.
