@@ -1,6 +1,4 @@
-
 { pkgs, ... }:
-
 {
   imports = [
     ../../home
@@ -21,6 +19,15 @@
   mp.programs.git.email = "milespossing@microsoft.com";
   mp.sdev.all = true;
   mp.sdev.dotnet.version = pkgs.dotnet-sdk_8;
+
+  home.file.".scripts.d" = {
+    source = ./scripts;
+    recursive = true;
+  };
+
+  posix.initExtra = ''
+    export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
+  '';
 
   home.packages = with pkgs; [
     multimarkdown
