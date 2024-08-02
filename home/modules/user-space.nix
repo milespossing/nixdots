@@ -25,7 +25,7 @@ in {
       spotify
       racket
       vlc
-      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" "Meslo" ]; })
     ];
 
     fonts.fontconfig.enable = true;

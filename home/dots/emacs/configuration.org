@@ -291,17 +291,18 @@ configuration.org file, configuration.el doesn't change unless I run this:
 ** Evil
 
 #+begin_src emacs-lisp
-    (use-package evil
-      :init
-      (setq evil-want-keybinding nil)
-      :demand t
-      :config
-      (evil-mode 1)
-  (setq evil-buffer-regexps '(("^ \\*load\\*")
- ("^\\*Org Src .*\\*$"))))
+  (use-package evil
+    :init
+    (setq evil-want-keybinding nil)
+    :demand t
+    :config
+    (evil-mode 1)
+    (setq evil-buffer-regexps '(("^ \\*load\\*")
+      ("^\\*Org Src .*\\*$"))))
     (use-package evil-collection
       :after evil
       :config
+      (setq evil-collection-want-unimpaired-p nil)
       (evil-collection-init))
 #+end_src
 
@@ -621,7 +622,9 @@ Using lsp-mode for this, several packages besides
     :states '(normal visual motion)
     :keymaps 'org-mode-map
     :prefix "SPC m"
-    "t" 'org-todo
+    "t" '(:ignore t :which-key "todo")
+    "tt" 'org-todo
+    "ts" 'org-schedule
     "a" 'org-agenda
     "c" 'org-capture
     "l" 'org-insert-link
@@ -674,16 +677,18 @@ Using lsp-mode for this, several packages besides
 *** gtd
 **** Agenda Files
 #+begin_src emacs-lisp
-  (setq org-agenda-files '("~/org/inbox.org"
-                           ;;"~/org/tickler.org"
-                           "~/org/gtd.org"))
-  (mp/leader-key-map
-    "o" '(:ignore t :which-key "org")
-    "o a" 'org-agenda)
+    (setq org-agenda-files '("~/org/inbox.org"
+                             ;;"~/org/tickler.org"
+                             "~/org/gtd.org"
+                             "~/org/home.org"))
+    (mp/leader-key-map
+      "o" '(:ignore t :which-key "org")
+      "o a" 'org-agenda)
 #+end_src
 **** Refiling
 #+begin_src emacs-lisp
   (setq org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
+                             ("~/org/archive.org" :maxlevel . 1)
                              ("~/org/someday.org" :level . 1)))
 #+end_src
 **** Capture Templates
@@ -752,21 +757,7 @@ Basic lisp utils
 
 ** Clojure
 
-Basic clojure mode
-
-#+begin_src emacs-lisp
-;    (use-package clojure-mode
-;      :mode "\\.clj\\'"
-;      :config
-;      (general-define-key
-;        :states '(normal)
-;        :keymaps 'clojure-mode-map
-;        :prefix "SPC m"
-;        "l" '(cider-load-buffer))
-;      (g)
-#+end_src
-
-CIDR
+*** CIDR
 
 #+begin_src emacs-lisp
   (use-package cider

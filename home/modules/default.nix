@@ -6,6 +6,7 @@
     ./eww
     ./git.nix
     ./hyprland
+    ./protonmail-bridge.nix
     ./rofi.nix
     ./shells
     ./tmux.nix
