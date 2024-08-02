@@ -28,7 +28,7 @@ in {
     enable = true;
     userName = cfg.user;
     userEmail = cfg.email;
-    ignores = [ "*~" "*.swp" "#*#" "venv/" ".direnv" ".envrc" ];
+    ignores = [ "*~" "*.swp" "\\#*\\#" "venv/" ".direnv" ".envrc" ];
     aliases = {
       s = "status";
       c = "checkout";
