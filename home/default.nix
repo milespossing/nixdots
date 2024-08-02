@@ -32,6 +32,7 @@
     pass
     rlwrap
     rustup
+    tldr
     unzip
     vim
     wget
