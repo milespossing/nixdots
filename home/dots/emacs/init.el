@@ -214,7 +214,7 @@
   (use-package projectile
     :config
     (projectile-mode +1)
-    (setq projectile-project-search-path '("~/src"))
+    (setq projectile-project-search-path '("~/org" "~/src"))
     (mp/leader-key-map
       "p" '(:ignore t :which-key "project")
       "pp" '(projectile-switch-project :which-key "switch project")
