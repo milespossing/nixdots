@@ -57,7 +57,9 @@
   # mp.wm.kde.version6 = true;
 
   # enable steam
-  mp.steam.enable = true;
+  programs.steam.enable = true;
+  programs.lutris.enable = true;
+  programs.wine.enable = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;

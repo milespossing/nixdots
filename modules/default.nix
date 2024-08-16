@@ -1,12 +1,13 @@
 { ... }:
 {
   imports = [
+    ./bundles
+    ./gnome.nix
     ./hyprland.nix
     ./kde.nix
-    ./gnome.nix
-    ./steam.nix
+    ./lutris.nix
     ./virtualization.nix
-    ./bundles
+    ./wine.nix
   ];
 
 
