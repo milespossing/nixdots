@@ -17,8 +17,7 @@
 
   mp.programs.emacs.enable = true;
   mp.programs.git.email = "milespossing@microsoft.com";
-  mp.sdev.all = true;
-  mp.sdev.dotnet.version = pkgs.dotnet-sdk_8;
+  sdev.all = true;
 
   home.file.".scripts.d" = {
     source = ./scripts;
