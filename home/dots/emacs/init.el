@@ -377,7 +377,10 @@
   (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
   (add-hook 'racket-mode-hook 'paredit-mode)
   (add-hook 'racket-repl-mode-hook 'paredit-mode)
-  (add-hook 'racket-repl-mode-hook #'(lambda () (define-key racket-repl-mode-map (kbd "<C-return>") 'racket-repl-submit))))
+  (add-hook 'racket-repl-mode-hook #'(lambda ()
+                                       (define-key racket-repl-mode-map (kbd "<C-return>") 'racket-repl-submit)
+                                       (define-key racket-repl-mode-map (kbd "<C-up") 'racket-repl-previous-input)
+                                       (define-key racket-repl-mode-map (kbd "<C-down") 'racket-repl-next-input))))
 
 (use-package cider
   :after paredit

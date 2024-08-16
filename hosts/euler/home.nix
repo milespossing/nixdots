@@ -14,6 +14,10 @@
   ];
 
   mp.user-space.enable = true;
+  sdev.racket = {
+    enable = true;
+    full = true;
+  };
 
   services.protonmail-bridge.enable = true;
 

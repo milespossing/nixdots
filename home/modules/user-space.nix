@@ -21,9 +21,7 @@ in {
       element-desktop
       grim
       nwg-drawer
-      racket
       spotify
-      racket
       vlc
       (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" "Meslo" ]; })
     ];
