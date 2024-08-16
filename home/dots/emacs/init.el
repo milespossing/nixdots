@@ -1,3 +1,5 @@
+;;;; init.el --- My init file
+;;; This is the init file of mp-complete
 (setq package-install-upgrade-built-in t)
 ; (require 'org)
 ; (org-babel-load-file
@@ -366,33 +368,44 @@
     (setq markdown-command "multimarkdown"))
   (use-package nix-mode
     :mode "\\.nix\\'")
-  (use-package paredit)
-  (use-package cider
-    :config
-    (add-hook 'cider-repl-mode-hook #'paredit-mode))
-  (use-package rust-mode
-    :config
-    ;; Enable rustfmt on save
-    (setq rust-format-on-save t)
+(use-package paredit
+  :config
+  (add-hook 'elisp-mode-hook 'paredit-mode))
+(use-package racket-mode
+  :after paredit
+  :config
+  (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
+  (add-hook 'racket-mode-hook 'paredit-mode)
+  (add-hook 'racket-repl-mode-hook 'paredit-mode)
+  (add-hook 'racket-repl-mode-hook #'(lambda () (define-key racket-repl-mode-map (kbd "<C-return>") 'racket-repl-submit))))
 
-    ;; Indentation settings
-    (add-hook 'rust-mode-hook
-              (lambda () (setq indent-tabs-mode nil)))
+(use-package cider
+  :after paredit
+  :config
+  (add-hook 'cider-repl-mode-hook #'paredit-mode))
+(use-package rust-mode
+  :config
+  ;; Enable rustfmt on save
+  (setq rust-format-on-save t)
 
-    ;; Prettify symbols
-    (add-hook 'rust-mode-hook
-              (lambda () (prettify-symbols-mode)))
-    (general-define-key
-      :states '(normal visual modtion)
-      :keymaps 'rust-mode-map
-      :prefix "SPC m"
-      "b" '(:ignore t :which-key "build")
-      "bb" '(rust-compile :which-key "compile")
-      "br" '(rust-run :which-key "run")
-      "bt" '(rust-test :which-key "test")
-      "bc" '(rust-check :which-key "check")
-      "l" '(rust-run-clippy :which-key "lint")))
-  (use-package cargo
+  ;; Indentation settings
+  (add-hook 'rust-mode-hook
+            (lambda () (setq indent-tabs-mode nil)))
+
+  ;; Prettify symbols
+  (add-hook 'rust-mode-hook
+            (lambda () (prettify-symbols-mode)))
+  (general-define-key
+    :states '(normal visual modtion)
+     :keymaps 'rust-mode-map
+     :prefix "SPC m"
+     "b" '(:ignore t :which-key "build")
+     "bb" '(rust-compile :which-key "compile")
+     "br" '(rust-run :which-key "run")
+     "bt" '(rust-test :which-key "test")
+     "bc" '(rust-check :which-key "check")
+     "l" '(rust-run-clippy :which-key "lint")))
+(use-package cargo
     :after rust-mode
     :config
     (add-hook 'rust-mode-hook 'cargo-minor-mode))
@@ -402,4 +415,6 @@
          (tsx-ts-mode . tide-setup)
          (typescript-ts-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
-   (use-package purescript-mode)
+(use-package purescript-mode)
+;;; init.el ends here
+
