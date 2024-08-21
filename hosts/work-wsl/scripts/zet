@@ -1,0 +1,16 @@
+#!/usr/bin/env bb
+
+(import 'java.time.format.DateTimeFormatter
+        'java.time.LocalDateTime)
+
+(def cli-options {})
+
+(defn join [c strs] (reduce (fn [a b] (str a c b)) (first strs) (rest strs)))
+(def title (join "-" *command-line-args*))
+(def zettle-date (.format (LocalDateTime/now) (DateTimeFormatter/ofPattern "yyyyMMddHHmm")))
+
+(def zettle-dir "~/notes")
+
+(def file-to-edit (str zettle-dir "/" zettle-date (if (empty? title) "" (str "_" title)) ".md"))
+
+(print file-to-edit)
