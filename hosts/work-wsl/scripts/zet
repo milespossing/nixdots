@@ -9,7 +9,7 @@
 (def title (join "-" *command-line-args*))
 (def zettle-date (.format (LocalDateTime/now) (DateTimeFormatter/ofPattern "yyyyMMddHHmm")))
 
-(def zettle-dir "~/notes")
+(def zettle-dir (str (System/getProperty "user.home") "/notes"))
 
 (def file-to-edit (str zettle-dir "/" zettle-date (if (empty? title) "" (str "_" title)) ".md"))
 
