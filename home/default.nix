@@ -20,12 +20,11 @@
     babashka
     bitwarden-cli
     cbonsai
-    clojure
     cmake
+    comma
     curl
     fd
     gcc
-    leiningen
     lsof
     neofetch
     neovim

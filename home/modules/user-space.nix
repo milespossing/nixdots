@@ -11,10 +11,11 @@ in {
     home.packages = with pkgs; [
       firefox
       chromium
-      (vivaldi.override {
-        proprietaryCodecs = true;
-        enableWidevine = false;
-      })
+      (vivaldi.overrideAttrs (oldAttrs: {
+        dontWrapQtApps = false;
+        dontPatchELF = true;
+        nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ pkgs.kdePackages.wrapQtAppsHook ];
+      }))
       thunderbird
       protonmail-bridge
       discord
@@ -23,7 +24,7 @@ in {
       nwg-drawer
       spotify
       vlc
-      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" "Meslo" ]; })
+      wl-clipboard
     ];
 
     fonts.fontconfig.enable = true;
