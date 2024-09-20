@@ -1,6 +1,14 @@
 
 return {
   {
+    'shaunsingh/nord.nvim',
+    lazy = false,
+  },
+  {
+    'xiyaowong/transparent.nvim',
+    lazy = false,
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
