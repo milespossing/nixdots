@@ -15,6 +15,11 @@
     full = true;
   };
 
+  home.packages = with pkgs; [
+    calibre
+    librecad
+  ];
+
 
   services.protonmail-bridge.enable = true;
 

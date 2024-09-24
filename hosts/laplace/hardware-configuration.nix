@@ -33,6 +33,8 @@
     [ { device = "/dev/disk/by-uuid/20dc13da-3077-4472-a468-1c64bd1eb1f9"; }
     ];
 
+  services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction

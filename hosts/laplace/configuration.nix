@@ -33,6 +33,7 @@
   networking.networkmanager.enable = true;
 
   services.resolved.enable = true;
+  services.openssh.enable = true;
 
   # networking.wg-quick.interfaces.wg0.configFile = "/home/mpossing/.nixdots/secrets/wg0.conf";
   
