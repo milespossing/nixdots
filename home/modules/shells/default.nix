@@ -5,6 +5,7 @@ let
     ls = "eza";
     ll = "eza -l";
     la = "eza -la";
+    fzfp = "fzf --preview 'bat --color=always {}' --preview-window '~3'";
   };
   posixInitExtra = ''
     . $HOME/.scripts/fzf-git.sh

@@ -33,6 +33,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.wireguard.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Chicago";

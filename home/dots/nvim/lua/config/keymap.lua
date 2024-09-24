@@ -13,5 +13,6 @@ wk.add({
   { "<leader>wj", "<C-w>j", desc = "Move point down" },
   { "<leader>wk", "<C-w>k", desc = "Move point up" },
   { "<leader>wl", "<C-w>l", desc = "Move point right" },
+  { "<leader>s", group = "search" },
 })
 

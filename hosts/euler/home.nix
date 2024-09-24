@@ -1,4 +1,4 @@
-{ config, pkgs, outputs, inputs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     ../../home
@@ -10,6 +10,7 @@
   home.homeDirectory = "/home/miles";
 
   home.packages = with pkgs; [
+    calibre
     tetrio-desktop
   ];
 
