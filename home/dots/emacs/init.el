@@ -4,9 +4,6 @@
 ;;; Code:
 
 (setq package-install-upgrade-built-in t)
-; (require 'org)
-; (org-babel-load-file
-;  (expand-file-name "configuration.org" user-emacs-directory))
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -189,7 +186,7 @@
     "ws" '(evil-window-split :which-key "split horizontal")
     "wv" '(evil-window-vsplit :which-key "split vertical"))
 
-(defvar mp/emacs-config-path "~/.config/emacs/configuration.org")
+(defvar mp/emacs-config-path "~/.nixdots/home/dots/emacs/init.el")
 
 (mp/leader-key-map
   "h" '(:ignore t :which-key "help")
@@ -344,11 +341,11 @@
 (setq org-startup-indented t)
 (add-hook 'org-src-mode-hook
   (lambda () (electric-indent-local-mode -1)))
-(add-hook 'org-mode-hook 'visual-line-mode)
-  (setq org-agenda-files '("~/org/inbox.org"
-                           ;;"~/org/tickler.org"
-                           "~/org/gtd.org"
-                           "~/org/home.org"))
+(setq org-agenda-files (append '("~/org/inbox.org"
+                         ;;"~/org/tickler.org"
+                         "~/org/gtd.org"
+                         "~/org/home.org")
+                         (file-expand-wildcards "~/org/*.project.org")))
 (mp/leader-key-map
   "o" '(:ignore t :which-key "org")
   "o a" 'org-agenda)
@@ -394,8 +391,6 @@
   (define-key racket-repl-mode-map (kbd "<C-down>") 'racket-repl-next-input)
   (define-key racket-mode-map (kbd "<f5>") 'racket-run)
   (define-key racket-mode-map (kbd "<S-f5>") 'racket-run-and-switch-to-repl))
-
-(use-package racket-debug-mode)
 
 (use-package cider
   :after paredit

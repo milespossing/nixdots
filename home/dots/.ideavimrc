@@ -1,0 +1,71 @@
+let mapleader = " "
+set scrolloff=5
+
+set clipboard+=unnamed
+set clipboard+=ideaput
+set ideajoin
+
+set incsearch
+
+map Q gq
+
+set which-key
+Plug 'easymotion/vim-easymotion'
+Plug 'justinmk/vim-sneak'
+Plug 'preservim/nerdtree'
+Plug 'machakann/vim-highlightedyank'
+Plug 'tpope/vim-commentary'
+
+set notimeout
+let g:WhichKeyDesc_Buffer               = "<leader>b Buffer"
+let g:WhichKeyDesc_CloseTab             = "<leader>bd Close"
+map <leader>bd <Action>(CloseContent)
+let g:WhichKeyDesc_BufferSwitch         = "<leader>bb Switch"
+map <leader>bb <Action>(Switcher)
+let g:WhichKeyDesc_Action               = "<leader>: Action"
+map <leader>: <Action>(GotoAction)
+let g:WhichKeyDesc_Search               = "<leader>s Search"
+let g:WhichKeyDesc_SearchFile           = "<leader>st Find text in path"
+map <leader>st <Action>(FindInPath)
+let g:WhichKeyDesc_SearchEverywhere     = "<leader>ss Everywhere"
+map <leader>ss <Action>(SearchEverywhere)
+let g:WhichKeyDesc_SearchSymbol         = "<leader>sS Symbol"
+map <leader>sS <Action>(GotoSymbol)
+let g:WhichKeyDesc_File                 = "<leader>f File"
+let g:WhichKeyDesc_FileOpen             = "<leader>ff Open"
+map <leader>ff <Action>(GotoFile)
+map <leader>e :NERDTree<cr>
+
+map gu <Action>(ShowUsages)
+map gd <Action>(GotoDeclaration)
+map gh <Action>(QuickJavaDoc)
+
+" Refactoring
+let g:WhichKeyDesc_Refactor             = "<leader>r Refactor\/Reformat"
+let g:WhichKeyDesc_RefactorMenu         = "<leader>rr Refactor Menu"
+map <leader>rr <Action>(Refactorings.QuickListPopupAction)
+let g:WhichKeyDesc_RefactorExtract      = "<leader>re Extract"
+let g:WhichKeyDesc_RefactorVariable     = "<leader>rev Extract Variable"
+map <leader>rev <Action>(IntroduceVariable)
+let g:WhichKeyDesc_Reformat             = "<leader>rf Reformat Code"
+map <leader>rf <Action>(ReformatCode)
+let g:WhichKeyDesc_RefactorRename       = "<leader>rn Rename"
+map <leader>rn <Action>(RenameElement)
+let g:WhichKeyDesc_ContextActions       = "<leader>. Show Context Actions"
+map <leader>. <Action>(ShowIntentionActions)
+
+" Git
+let g:WhichKeyDesc_Git                  = "<leader>g Git"
+let g:WhichKeyDesc_GitBlame             = "<leader>gb Blame"
+map <leader>gb <Action>(Annotate)
+let g:WhichKeyDesc_GitRollback          = "<leader>gr Rollback"
+map <leader>gr <Action>(Vcs.RollbackChangedLines)
+
+" utils
+let g:WhichKeyDesc_Help                 = "<leader>h Help"
+let g:WhichKeyDesc_HelpActionName       = "<leader>ha Vim Toggle Find Action"
+map <leader>ha <Action>(VimFindActionIdAction)
+let g:WhichKeyDesc_HelpReloadConfig     = "<leader>hr Vim Reload Vim Rc
+map <leader>hr <Action>(IdeaVim.ReloadVimRc.reload)
+let g:WhichKeyDesc_HelpOpenRc           = "<leader>hc Open Config"
+map <leader>hc :e ~/.ideavimrc<cr>

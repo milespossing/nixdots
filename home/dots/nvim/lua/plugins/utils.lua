@@ -8,6 +8,7 @@ return {
         { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find File" },
 	    { "<leader>bb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Find Buffer" },
         { "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch Buffer" },
+        { "<leader>ss", "<cmd> Telescope grep_string<cr>", desc = "grep String" },
       },
     },
     {

@@ -18,6 +18,7 @@
   mp.programs.emacs.enable = true;
   mp.programs.git.email = "milespossing@microsoft.com";
   sdev.all = true;
+  sdev.racket.full = true;
 
   home.file.".scripts.d" = {
     source = ./scripts;
