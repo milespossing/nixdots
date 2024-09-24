@@ -1,5 +1,6 @@
 
 vim.g.mapleader = " "
+vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.confirm = false
 
 vim.opt.expandtab = true

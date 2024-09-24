@@ -377,9 +377,16 @@
   (setq markdown-command "multimarkdown"))
 (use-package nix-mode
   :mode "\\.nix\\'")
+
 (use-package paredit
   :config
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
+
+(use-package clojure-mode
+  :config
+  (add-hook 'clojure-mode-hook #'paredit-mode)
+  (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode)))
+
 (use-package racket-mode
   :after paredit
   :config

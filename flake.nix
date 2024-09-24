@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -21,7 +22,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, nixos-wsl, ... }@inputs:
+  outputs = { self, nixos-hardware, nixpkgs, darwin, home-manager, nixos-wsl, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -47,9 +48,20 @@
           specialArgs = { inherit inputs sharedOptions; };
           modules = [
             ./hosts/euler/configuration.nix
+            ./modules/kde.nix
             inputs.home-manager.nixosModules.default
           ];
         };
+	laplace = nixpkgs.lib.nixosSystem {
+	  specialArgs = { inherit inputs sharedOptions; };
+	  modules = [
+        ./modules
+	    ./hosts/laplace/configuration.nix
+      ./modules/kde.nix
+	    inputs.home-manager.nixosModules.default
+        nixos-hardware.nixosModules.framework-13-7040-amd
+	  ];
+	};
 	wsl = nixpkgs.lib.nixosSystem {
 	  specialArgs = { inherit inputs sharedOptions; };
 	  system = "x86_64-linux";

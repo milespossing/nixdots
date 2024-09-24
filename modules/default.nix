@@ -2,9 +2,9 @@
 {
   imports = [
     ./bundles
+    ./fonts.nix
     ./gnome.nix
     ./hyprland.nix
-    ./kde.nix
     ./lutris.nix
     ./virtualization.nix
     ./wine.nix
