@@ -46,9 +46,9 @@
   swapDevices = [ ];
 
   hardware.bluetooth.enable = true;
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
