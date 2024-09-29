@@ -7,10 +7,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [
-      cfg.package
-    ];
-
     home.file.".config/emacs" = {
       source = if cfg.useDoom then ../dots/doomemacs else ../dots/emacs;
       recursive = true;
