@@ -20,6 +20,8 @@
     full = true;
   };
 
+  mp.programs.emacs.useDoom = true;
+
   services.protonmail-bridge.enable = true;
 
   # This value determines the Home Manager release that your configuration is

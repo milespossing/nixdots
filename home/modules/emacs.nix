@@ -7,6 +7,7 @@ in {
     package = mkPackageOption pkgs "emacs" {
       default = ["emacs29"];
     };
+    useDoom = mkEnableOption "Enables doom rather than personal emacs";
   };
 
   config = mkIf cfg.enable {
@@ -15,7 +16,7 @@ in {
     ];
 
     home.file.".config/emacs" = {
-      source = ../dots/emacs;
+      source = if cfg.useDoom then ../dots/doomemacs else ../dots/emacs;
       recursive = true;
     };
   };
