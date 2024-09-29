@@ -20,7 +20,7 @@
     full = true;
   };
 
-  mp.programs.emacs.useDoom = true;
+  programs.emacs.useDoom = true;
 
   services.protonmail-bridge.enable = true;
 

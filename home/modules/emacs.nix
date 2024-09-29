@@ -1,12 +1,8 @@
 { lib, pkgs, config, ... }:
 with lib;
-let cfg = config.mp.programs.emacs;
+let cfg = config.programs.emacs;
 in {
-  options.mp.programs.emacs = {
-    enable = mkEnableOption "Enables emacs";
-    package = mkPackageOption pkgs "emacs" {
-      default = ["emacs29"];
-    };
+  options.programs.emacs = {
     useDoom = mkEnableOption "Enables doom rather than personal emacs";
   };
 
