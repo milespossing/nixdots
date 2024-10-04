@@ -55,7 +55,6 @@
 
   # enable steam
   programs.steam.enable = true;
-  programs.lutris.enable = true;
   programs.wine.enable = true;
 
   # Enable CUPS to print documents.

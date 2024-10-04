@@ -28,9 +28,7 @@ in {
       shellAliases = posixAliases;
       initExtra = posixInitExtra + ''
       . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
-      '' + cfg.initExtra + (if config.programs.emacs.useDoom then
-        "export PATH=\"$PATH:$HOME/.config/emacs/bin\"\n"
-      else "");
+      '' + cfg.initExtra;
     };
 
     programs.zsh = {
