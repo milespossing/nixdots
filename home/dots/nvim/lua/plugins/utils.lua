@@ -28,11 +28,10 @@ return {
         { "<leader>gg", "<cmd>FloatermNew lazygit<cr>", desc = "lazygit" },
       },
     },
-    -- {
-    --   "lewis6991/gitsigns.nvim",
-    --   event = "LazyFile",
-    --   config = function()
-    --     require('gitsigns').setup()
-    --   end,
-    -- },
+    {
+      "nvim-neorg/neorg",
+      lazy = false,
+      version = "*",
+      config = true,
+    },
 }

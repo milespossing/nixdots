@@ -290,6 +290,7 @@
   :hook (typescript-ts-mode . lsp)
          (rust-mode . lsp)
          (scala-mode . lsp)
+         (clojure-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration)
   :commands lsp)
 (use-package lsp-ui :commands lsp-ui-mode)
