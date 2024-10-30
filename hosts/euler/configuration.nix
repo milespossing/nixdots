@@ -34,6 +34,10 @@
   # Enable networking
   networking.networkmanager.enable = true;
   networking.wireguard.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8080 ];
+  };
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -55,7 +59,6 @@
 
   # enable steam
   programs.steam.enable = true;
-  programs.lutris.enable = true;
   programs.wine.enable = true;
 
   # Enable CUPS to print documents.
@@ -119,6 +122,12 @@
       AllowUsers = [ "miles" ];
     };
   };
+
+  # Never sleep
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

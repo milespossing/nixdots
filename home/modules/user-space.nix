@@ -6,7 +6,7 @@ in {
 
   config = mkIf cfg.enable {
     mp.rofi.enable = true;
-    mp.programs.emacs.enable = true;
+    programs.emacs.enable = true;
 
     home.packages = with pkgs; [
       firefox
