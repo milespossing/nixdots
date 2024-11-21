@@ -170,10 +170,12 @@
 (mp/leader-key-map
   "f"  '(:ignore t :which-key "file")
   "ff" '(find-file :which-key "file open"))
+
 (mp/leader-key-map
   "b"  '(:ignore t :which-key "buffer")
   "bb" '(counsel-switch-buffer :which-key "buffer switch")
-  "bd" '(kill-current-buffer :which-key "buffer delete"))
+  "bd" '(kill-current-buffer :which-key "buffer delete")
+  "br" '(revert-buffer-quick :which-key "revert buffer"))
 
 
   (mp/leader-key-map
@@ -437,6 +439,12 @@
          (typescript-ts-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
 (use-package purescript-mode)
+
+;; Typst Mode
+
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"
+                 :files (:defaults "*.el")))
 
 ;;; init.el ends here
 

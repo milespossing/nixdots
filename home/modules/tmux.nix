@@ -13,6 +13,8 @@ in {
     clock24 = true;
     newSession = true;
     historyLimit = 10000;
+    terminal = "screen-256color";
+    escapeTime = 100;
     extraConfig = ''
       bind - split-window -v -c "#{pane_current_path}"
       bind | split-window -h -c "#{pane_current_path}"
