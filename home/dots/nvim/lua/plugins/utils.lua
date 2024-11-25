@@ -28,10 +28,4 @@ return {
         { "<leader>gg", "<cmd>FloatermNew lazygit<cr>", desc = "lazygit" },
       },
     },
-    {
-      "nvim-neorg/neorg",
-      lazy = false,
-      version = "*",
-      config = true,
-    },
 }
