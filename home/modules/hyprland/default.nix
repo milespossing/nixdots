@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 with lib;
-let cfg = config.mp.hyprland;
+let cfg = config.hyprland;
 in {
-  options.mp.hyprland.enable = lib.mkEnableOption "Enable hyprland dots";
+  options.hyprland.enable = lib.mkEnableOption "Enable hyprland dots";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
@@ -18,8 +18,13 @@ in {
       recursive = true;
     };
 
-    programs = {
-      waybar.enable = true;
+    programs.eww = {
+      enable = true;
+    };
+
+    home.file.".config/eww" = {
+      source = ../../dots/eww;
+      recursive = true;
     };
   };
 }

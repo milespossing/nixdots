@@ -3,8 +3,6 @@
   imports = [
     ./bundles
     ./fonts.nix
-    ./gnome.nix
-    ./hyprland.nix
     ./lutris.nix
     ./virtualization.nix
     ./wine.nix
