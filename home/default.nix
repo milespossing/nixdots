@@ -60,6 +60,10 @@
     enable = true;
   };
 
+  programs.nnn = {
+    enable = true;
+  };
+
   programs.fzf = {
     enable = true;
     defaultCommand = "fd --type f";
@@ -87,7 +91,7 @@
 
   programs.eza = {
     enable = true;
-    icons = true;
+    icons = "auto";
     git = true;
   };
 

@@ -10,6 +10,7 @@
   home.homeDirectory = "/home/mpossing";
 
   mp.user-space.enable = true;
+  # hyprland.enable = true;
   sdev.racket = {
     enable = true;
     full = true;

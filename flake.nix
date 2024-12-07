@@ -35,10 +35,10 @@
             description = "Whether to use Hyprland.";
           };
         };
-	config.userName = lib.mkOption {
-	  type = lib.types.str;
-	  default = "miles";
-	  description = "Username";
+	    config.userName = lib.mkOption {
+	      type = lib.types.str;
+	      default = "miles";
+	      description = "Username";
         };
       };
     in
@@ -52,25 +52,25 @@
             inputs.home-manager.nixosModules.default
           ];
         };
-	laplace = nixpkgs.lib.nixosSystem {
-	  specialArgs = { inherit inputs sharedOptions; };
-	  modules = [
-        ./modules
-	    ./hosts/laplace/configuration.nix
-      ./modules/kde.nix
-	    inputs.home-manager.nixosModules.default
-        nixos-hardware.nixosModules.framework-13-7040-amd
-	  ];
-	};
-	wsl = nixpkgs.lib.nixosSystem {
-	  specialArgs = { inherit inputs sharedOptions; };
-	  system = "x86_64-linux";
-	  modules = [
-	    nixos-wsl.nixosModules.default
-	    ./hosts/wsl/configuration.nix
-            inputs.home-manager.nixosModules.default
-	  ];
-	};
+	    laplace = nixpkgs.lib.nixosSystem {
+	      specialArgs = { inherit inputs sharedOptions; };
+	      modules = [
+            ./modules
+	        ./hosts/laplace/configuration.nix
+            ./modules/kde.nix
+	        inputs.home-manager.nixosModules.default
+            nixos-hardware.nixosModules.framework-13-7040-amd
+	      ];
+	    };
+	    wsl = nixpkgs.lib.nixosSystem {
+	      specialArgs = { inherit inputs sharedOptions; };
+	      system = "x86_64-linux";
+	      modules = [
+	        nixos-wsl.nixosModules.default
+	        ./hosts/wsl/configuration.nix
+                inputs.home-manager.nixosModules.default
+	      ];
+	    };
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -84,20 +84,5 @@
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
       };
-      darwinConfigurations."macbook" =
-        let
-          system = "aarch64-darwin";
-          # pkgs-unstable = import nixpkgs-unstable { inherit system; };
-        in
-        darwin.lib.darwinSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs sharedOptions;
-          };
-          modules = [
-            ./hosts/macbook/configuration.nix
-            home-manager.darwinModules.home-manager
-          ];
-        };
     };
 }

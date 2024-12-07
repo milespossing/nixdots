@@ -65,7 +65,7 @@ map <leader>gr <Action>(Vcs.RollbackChangedLines)
 let g:WhichKeyDesc_Help                 = "<leader>h Help"
 let g:WhichKeyDesc_HelpActionName       = "<leader>ha Vim Toggle Find Action"
 map <leader>ha <Action>(VimFindActionIdAction)
-let g:WhichKeyDesc_HelpReloadConfig     = "<leader>hr Vim Reload Vim Rc
+let g:WhichKeyDesc_HelpReloadConfig     = "<leader>hr Vim Reload Vim Rc"
 map <leader>hr <Action>(IdeaVim.ReloadVimRc.reload)
 let g:WhichKeyDesc_HelpOpenRc           = "<leader>hc Open Config"
 map <leader>hc :e ~/.ideavimrc<cr>
