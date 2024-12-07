@@ -108,10 +108,51 @@
   (setq counsel-describe-function-function #'helpful-callable)
   (setq counsel-describe-variable-function #'helpful-variable))
 
-(defun reload-configuration ()
-  "Reloads the configuration.org file after deleting the tangled file."
+(defun current-user ()
+  "Get the current username"
+  (string-trim (shell-command-to-string "whoami")))
+
+(defun current-hostname ()
+  "Get the current host name"
+  (string-trim (shell-command-to-string "hostname")))
+
+
+(defun nixos-rebuild ()
   (interactive)
-  (load-file (expand-file-name "init.el" user-emacs-directory)))
+  (let* ((default-directory "/sudo:root@localhost:/")
+         (hostname (current-hostname))
+         (path (expand-file-name "~/.nixdots"))
+         (command (format "nix-shell -p git --run 'nixos-rebuild switch --flake %s#%s'" path hostname))
+         (buffer-name "*NixOS Rebuild Output*"))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert (format "Running: %s\n\n" command)))
+    ;; Ensure command output is redirected properly
+    (with-current-buffer buffer-name
+      (let ((exit-code (process-file-shell-command command nil t)))
+        (if (zerop exit-code)
+            (insert "\nCommand completed successfully.\n")
+          (insert (format "\nCommand failed with exit code: %d\n" exit-code))))
+      (read-only-mode 1))
+    (display-buffer buffer-name)))
+
+(defun nix-os-rebuild-tramp-async ()
+  "Rebuild NixOS configuration using Tramp with sudo as the current user, asynchronously."
+  (interactive)
+  (let* ((path (expand-file-name "~/.nixdots"))
+         (hostname (current-host-name))
+         (buffer-name "*NixOS Rebuild Output*")
+         (default-directory (format "/sudo:root@localhost:/")) ;; Use sudo for root permissions locally
+         (command (format "export PATH=/run/current-system/sw/bin:$PATH && nixos-rebuild switch --flake %s#%s" path hostname)))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (read-only-mode -1)
+      (erase-buffer)
+      (insert (format "Running: %s\n\n" command))
+      (read-only-mode 1))
+    (start-process-shell-command "nixos-rebuild" buffer-name command)
+    (display-buffer buffer-name)))
+
 
 (mp/leader-key-map
   "hr" '(reload-configuration :which-key "Reload config file"))
@@ -330,7 +371,9 @@
   "sh" '(org-promote-subtree :which-key "promote")
   "sj" '(org-move-subtree-down :which-key "move down")
   "sk" '(org-move-subtree-up :which-key "move up")
-  "sr" '(org-refile :which-key "refile"))
+  "sr" '(org-refile :which-key "refile")
+  "p" '(:ignore t :which-key "properties")
+  "ps" '(org-set-property :which-key "set property"))
 (setq org-pretty-entities t)
 (use-package org-bullets
   :ensure t
@@ -385,6 +428,13 @@
   :config
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
 
+(general-define-key
+  :states '(normal visual modtion)
+  :keymaps 'emacs-lisp-mode-map
+  :prefix "SPC m"
+  "e" '(:ignore t :which-key "eval")
+  "er" '(eval-region :which-key "eval region"))
+
 (use-package clojure-mode
   :config
   (add-hook 'clojure-mode-hook #'paredit-mode)
@@ -405,7 +455,9 @@
 (use-package cider
   :after paredit
   :config
-  (add-hook 'cider-repl-mode-hook #'paredit-mode))
+  (add-hook 'cider-repl-mode-hook #'paredit-mode)
+  (define-key cider-repl-mode-map (kbd "<return>") 'cider-repl-newline-and-indent)
+  (define-key cider-repl-mode-map (kbd "<C-return>") 'cider-repl-return))
 (use-package rust-mode
   :config
   ;; Enable rustfmt on save

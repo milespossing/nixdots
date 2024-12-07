@@ -8,6 +8,7 @@
   imports = [
     ../../modules
     ./hardware-configuration.nix
+    ../../modules/office.nix
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
