@@ -34,7 +34,7 @@ in {
       settings = {
         font = {
           size = 13;
-          normal.family = "FiraCode Nerd Font Mono";
+          normal.family = "DepartureMono Nerd Font Mono";
         };
         window = {
           opacity = 0.9;
