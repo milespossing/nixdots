@@ -90,6 +90,7 @@
     enable = true;
     settings = {
       theme = "nord";
+      default_shell = "fish";
     };
     enableBashIntegration = true;
     enableZshIntegration = true;

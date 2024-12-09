@@ -27,6 +27,7 @@
 
   posix.initExtra = ''
     export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
+    export WSL=1
   '';
 
   home.packages = with pkgs; [
