@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 with lib;
 let
   posixAliases = {
@@ -33,14 +33,14 @@ in {
     programs.zsh = {
       enable = true;
       shellAliases = posixAliases;
-      initExtra = posixInitExtra;
+      initExtra = posixInitExtra + cfg.initExtra;
     };
 
     programs.fish = {
       enable = true;
       generateCompletions = true;
       shellAliases = posixAliases;
-      shellInit = posixInitExtra;
+      shellInit = posixInitExtra + cfg.initExtra;
     };
 
     programs.nushell = {
