@@ -58,6 +58,9 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # enable fish
+  programs.fish.enable = true;
+
   # enable steam
   programs.steam.enable = true;
   programs.wine.enable = true;
@@ -91,6 +94,7 @@
     isNormalUser = true;
     description = "miles";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
   };
 
   home-manager = {
