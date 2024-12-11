@@ -92,9 +92,6 @@
       theme = "nord";
       default_shell = "fish";
     };
-    enableBashIntegration = true;
-    enableZshIntegration = true;
-    enableFishIntegration = true;
   };
 
   programs.lazygit = {

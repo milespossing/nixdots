@@ -12,5 +12,10 @@ in {
     ];
 
     fonts.fontconfig.enable = true;
+
+    home.file.".local/share/fonts" = {
+      source = ../../assets/fonts;
+      recursive = true;
+    };
   };
 }

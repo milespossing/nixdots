@@ -33,6 +33,7 @@
   home.packages = with pkgs; [
     multimarkdown
     mermaid-cli
+    fontconfig
   ];
 
   # This value determines the Home Manager release that your configuration is
