@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 with lib;
 let
   posixAliases = {
@@ -41,6 +41,12 @@ in {
       generateCompletions = true;
       shellAliases = posixAliases;
       shellInit = posixInitExtra + cfg.initExtra;
+      plugins = [
+        {
+          name = "fzf-fish";
+          src = pkgs.fishPlugins.fzf-fish.src;
+        }
+      ];
     };
 
     programs.nushell = {

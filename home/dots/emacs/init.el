@@ -74,7 +74,7 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(set-face-attribute 'default nil :font "DepartureMono Nerd Font Mono")
+(set-face-attribute 'default nil :font "DepartureMono Nerd Font")
 (defun set-font-height (height)
   (set-face-attribute 'default nil :height height))
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
