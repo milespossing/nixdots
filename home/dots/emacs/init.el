@@ -254,14 +254,6 @@
   :config
   (vertico-mode))
 
-(use-package treemacs
-  :config
-  (mp/leader-key-map
-    "e" '(treemacs :which-key "treemacs")))
-
-(use-package treemacs-evil
-  :after (evil treemacs))
-
 (use-package projectile
   :config
   (projectile-mode +1)
@@ -271,9 +263,6 @@
     "pp" '(projectile-switch-project :which-key "switch project")
     "SPC" '(projectile-find-file :which-key "find file")
     "pf" '(projectile-find-file :which-key "find file")))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile))
 
 (defun +elpaca-unload-seq (e)
   (and (featurep 'seq) (unload-feature 'seq t))
@@ -344,7 +333,6 @@
   :config
   (company-mode)
   (setq company-tooltip-align-notations 1))
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 (use-package dap-mode
   :config
