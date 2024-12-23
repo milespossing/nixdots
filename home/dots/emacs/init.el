@@ -74,7 +74,7 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(set-face-attribute 'default nil :font "DepartureMono Nerd Font")
+(set-face-attribute 'default nil :font "DepartureMono Nerd Font Mono")
 (defun set-font-height (height)
   (interactive "sSet Font Height: ")
   (let ((parsed-number (string-to-number height)))
@@ -422,7 +422,10 @@
 
 ;; Org Roam
 
-(use-package org-roam)
+(use-package org-roam
+  :config
+  (setq org-roam-database-connector 'sqlite-builtin)
+  (org-roam-db-autosync-mode))
 
 ;; (use-package org-caldav)
 ;;   :config
