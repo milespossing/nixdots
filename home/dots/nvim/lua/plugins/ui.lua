@@ -1,13 +1,6 @@
 
 return {
-  {
-    'shaunsingh/nord.nvim',
-    lazy = false,
-  },
-  {
-    'xiyaowong/transparent.nvim',
-    lazy = false,
-  },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     "nvim-neo-tree/neo-tree.nvim",
     dependencies = {
