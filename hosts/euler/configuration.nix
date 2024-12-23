@@ -62,7 +62,17 @@
   programs.fish.enable = true;
 
   # enable steam
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+  programs.lutris.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    sqlite
+  ];
+
   programs.wine.enable = true;
 
   # Enable CUPS to print documents.

@@ -38,7 +38,7 @@
   };
 
   fileSystems."/mnt/gamedisk" = {
-    device = "/dev/disk/by-uuid/7A00BE8100BE43C3";
+    device = "/dev/disk/by-uuid/645C234A4278F1E6";
     fsType = "ntfs-3g";
     options = [ "rw" "user" "exec" "uid=1000" "gid=100" "umask=000" ];
   };
