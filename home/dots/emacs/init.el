@@ -76,7 +76,12 @@
 (setq visible-bell t)
 (set-face-attribute 'default nil :font "DepartureMono Nerd Font")
 (defun set-font-height (height)
-  (set-face-attribute 'default nil :height height))
+  (interactive "sSet Font Height: ")
+  (let ((parsed-number (string-to-number height)))
+    (if (zerop parsed-number)
+        (message "Invalid font height")
+      (set-face-attribute 'default nil :height parsed-number))))
+
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (use-package doom-themes
@@ -351,6 +356,8 @@
   ;; Enabling only some features
   (setq dap-auto-configure-features '(sessions locals controls tooltip)))
 
+;; Org
+
 (mp/leader-key-map
   "X" 'org-capture)
 (general-define-key
@@ -412,6 +419,11 @@
       org-habit-preceding-days 14
       org-habit-graph-column 55
       org-habit-show-all-today t)
+
+;; Org Roam
+
+(use-package org-roam)
+
 ;; (use-package org-caldav)
 ;;   :config
 ;;   (setq org-caldav-calendars
