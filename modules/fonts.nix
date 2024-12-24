@@ -2,7 +2,6 @@
 {
     fonts.enableDefaultPackages = true;
     fonts.packages = with pkgs; [
-        departure-mono
         font-awesome
         hack-font
         material-design-icons

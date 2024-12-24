@@ -33,8 +33,6 @@ in {
       recursive = true;
     };
 
-    fonts.fontconfig.enable = true;
-
     programs.alacritty = {
       enable = true;
       settings = {

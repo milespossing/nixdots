@@ -74,7 +74,8 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(set-face-attribute 'default nil :font "DepartureMono Nerd Font Mono")
+(set-face-attribute 'default nil :font "DepartureMono Nerd Font")
+(set-fontset-font t 'unicode "DepartureMono Nerd Font" nil 'prepend)
 (defun set-font-height (height)
   (interactive "sSet Font Height: ")
   (let ((parsed-number (string-to-number height)))
@@ -82,11 +83,6 @@
         (message "Invalid font height")
       (set-face-attribute 'default nil :height parsed-number))))
 
-;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(use-package doom-themes
-  :config
-  (load-theme 'doom-nord t))
 (use-package doom-modeline
   :config
   (doom-modeline-mode 1))
