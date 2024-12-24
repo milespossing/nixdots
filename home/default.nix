@@ -16,7 +16,6 @@
     ];
 
   home.packages = with pkgs; [
-    asdf-vm # somethings just are easier with asdf
     babashka
     bitwarden-cli
     cbonsai
@@ -69,6 +68,7 @@
     defaultCommand = "fd --type f";
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
   };
 
   programs.jq = {
@@ -79,6 +79,7 @@
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
     enableNushellIntegration = true;
   };
 
@@ -89,6 +90,10 @@
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    settings = {
+      theme = "nord";
+      default_shell = "fish";
+    };
   };
 
   programs.lazygit = {
@@ -108,6 +113,7 @@
   programs.direnv = {
     enable = true;
     enableBashIntegration = true;
+    # Don't need the fish integration bc it's automatically in there
     enableNushellIntegration = true;
     nix-direnv.enable = true;
   };

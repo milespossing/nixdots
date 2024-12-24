@@ -27,13 +27,20 @@ in {
       wl-clipboard
     ];
 
+    # Copy font files. This won't need to be here forever
+    home.file.".local/share/fonts" = {
+      source = ../../assets/fonts;
+      recursive = true;
+    };
+
     fonts.fontconfig.enable = true;
 
     programs.alacritty = {
       enable = true;
       settings = {
         font = {
-          normal.family = "Departure Mono";
+          size = 13;
+          normal.family = "DepartureMono Nerd Font Mono";
         };
         window = {
           opacity = 0.9;

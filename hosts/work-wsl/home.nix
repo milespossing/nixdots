@@ -27,11 +27,13 @@
 
   posix.initExtra = ''
     export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
+    export WSL=1
   '';
 
   home.packages = with pkgs; [
     multimarkdown
     mermaid-cli
+    fontconfig
   ];
 
   # This value determines the Home Manager release that your configuration is
