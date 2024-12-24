@@ -74,7 +74,9 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font")
+(set-face-attribute 'default nil :font "Departure Mono")
+(set-fontset-font t 'unicode "Noto Sans Symbols" nil 'append)
+(set-fontset-font t 'emoji "Noto Color Emoji" nil 'append)
 (defun set-font-height (height)
   (set-face-attribute 'default nil :height height))
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
@@ -178,15 +180,15 @@
   "br" '(revert-buffer-quick :which-key "revert buffer"))
 
 
-  (mp/leader-key-map
-    "w"  '(:ignore t :which-key "window")
-    "wj" '(evil-window-down :which-key "move down")
-    "wh" '(evil-window-left :which-key "move left")
-    "wl" '(evil-window-right :which-key "move right")
-    "wk" '(evil-window-up :which-key "move up")
-    "wd" '(evil-window-delete :which-key "delete")
-    "ws" '(evil-window-split :which-key "split horizontal")
-    "wv" '(evil-window-vsplit :which-key "split vertical"))
+(mp/leader-key-map
+  "w"  '(:ignore t :which-key "window")
+  "wj" '(evil-window-down :which-key "move down")
+  "wh" '(evil-window-left :which-key "move left")
+  "wl" '(evil-window-right :which-key "move right")
+  "wk" '(evil-window-up :which-key "move up")
+  "wd" '(evil-window-delete :which-key "delete")
+  "ws" '(evil-window-split :which-key "split horizontal")
+  "wv" '(evil-window-vsplit :which-key "split vertical"))
 
 (defvar mp/emacs-config-path "~/.nixdots/home/dots/emacs/init.el")
 
@@ -203,7 +205,9 @@
 (mp/leader-key-map
   "t" '(:ignore t :which-key "toggle")
   "tw" '(white-space-mode :which-key "toggle whitespace")
-  "tt" '(counsel-load-theme :which-key "load theme"))
+  "tt" '(counsel-load-theme :which-key "load theme")
+  "tl" '(:ignore t :which-key "line")
+  "tlt" '(toggle-truncate-lines :which-key "truncate lines"))
 
 (mp/leader-key-map
   ;; EXECUTE
@@ -212,11 +216,6 @@
 (use-package vertico
   :config
   (vertico-mode))
-
-(use-package treemacs
-  :config
-  (mp/leader-key-map
-    "e" '(treemacs :which-key "treemacs")))
 
 (use-package treemacs-evil
   :after (evil treemacs))

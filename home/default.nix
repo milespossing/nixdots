@@ -85,6 +85,12 @@
   mp.programs.git.enable = true;
   mp.programs.tmux.enable = true;
 
+  programs.zellij = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+  };
+
   programs.lazygit = {
     enable = true;
   };

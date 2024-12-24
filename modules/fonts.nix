@@ -2,18 +2,18 @@
 {
     fonts.enableDefaultPackages = true;
     fonts.packages = with pkgs; [
+        departure-mono
+        font-awesome
+        hack-font
+        material-design-icons
         noto-fonts
         noto-fonts-emoji
         noto-fonts-cjk-sans
-        font-awesome
-        material-design-icons
-        hack-font
         (nerdfonts.override { fonts = [
           "JetBrainsMono"
           "FiraCode"
           "DroidSansMono"
-          "Noto"
-        ];})
+          "Noto"];})
     ];
 
     fonts.fontDir.enable = true;
