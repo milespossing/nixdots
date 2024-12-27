@@ -83,8 +83,27 @@
         (message "Invalid font height")
       (set-face-attribute 'default nil :height parsed-number))))
 
+(use-package catppuccin-theme
+  :config
+  (setq catppuccin-flavor 'macchiato)
+  (load-theme 'catppuccin :no-confirm))
+
+(defun set-catppuccin-flavor ()
+  "Select the flavor"
+  (interactive)
+  (let ((options '(("Mocha" . mocha)
+                   ("Macchiato" . macchiato)
+                   ("Frappe" . frappe)
+                   ("Latte" . latte))))
+    (ivy-read "Select the flavor:" (mapcar #'car options)
+              :action (lambda (choice)
+                        (let ((mapped-value (cdr (assoc choice options))))
+                          (setq catppuccin-flavor mapped-value)
+                          (catppuccin-reload))))))
+
 (use-package doom-modeline
   :config
+  (setq doom-modeline-hud t)
   (doom-modeline-mode 1))
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -387,7 +406,9 @@
                          (file-expand-wildcards "~/org/*.project.org")))
 (mp/leader-key-map
   "o" '(:ignore t :which-key "org")
-  "o a" 'org-agenda)
+  "o a" 'org-agenda
+  "o o" '(org-roam-node-find :which-key "Find Roam File")
+  "o t" '(org-roam-dailies-goto-today :which-key "Go to today"))
 (setq org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
                            ("~/org/archive.org" :maxlevel . 1)
                            ("~/org/someday.org" :level . 1)))
