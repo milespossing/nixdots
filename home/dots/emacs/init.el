@@ -85,8 +85,18 @@
 
 (use-package catppuccin-theme
   :config
-  (setq catppuccin-flavor 'macchiato)
-  (load-theme 'catppuccin :no-confirm))
+  (setq catppuccin-flavor 'macchiato))
+
+(defun set-theme ()
+      (if (display-graphic-p)
+        (progn
+          ;; GUI
+          (load-theme 'catppuccin :no-confirm))
+        (progn
+          ;; TERM
+          (load-theme 'tango-dark t))))
+
+(add-hook 'after-init-hook 'set-theme)
 
 (defun set-catppuccin-flavor ()
   "Select the flavor"
