@@ -8,14 +8,11 @@ in {
     mp.programs.git.gcmCoreIntegration.enable = true;
 
     home.packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" "Meslo" ]; })
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.meslo-lg
     ];
 
     fonts.fontconfig.enable = true;
-
-    home.file.".local/share/fonts" = {
-      source = ../../assets/fonts;
-      recursive = true;
-    };
   };
 }
