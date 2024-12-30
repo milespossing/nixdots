@@ -6,7 +6,8 @@ in {
     enable = mkEnableOption "Enables gnome";
   };
 
-  config = mkIf cfg.enable {
+  # TODO: Remove this once virtualization can work again
+  config = mkIf (cfg.enable && false) {
     environment.systemPackages = with pkgs; [
       spice
       spice-gtk

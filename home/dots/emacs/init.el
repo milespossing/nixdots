@@ -297,8 +297,8 @@
           (list '+elpaca-unload-seq 'elpaca--activate-package)))
 
 ;; this needs to be here to make sure that the server starts just right.
-(server-start)
-(setq-default with-editor-emacsclient-executable "emacsclient")
+;; (server-start)
+;; (setq-default with-editor-emacsclient-executable "emacsclient")
 
 (elpaca `(seq :build ,(+elpaca-seq-build-steps)))
 (use-package transient :after seq)

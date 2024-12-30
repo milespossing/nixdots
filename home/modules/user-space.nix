@@ -27,12 +27,6 @@ in {
       wl-clipboard
     ];
 
-    # Copy font files. This won't need to be here forever
-    home.file.".local/share/fonts" = {
-      source = ../../assets/fonts;
-      recursive = true;
-    };
-
     programs.alacritty = {
       enable = true;
       settings = {

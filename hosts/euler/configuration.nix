@@ -61,6 +61,9 @@
   # enable fish
   programs.fish.enable = true;
 
+  # enable mosh
+  programs.mosh.enable = true;
+
   # enable steam
   programs.steam = {
     enable = true;

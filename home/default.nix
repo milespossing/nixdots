@@ -25,12 +25,14 @@
     fd
     gcc
     lsof
+    mosh
     neofetch
     neovim
     pass
     rlwrap
     rustup
     tldr
+    typer
     unzip
     vim
     wget

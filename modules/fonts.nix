@@ -8,11 +8,12 @@
         noto-fonts
         noto-fonts-emoji
         noto-fonts-cjk-sans
-        (nerdfonts.override { fonts = [
-          "JetBrainsMono"
-          "FiraCode"
-          "DroidSansMono"
-          "Noto"];})
+        nerd-fonts.departure-mono
+        nerd-fonts.jetbrains-mono
+        nerd-fonts.fira-mono
+        nerd-fonts.fira-code
+        nerd-fonts.droid-sans-mono
+        nerd-fonts.noto
     ];
 
     fonts.fontDir.enable = true;
