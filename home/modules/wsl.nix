@@ -8,6 +8,7 @@ in {
     mp.programs.git.gcmCoreIntegration.enable = true;
 
     home.packages = with pkgs; [
+      nerd-fonts.departure-mono
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
       nerd-fonts.meslo-lg
