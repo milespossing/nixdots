@@ -73,7 +73,9 @@
   programs.lutris.enable = true;
 
   environment.systemPackages = with pkgs; [
+    gimp
     sqlite
+    qmk
   ];
 
   programs.wine.enable = true;
