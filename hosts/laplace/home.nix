@@ -16,6 +16,18 @@
     full = true;
   };
 
+  programs.kitty = {
+    enable = true;
+    settings = {
+      confirm_os_window_close = 0;
+      font_family = "DepartureMono Nerd Font";
+    };
+    themeFile = "Catppuccin-Macchiato";
+    shellIntegration = {
+      enableFishIntegration = true;
+    };
+  };
+
   home.packages = with pkgs; [
     calibre
     librecad
