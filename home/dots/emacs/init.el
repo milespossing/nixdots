@@ -441,6 +441,7 @@
 
 (use-package org-roam
   :config
+  (setq org-roam-directory (expand-file-name "~/org"))
   (setq org-roam-database-connector 'sqlite-builtin)
   (org-roam-db-autosync-mode))
 
@@ -523,6 +524,7 @@
          (typescript-ts-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
 (use-package purescript-mode)
+(use-package yaml-mode)
 
 ;; Typst Mode
 

@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    sops-nix.url = "github:Mic92/sops-nix";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -12,7 +13,7 @@
     };
   };
 
-  outputs = { self, nixos-hardware, nixpkgs, home-manager, nixos-wsl, ... }@inputs:
+  outputs = { self, nixos-hardware, nixpkgs, home-manager, sops-nix, nixos-wsl, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -40,6 +41,7 @@
             ./hosts/euler/configuration.nix
             ./modules/kde.nix
             inputs.home-manager.nixosModules.default
+            sops-nix.nixosModules.sops
           ];
         };
 	    laplace = nixpkgs.lib.nixosSystem {

@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, lib, ... }:
 
 {
   imports = [
@@ -85,9 +85,31 @@
 
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  # davfs to mount webdav
+  services.davfs2.enable = true;
+
+  sops = {
+    age = {
+      keyFile = "/var/lib/sops-nix/key.txt";
+    };
+    secrets."webdav/secrets" = {
+      mode = "0600";
+      sopsFile = ../../secrets/davfs2.yaml;
+      path = "/etc/davfs2/secrets";
+    };
+  };
+  
   services.samba = {
     enable = true;
   };
+
+  services.syncthing = {
+    enable = true;
+    group = "users";
+    user = "miles";
+    configDir = "/home/miles/.config/syncthing";
+  };
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -108,7 +130,7 @@
   users.users.miles = {
     isNormalUser = true;
     description = "miles";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "davfs2"];
     shell = pkgs.fish;
   };
 
@@ -127,10 +149,12 @@
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  services.pcscd.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-gtk2;
+    enableSSHSupport = true;
+  };
 
   # List services that you want to enable:
 
