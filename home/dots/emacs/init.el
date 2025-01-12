@@ -412,7 +412,6 @@
 (setq org-agenda-files (append '("~/org/inbox.org"
                          ;;"~/org/tickler.org"
                          "~/org/gtd.org"
-                         "~/org/home.org"
                          "~/org/schedule.org")
                          (file-expand-wildcards "~/org/*.project.org")))
 (mp/leader-key-map
