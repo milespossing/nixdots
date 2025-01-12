@@ -445,6 +445,8 @@
   (setq org-roam-database-connector 'sqlite-builtin)
   (org-roam-db-autosync-mode))
 
+(use-package org-roam-ui)
+
 ;; (use-package org-caldav)
 ;;   :config
 ;;   (setq org-caldav-calendars

@@ -65,6 +65,13 @@
     variant = "";
   };
 
+  services.syncthing = {
+    enable = true;
+    group = "users";
+    user = "mpossing";
+    configDir = "/home/mpossing/.config/syncthing";
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
