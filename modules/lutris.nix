@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.programs.lutris;
-in {
+let
+  cfg = config.programs.lutris;
+in
+{
   options.programs.lutris = {
     enable = mkEnableOption "Enables Lutris";
   };
@@ -12,4 +19,3 @@ in {
     ];
   };
 }
-    

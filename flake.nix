@@ -13,25 +13,36 @@
     };
   };
 
-  outputs = { self, nixos-hardware, nixpkgs, home-manager, sops-nix, nixos-wsl, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixos-hardware,
+      nixpkgs,
+      home-manager,
+      sops-nix,
+      nixos-wsl,
+      ...
+    }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      sharedOptions = { lib, ... }: {
-        options.myConfig = {
-          useHyprland = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "Whether to use Hyprland.";
+      sharedOptions =
+        { lib, ... }:
+        {
+          options.myConfig = {
+            useHyprland = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Whether to use Hyprland.";
+            };
+          };
+          config.userName = lib.mkOption {
+            type = lib.types.str;
+            default = "miles";
+            description = "Username";
           };
         };
-	    config.userName = lib.mkOption {
-	      type = lib.types.str;
-	      default = "miles";
-	      description = "Username";
-        };
-      };
     in
     {
       nixosConfigurations = {
@@ -44,25 +55,25 @@
             sops-nix.nixosModules.sops
           ];
         };
-	    laplace = nixpkgs.lib.nixosSystem {
-	      specialArgs = { inherit inputs sharedOptions; };
-	      modules = [
+        laplace = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs sharedOptions; };
+          modules = [
             ./modules
-	        ./hosts/laplace/configuration.nix
+            ./hosts/laplace/configuration.nix
             ./modules/kde.nix
-	        inputs.home-manager.nixosModules.default
+            inputs.home-manager.nixosModules.default
             nixos-hardware.nixosModules.framework-13-7040-amd
-	      ];
-	    };
-	    wsl = nixpkgs.lib.nixosSystem {
-	      specialArgs = { inherit inputs sharedOptions; };
-	      system = "x86_64-linux";
-	      modules = [
-	        nixos-wsl.nixosModules.default
-	        ./hosts/wsl/configuration.nix
-                inputs.home-manager.nixosModules.default
-	      ];
-	    };
+          ];
+        };
+        wsl = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs sharedOptions; };
+          system = "x86_64-linux";
+          modules = [
+            nixos-wsl.nixosModules.default
+            ./hosts/wsl/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;

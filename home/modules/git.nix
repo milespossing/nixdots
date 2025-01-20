@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.programs.git;
-in {
+let
+  cfg = config.mp.programs.git;
+in
+{
   options.mp.programs.git = {
     enable = mkEnableOption "Enables git";
     user = mkOption {
@@ -28,7 +35,15 @@ in {
     enable = true;
     userName = cfg.user;
     userEmail = cfg.email;
-    ignores = [ "*~" "*.swp" ".\\#*" "\\#*\\#" "venv/" ".direnv" ".envrc" ];
+    ignores = [
+      "*~"
+      "*.swp"
+      ".\\#*"
+      "\\#*\\#"
+      "venv/"
+      ".direnv"
+      ".envrc"
+    ];
     aliases = {
       s = "status";
       c = "checkout";

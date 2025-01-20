@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.hyprland;
-in {
+let
+  cfg = config.hyprland;
+in
+{
   options.hyprland.enable = lib.mkEnableOption "Enable hyprland dots";
 
   config = mkIf cfg.enable {

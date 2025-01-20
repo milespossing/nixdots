@@ -1,9 +1,18 @@
-{ inputs, lib, config, pkgs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 with lib;
-let 
+let
   cfg = config.mp.eww;
-in {
-  options.mp.eww = { enable = mkEnableOption "eww"; };
+in
+{
+  options.mp.eww = {
+    enable = mkEnableOption "eww";
+  };
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [

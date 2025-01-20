@@ -2,15 +2,23 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # # Trying to fix fonts for vivaldi
   # environment.variables = {
@@ -36,7 +44,7 @@
   services.openssh.enable = true;
 
   # networking.wg-quick.interfaces.wg0.configFile = "/home/mpossing/.nixdots/secrets/wg0.conf";
-  
+
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
@@ -98,7 +106,10 @@
   users.users.mpossing = {
     isNormalUser = true;
     description = "Miles Possing";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   # Install firefox.
@@ -117,7 +128,7 @@
   ];
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = { inherit inputs; };
     users = {
       "mpossing" = import ./home.nix;
     };

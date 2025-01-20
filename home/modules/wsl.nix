@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.wsl;
-in {
+let
+  cfg = config.mp.wsl;
+in
+{
   options.mp.wsl.enable = lib.mkEnableOption "Enable wsl dots, programs, and services";
 
   config = mkIf cfg.enable {

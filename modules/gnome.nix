@@ -1,7 +1,15 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 with lib;
-let cfg = config.mp.wm.gnome;
-in {
+let
+  cfg = config.mp.wm.gnome;
+in
+{
   options.mp.wm.gnome = {
     enable = mkEnableOption "Enables gnome";
   };

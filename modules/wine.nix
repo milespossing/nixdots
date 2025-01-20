@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.programs.wine;
-in {
+let
+  cfg = config.programs.wine;
+in
+{
   options.programs.wine = {
     enable = mkEnableOption "Enables Wine";
   };

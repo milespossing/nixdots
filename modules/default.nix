@@ -8,7 +8,6 @@
     ./wine.nix
   ];
 
-
   # misc.
   services.xserver = {
     xkb.layout = "us";

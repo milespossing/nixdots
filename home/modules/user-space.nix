@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.user-space;
-in {
+let
+  cfg = config.mp.user-space;
+in
+{
   options.mp.user-space.enable = lib.mkEnableOption "Enable user-space dots, programs, and services";
 
   config = mkIf cfg.enable {

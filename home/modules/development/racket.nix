@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.sdev.racket;
-in {
+let
+  cfg = config.sdev.racket;
+in
+{
   options.sdev.racket = {
     enable = mkEnableOption "Enables racket";
     full = mkEnableOption "Enables DrRacket";

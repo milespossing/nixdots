@@ -1,7 +1,9 @@
 { config, lib, ... }:
 with lib;
-let cfg = config.sdev;
-in {
+let
+  cfg = config.sdev;
+in
+{
   options.sdev.all = mkEnableOption "Enables everything";
 
   config = mkIf cfg.all {

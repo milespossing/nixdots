@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.sdev.scala;
-in {
+let
+  cfg = config.mp.sdev.scala;
+in
+{
   options.mp.sdev.scala = {
     enable = mkEnableOption "Enables scala";
   };

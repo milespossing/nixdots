@@ -1,7 +1,15 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 with lib;
-let cfg = config.bundles.development;
-in {
+let
+  cfg = config.bundles.development;
+in
+{
   options.bundles.development = {
     enable = mkEnableOption "Enables gnome";
   };
@@ -10,4 +18,3 @@ in {
     mp.virtualization.enable = true;
   };
 }
-

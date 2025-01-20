@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.programs.tmux;
-in {
+let
+  cfg = config.mp.programs.tmux;
+in
+{
   options.mp.programs.tmux = {
     enable = mkEnableOption "Enables tmux";
   };

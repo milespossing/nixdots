@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.virtualization;
-in {
+let
+  cfg = config.mp.virtualization;
+in
+{
   options.mp.virtualization = {
     enable = mkEnableOption "Enables gnome";
   };
@@ -24,10 +31,12 @@ in {
           swtpm.enable = true;
           ovmf = {
             enable = true;
-            packages = [(pkgs.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd];
+            packages = [
+              (pkgs.OVMF.override {
+                secureBoot = true;
+                tpmSupport = true;
+              }).fd
+            ];
           };
         };
       };
@@ -42,4 +51,3 @@ in {
     users.users.miles.extraGroups = [ "docker" ];
   };
 }
-

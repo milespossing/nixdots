@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.rofi;
-in {
+let
+  cfg = config.mp.rofi;
+in
+{
   options.mp.rofi.enable = lib.mkEnableOption "Enable rofi dots";
 
   config = mkIf cfg.enable {

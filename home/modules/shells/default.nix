@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
 let
   posixAliases = {
@@ -14,7 +19,8 @@ let
     export PATH="$PATH:/usr/local/bin"
   '';
   cfg = config.posix;
-in {
+in
+{
   options.posix = {
     initExtra = mkOption {
       type = types.str;
@@ -53,7 +59,6 @@ in {
       enable = true;
     };
 
-    
     home.file.".scripts/fzf-git.sh" = {
       source = ./fzf-git.sh;
     };

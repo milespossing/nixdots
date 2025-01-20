@@ -2,7 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -11,7 +16,10 @@
     ../../modules/office.nix
   ];
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Bootloader.
   boot.loader = {
@@ -98,7 +106,7 @@
       path = "/etc/davfs2/secrets";
     };
   };
-  
+
   services.samba = {
     enable = true;
   };
@@ -130,12 +138,16 @@
   users.users.miles = {
     isNormalUser = true;
     description = "miles";
-    extraGroups = [ "networkmanager" "wheel" "davfs2"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "davfs2"
+    ];
     shell = pkgs.fish;
   };
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = { inherit inputs; };
     users = {
       "miles" = import ./home.nix;
     };

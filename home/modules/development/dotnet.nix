@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.mp.sdev.dotnet;
-in {
+let
+  cfg = config.mp.sdev.dotnet;
+in
+{
   options.mp.sdev.dotnet = {
     enable = mkEnableOption "Enables dotnet";
     version = mkOption {

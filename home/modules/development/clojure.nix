@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.sdev.clojure;
-in {
+let
+  cfg = config.sdev.clojure;
+in
+{
   options.sdev.clojure.enable = mkEnableOption "Enables clojure";
 
   config = mkIf cfg.enable {
@@ -10,4 +17,3 @@ in {
     ];
   };
 }
-
