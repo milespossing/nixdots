@@ -7,6 +7,11 @@
 with lib;
 let
   cfg = config.mp.programs.git;
+  helperLocation =
+    if config.mp.wsl.enable then
+      "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe"
+    else
+      "${pkgs.git-credential-manager}/bin/git-crendential-manager-core";
 in
 {
   options.mp.programs.git = {
@@ -23,11 +28,6 @@ in
     };
     gcmCoreIntegration = {
       enable = mkEnableOption "Uses GCM";
-      location = mkOption {
-        type = types.str;
-        default = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
-        description = "Where is the gcm located";
-      };
     };
   };
 
@@ -63,7 +63,7 @@ in
         pager = "bat";
       };
       credential = {
-        helper = mkIf cfg.gcmCoreIntegration.enable cfg.gcmCoreIntegration.location;
+        helper = mkIf cfg.gcmCoreIntegration.enable helperLocation;
         useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
         "https://github.com" = {
           helper = "!${pkgs.gh}/bin/gh auth git-credential";
