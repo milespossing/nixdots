@@ -14,6 +14,7 @@
     tetrio-desktop
   ];
 
+  neovim.use-fennel = true;
   mp.user-space.enable = true;
   sdev.racket.full = true;
   sdev.all = true;

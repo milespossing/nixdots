@@ -1,0 +1,15 @@
+(local plugins [(require :plugins.fennel)
+                (require :plugins.mini)
+                (require :plugins.treesitter)
+                (require :plugins.paredit)
+                (require :plugins.ui)
+                (require :plugins.conjure)
+                (require :plugins.org)
+                (require :plugins.lsp)
+                (require :plugins.utils)
+                ])
+
+(local lazy (require :lazy))
+(lazy.setup [ :folke/which-key.nvim
+              :folke/trouble.nvim
+              plugins ])

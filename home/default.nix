@@ -1,11 +1,13 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 {
+  options.neovim.use-fennel = lib.mkEnableOption "Enables the fennel version of nvim (unstable)";
   imports = [
     ./modules
     ./dir-colors.nix
     ./lsp.nix
     ./starship.nix
   ];
+  config = {
 
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
@@ -45,7 +47,8 @@
   };
 
   home.file.".config/nvim" = {
-    source = ./dots/nvim;
+    source = if config.neovim.use-fennel then ./dots/nvim-fennel
+             else ./dots/nvim;
     recursive = true;
   };
 
@@ -118,5 +121,6 @@
     # Don't need the fish integration bc it's automatically in there
     enableNushellIntegration = true;
     nix-direnv.enable = true;
+  };
   };
 }
