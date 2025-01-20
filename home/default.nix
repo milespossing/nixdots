@@ -36,7 +36,6 @@
       mosh
       neofetch
       neovim
-      pass
       rlwrap
       rustup
       tldr
@@ -93,7 +92,10 @@
       enableNushellIntegration = true;
     };
 
-    mp.programs.git.enable = true;
+    mp.programs.git = {
+      enable = true;
+      gcmCoreIntegration.enable = true;
+    };
     mp.programs.tmux.enable = true;
 
     programs.zellij = {
@@ -117,6 +119,10 @@
     };
 
     programs.gpg = {
+      enable = true;
+    };
+
+    programs.password-store = {
       enable = true;
     };
 
