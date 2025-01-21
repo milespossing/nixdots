@@ -6,7 +6,7 @@ wk.add({
   { "<leader>br", ":set relativenumber<cr>", desc = "Set Relative" },
   { "<leader>f", group = "file" },
   { "<leader>g", group = "git" },
-  { "<leader>t", group = "term" },
+  { "<leader>t", group = "toggle" },
   { "<leader>w", group = "window" },
   { "<leader>wh", "<C-w>h", desc = "Move point left" },
   { "<leader>wj", "<C-w>j", desc = "Move point down" },

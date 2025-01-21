@@ -1,4 +1,6 @@
-(fn setup [name ...]
+(local M {})
+
+(fn M.setup [name ...]
   ((. (require name) :setup) ...))
 
-{ :setup setup }
+M

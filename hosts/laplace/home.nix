@@ -15,6 +15,7 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
+  neovim.use-fennel = true;
   mp.user-space.enable = true;
   # hyprland.enable = true;
   sdev.racket = {

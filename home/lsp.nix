@@ -9,6 +9,8 @@
     # Lua
     lua-language-server
     stylua
+    fennel-ls
+    fnlfmt
     # Node
     nodePackages.vim-language-server
     # Misc.

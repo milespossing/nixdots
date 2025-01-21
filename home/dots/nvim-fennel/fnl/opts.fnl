@@ -3,13 +3,13 @@
 (g! mapleader " ")
 (g! maplocalleader "\\")
 
-(when (os.getenv "WSL")
-  (local psh-paste "powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace(\"`r\", \"\"))")
+(when (os.getenv :WSL)
+  (local psh-paste
+         "powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace(\"`r\", \"\"))")
   (g! clipboard {:name :WslClipBoard
-                                       :copy {"+" "clip.exe"
-                                              "*" "clip.exe"}
-                                       :paste {"+" psh-paste
-                                               "*" psh-paste}}))
+                 :copy {:+ :clip.exe :* :clip.exe}
+                 :paste {:+ psh-paste :* psh-paste}}))
+
 (set! clipboard "unnamed,unnamedplus")
 (set! confirm false)
 

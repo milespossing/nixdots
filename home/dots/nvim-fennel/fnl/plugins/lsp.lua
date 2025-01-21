@@ -10,6 +10,7 @@ return {
 				lua_ls = {
 					settings = require("lib.lua_settings"),
 				},
+				fennel_ls = {},
 				nil_ls = {},
 				clojure_lsp = {},
 				yamlls = {},
@@ -31,26 +32,27 @@ return {
 			require("conform").setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
-                    nix = { "nixfmt" },
+					fennel = { "fnlfmt", prepend_args = { "--fix" } },
+					nix = { "nixfmt" },
 				},
 			})
 		end,
 	},
-    {
-        "saghen/blink.compat",
-        version = "*",
-        lazy = true,
-        opts = {
-            debug = true,
-        },
-    },
+	{
+		"saghen/blink.compat",
+		version = "*",
+		lazy = true,
+		opts = {
+			debug = true,
+		},
+	},
 	{
 		"saghen/blink.cmp",
 		-- optional: provides snippets for the snippet source
 		dependencies = {
-            "rafamadriz/friendly-snippets",
-            "PaterJason/cmp-conjure",
-        },
+			"rafamadriz/friendly-snippets",
+			"PaterJason/cmp-conjure",
+		},
 
 		-- use a release tag to download pre-built binaries
 		version = "*",
@@ -82,12 +84,12 @@ return {
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer", "conjure" },
-                providers = {
-                    conjure = {
-                        name = 'conjure',
-                        module = 'blink.compat.source',
-                    },
-                },
+				providers = {
+					conjure = {
+						name = "conjure",
+						module = "blink.compat.source",
+					},
+				},
 			},
 		},
 		opts_extend = { "sources.default" },

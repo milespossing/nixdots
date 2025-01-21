@@ -28,7 +28,7 @@ return {
           tag = "0.3.7",
         },
       },
-      lazy = false,
+      event = 'VeryLazy',
       config = function()
         require("org-roam").setup({
           directory = "~/org",
