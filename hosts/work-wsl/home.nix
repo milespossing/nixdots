@@ -16,6 +16,7 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
+  neovim.use-fennel = true;
   mp.wsl.enable = true;
 
   programs.emacs.enable = true;

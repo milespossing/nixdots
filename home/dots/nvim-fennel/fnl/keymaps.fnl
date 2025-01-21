@@ -21,8 +21,18 @@
                            :d {:toggle (toggle.dim)}
                            :a {:toggle (toggle.animate)}
                            :i {:toggle (toggle.indent)}
-                           :n {:toggle (toggle.line_number)}
-                           :t {:toggle (toggle.treesitter)}}}})
+                           :n {:group :numbers
+                               :maps {:n {:toggle (toggle.line_number)}
+                                      :a {:toggle (toggle.option :number
+                                                                 {:name "Absolute Number"})}
+                                      :r {:toggle (toggle.option :relativenumber
+                                                                 {:name "Relative Number"})}}}
+                           :t {:toggle (toggle.treesitter)}}}
+        :<leader>w {:group :Window
+                    :maps {:h {:cmd :<C-w>h :desc "Move window left"}
+                           :l {:cmd :<C-w>l :desc "Move window right"}
+                           :k {:cmd :<C-w>k :desc "Move window up"}
+                           :j {:cmd :<C-w>j :desc "Move window down"}}}})
 
 ;; TODO: Need to finish up the keymaps
 
@@ -34,10 +44,12 @@
 
 (fn process-group [prefix group]
   (case group
-    {:group name : maps} (each [p m (pairs maps)]
-                           (process-group (.. prefix p) m))
+    {:group name : maps} (do
+                           (add-group prefix name)
+                           (each [p m (pairs maps)]
+                             (process-group (.. prefix p) m)))
     {: cmd : desc} (add-cmd prefix cmd desc)
-    {: toggle} (: toggle :map prefix)))
+    {: toggle} (toggle:map prefix)))
 
 (each [p m (pairs bindings)]
   (process-group p m))

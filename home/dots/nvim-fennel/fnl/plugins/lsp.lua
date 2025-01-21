@@ -4,7 +4,7 @@ return {
 		dependencies = {
 			{ "saghen/blink.cmp" },
 		},
-		lazy = false,
+        lazy = false,
 		opts = {
 			servers = {
 				lua_ls = {

@@ -9,4 +9,5 @@
  {1 :akinsho/bufferline.nvim
   :version "*"
   :dependencies [:nvim-tree/nvim-web-devicons]}
- {1 :nvim-lualine/lualine.nvim :config (lambda [] (helpers.setup :lualine {}))}]
+ {1 :nvim-lualine/lualine.nvim :config (lambda [] (helpers.setup :lualine {}))}
+ {1 :folke/noice.nvim :event :VeryLazy :dependencies [:ManifTanjim/nui.nvim :rcarriga/nvim-notify]}]
