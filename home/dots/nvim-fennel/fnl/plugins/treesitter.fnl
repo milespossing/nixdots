@@ -3,7 +3,7 @@
 { 1 :nvim-treesitter/nvim-treesitter
 :lazy false
 :run ":TSUpdate"
-:config (lambda [] (helpers.setup :nvim-treesitter-configs {
+:config (lambda [] (helpers.setup :nvim-treesitter.configs {
                                   :ensure_installed [ :lua
                                                         :tsx
                                                         :typescript

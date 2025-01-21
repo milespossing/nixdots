@@ -56,6 +56,11 @@
       recursive = true;
     };
 
+    home.activation.nvim-fnl-compile = lib.mkIf config.neovim.use-fennel (lib.hm.dag.entryAfter ["writeBoundary"] ''
+        ${pkgs.neovim}/bin/nvim --headless +":FnlCompile!" +qall
+        ''
+    );
+
     programs.bat = {
       enable = true;
     };
