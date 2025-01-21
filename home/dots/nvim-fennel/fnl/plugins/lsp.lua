@@ -10,6 +10,7 @@ return {
 				lua_ls = {
 					settings = require("lib.lua_settings"),
 				},
+                ts_ls = {},
 				fennel_ls = {},
 				nil_ls = {},
 				clojure_lsp = {},

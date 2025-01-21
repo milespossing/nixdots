@@ -11,9 +11,10 @@
     stylua
     fennel-ls
     fnlfmt
-    # Node
-    nodePackages.vim-language-server
+    # Node & TS
+    typescript-language-server
     # Misc.
+    nodePackages.vim-language-server
     typst-lsp
     tree-sitter-grammars.tree-sitter-typst
     yaml-language-server
