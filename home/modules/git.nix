@@ -31,12 +31,6 @@ in
     };
   };
 
-  config.programs.git-credential-oauth =
-    mkIf (cfg.gcmCoreIntegration.enable && !config.mp.wsl.enable)
-      {
-        enable = true;
-      };
-
   config.programs.git = mkIf cfg.enable {
     enable = true;
     userName = cfg.user;
@@ -69,7 +63,7 @@ in
         pager = "bat";
       };
       credential = {
-        helper = mkIf (cfg.gcmCoreIntegration.enable && config.mp.wsl.enable) helperLocation;
+        helper = mkIf cfg.gcmCoreIntegration.enable helperLocation;
         useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
         "https://github.com" = {
           helper = "!${pkgs.gh}/bin/gh auth git-credential";
