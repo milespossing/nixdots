@@ -9,5 +9,4 @@
            (helpers.setup :mini.indentscope)
            (helpers.setup :mini.surround)
            (helpers.setup :mini.pairs)
-           (helpers.setup :mini.ai)
-           (helpers.setup :mini.icons))}
+           (helpers.setup :mini.ai))}
