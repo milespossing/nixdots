@@ -31,45 +31,53 @@ in
     };
   };
 
-  config.programs.git = mkIf cfg.enable {
-    enable = true;
-    userName = cfg.user;
-    userEmail = cfg.email;
-    ignores = [
-      "*~"
-      "*.swp"
-      ".\\#*"
-      "\\#*\\#"
-      "venv/"
-      ".direnv"
-      ".envrc"
-    ];
-    aliases = {
-      s = "status";
-      c = "checkout";
-      d = "diff";
+  config = mkIf cfg.enable {
+    home.sessionVariables = mkIf (!config.mp.wsl.enable) {
+      GCM_CREDENTIAL_STORE = "gpg";
     };
-    extraConfig = {
-      init.defaultBranch = "main";
-      pull.rebase = false;
-      diff.tool = "nvimdiff";
-      merge.tool = "nvimdiff";
-      mergetool = {
-        keepBackup = false;
+    programs.git = {
+      enable = true;
+      userName = cfg.user;
+      userEmail = cfg.email;
+      ignores = [
+        "*~"
+        "*.swp"
+        ".\\#*"
+        "\\#*\\#"
+        "venv/"
+        ".direnv"
+        ".envrc"
+      ];
+      aliases = {
+        s = "status";
+        c = "checkout";
+        d = "diff";
       };
-      push.autoSetupRemote = true;
-      core = {
-        editor = "nvim";
-        pager = "bat";
-      };
-      credential = {
-        helper = mkIf cfg.gcmCoreIntegration.enable helperLocation;
-        useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
-        "https://github.com" = {
-          helper = "!${pkgs.gh}/bin/gh auth git-credential";
+      extraConfig = {
+        init.defaultBranch = "main";
+        pull.rebase = false;
+        diff.tool = "nvimdiff";
+        merge.tool = "nvimdiff";
+        mergetool = {
+          keepBackup = false;
         };
-        "https://gist.github.com" = {
-          helper = "!${pkgs.gh}/bin/gh auth git-credential";
+        push.autoSetupRemote = true;
+        core = {
+          editor = "nvim";
+          pager = "bat";
+        };
+        credential = {
+          helper = mkIf cfg.gcmCoreIntegration.enable helperLocation;
+          useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
+          "https://github.com" = {
+            helper = "!${pkgs.gh}/bin/gh auth git-credential";
+          };
+          "https://gist.github.com" = {
+            helper = "!${pkgs.gh}/bin/gh auth git-credential";
+          };
+          "https://git.possing.tech" = {
+            provider = "generic";
+          };
         };
       };
     };
