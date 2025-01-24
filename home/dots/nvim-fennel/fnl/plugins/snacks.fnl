@@ -1,19 +1,11 @@
 
-(local dashboard-config {
-       :enabled true
-       :preset {:keys [
-                       ; { :icon "󰈞" :key "f" :desc "Find File" :action (. (require :telescope.builtin) :find_files) }
-                       ; { :icon "" :key "g" :desc "Find Text" :action (. (require :telescope.builtin) :live)}
-                       ]}
-       })
-
 {1 :folke/snacks.nvim
  :lazy false
  :priority 1000
  :opts {:animate {:enabled true}
         :bigfile {:enabled true}
         :bufdelete {:enabled true}
-        :dashboard {:enabled true}
+        :dashboard (require :plugins.dashboard)
         :dim {:enabled true}
         :git {:enabled true}
         :indent {:enabled true}

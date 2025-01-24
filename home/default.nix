@@ -26,6 +26,7 @@
     home.packages = with pkgs; [
       babashka
       bitwarden-cli
+      chafa
       cbonsai
       cmake
       comma
@@ -56,13 +57,14 @@
       recursive = true;
     };
 
-    home.activation.nvim-ts-update = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        ${pkgs.neovim}/bin/nvim --headless +":TSUpdate" +qall
+    home.activation.nvim-ts-update = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${pkgs.neovim}/bin/nvim --headless +":TSUpdate" +qall
     '';
 
-    home.activation.nvim-fnl-compile = lib.mkIf config.neovim.use-fennel (lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.nvim-fnl-compile = lib.mkIf config.neovim.use-fennel (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         ${pkgs.neovim}/bin/nvim --headless +":FnlCompile!" +qall
-        ''
+      ''
     );
 
     programs.bat = {
