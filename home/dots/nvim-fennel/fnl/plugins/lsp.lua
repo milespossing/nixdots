@@ -4,7 +4,7 @@ return {
 		dependencies = {
 			{ "saghen/blink.cmp" },
 		},
-        lazy = false,
+        event = "VeryLazy",
 		opts = {
 			servers = {
 				lua_ls = {
@@ -28,6 +28,7 @@ return {
 	},
 	{
 		"stevearc/conform.nvim",
+        event = "VeryLazy",
 		opts = {},
 		config = function()
 			require("conform").setup({
@@ -49,6 +50,7 @@ return {
 	},
 	{
 		"saghen/blink.cmp",
+        event = "VeryLazy",
 		-- optional: provides snippets for the snippet source
 		dependencies = {
 			"rafamadriz/friendly-snippets",

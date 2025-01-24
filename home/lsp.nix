@@ -14,6 +14,7 @@
     # Node & TS
     typescript-language-server
     # Misc.
+    nginx-language-server
     nodePackages.vim-language-server
     typst-lsp
     tree-sitter-grammars.tree-sitter-typst

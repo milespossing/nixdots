@@ -1,9 +1,11 @@
 return {
 	{
 		"ibhagwan/fzf-lua",
+        event = "VeryLazy",
 		-- optional for icon support
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = {},
+        config = require("config.fzf")
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
@@ -14,12 +16,5 @@ return {
 				indent = { char = " " },
 			})
 		end,
-	},
-	{
-		"voldikss/vim-floaterm",
-		keys = {
-			-- { "<leader>tf", "<cmd>FloatermNew<cr>", desc = "New Floaterm" },
-			-- { "<leader>gg", "<cmd>FloatermNew lazygit<cr>", desc = "lazygit" },
-		},
 	},
 }

@@ -35,21 +35,21 @@ return {
 			})
 		end,
 	},
-    {
-        "saghen/blink.compat",
-        version = "*",
-        lazy = true,
-        opts = {
-            debug = true,
-        },
-    },
+	{
+		"saghen/blink.compat",
+		version = "*",
+		lazy = true,
+		opts = {
+			debug = true,
+		},
+	},
 	{
 		"saghen/blink.cmp",
 		-- optional: provides snippets for the snippet source
 		dependencies = {
-            "rafamadriz/friendly-snippets",
-            "PaterJason/cmp-conjure",
-        },
+			"rafamadriz/friendly-snippets",
+			"PaterJason/cmp-conjure",
+		},
 
 		-- use a release tag to download pre-built binaries
 		version = "*",
@@ -81,14 +81,51 @@ return {
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer", "conjure" },
-                providers = {
-                    conjure = {
-                        name = 'conjure',
-                        module = 'blink.compat.source',
-                    },
-                },
+				providers = {
+					conjure = {
+						name = "conjure",
+						module = "blink.compat.source",
+					},
+				},
 			},
 		},
 		opts_extend = { "sources.default" },
+	},
+	{
+		"folke/trouble.nvim",
+		opts = {},
+		cmd = "Trouble",
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
 	},
 }

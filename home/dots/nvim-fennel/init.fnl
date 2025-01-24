@@ -1,5 +1,5 @@
-
 (require :opts)
 (require :plugins)
 (require :keymaps)
+(require :config)
 (require :after-init)

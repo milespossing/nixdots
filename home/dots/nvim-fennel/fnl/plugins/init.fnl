@@ -7,7 +7,8 @@
                 (require :plugins.org)
                 (require :plugins.lsp)
                 (require :plugins.utils)
-                (require :plugins.snacks)])
+                (require :plugins.snacks)
+                (require :plugins.dap)])
 
 (local lazy (require :lazy))
 (lazy.setup [:folke/which-key.nvim :folke/trouble.nvim plugins])
