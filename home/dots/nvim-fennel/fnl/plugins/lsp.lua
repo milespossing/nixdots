@@ -4,13 +4,13 @@ return {
 		dependencies = {
 			{ "saghen/blink.cmp" },
 		},
-        event = "VeryLazy",
+		event = "VeryLazy",
 		opts = {
 			servers = {
 				lua_ls = {
 					settings = require("lib.lua_settings"),
 				},
-                ts_ls = {},
+				ts_ls = {},
 				fennel_ls = {},
 				nil_ls = {},
 				clojure_lsp = {},
@@ -28,17 +28,41 @@ return {
 	},
 	{
 		"stevearc/conform.nvim",
-        event = "VeryLazy",
-		opts = {},
-		config = function()
-			require("conform").setup({
-				formatters_by_ft = {
-					lua = { "stylua" },
-					fennel = { "fnlfmt", prepend_args = { "--fix" } },
-					nix = { "nixfmt" },
+		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
+		keys = {
+			{
+				"<leader>fm",
+				function()
+					require("conform").format({ async = true })
+				end,
+				mode = "n",
+				desc = "Format Buffer",
+			},
+		},
+		opts = {
+			formatters_by_ft = {
+				clojure = { "cljfmt", prepend_args = { "fix" } },
+				fennel = { "fnlfmt", prepend_args = { "--fix" } },
+				lua = { "stylua" },
+				nix = { "nixfmt" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
+			},
+			formatters = {
+				prettier = {
+					options = {
+						ft_parsers = {
+							typescript = "typescript",
+							typescriptreact = "typescript",
+						},
+					},
 				},
-			})
-		end,
+			},
+			default_format_opts = {
+				lsp_format = "fallback",
+			},
+		},
 	},
 	{
 		"saghen/blink.compat",
@@ -50,7 +74,7 @@ return {
 	},
 	{
 		"saghen/blink.cmp",
-        event = "VeryLazy",
+		event = "VeryLazy",
 		-- optional: provides snippets for the snippet source
 		dependencies = {
 			"rafamadriz/friendly-snippets",

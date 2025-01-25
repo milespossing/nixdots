@@ -1,5 +1,7 @@
 (require :opts)
+(require :autocmds)
 (require :plugins)
 (require :keymaps)
 (require :config)
+(require :commands)
 (require :after-init)

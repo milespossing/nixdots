@@ -37,7 +37,7 @@ require("tangerine").setup({
 		-- disable popup showing compiled files
 		verbose = false,
 
-		-- compile every time changes are made to fennel files or on entering vim
-		hooks = { "onsave", "oninit" },
+		-- we don't want to compile because we have quick compile and home-manager doing it for us
+		-- hooks = { "onsave", "oninit" },
 	},
 })

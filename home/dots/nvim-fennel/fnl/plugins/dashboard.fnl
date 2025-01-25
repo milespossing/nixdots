@@ -1,5 +1,5 @@
 {:enabled true
- :sections [{:cmd "chafa ~/.config/wall.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1"
+ :sections [{:cmd "chafa ~/.config/nvim/night.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1"
              :height 17
              :padding 1
              :section :terminal}

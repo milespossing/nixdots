@@ -6,6 +6,7 @@
     nixfmt-rfc-style
     # Lisps
     clojure-lsp
+    cljfmt
     # Lua
     lua-language-server
     stylua
@@ -13,6 +14,7 @@
     fnlfmt
     # Node & TS
     typescript-language-server
+    nodePackages.prettier
     # Misc.
     nginx-language-server
     nodePackages.vim-language-server

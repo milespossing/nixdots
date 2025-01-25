@@ -1,16 +1,12 @@
 (local km (require :lib.keymap))
 
 (local toggle (require :snacks.toggle))
-(local conform (require :conform))
 (local zellij (require :lib.zellij))
 
 ;; Normal Bindings
 (km.add-keys {:<leader>b {:group :Buffer
                           :maps {"," [":cmd buffer #<cr>"
                                       {:desc "Previous buffer"}]}}
-              :<leader>f {:group :File
-                          :maps {:m [(lambda [] (conform.format {:async true}))
-                                     {:desc "Format file"}]}}
               :<leader>t {:group :Toggle
                           :maps {:z {:toggle (toggle.zen)}
                                  :d {:toggle (toggle.dim)}
