@@ -27,6 +27,8 @@
     source = ../../home/dots/wallpapers-mocha/vert/city-pixels.png;
   };
 
+  services.protonmail-bridge.enable = true;
+
   hyprland = {
     pre-source = ''
       monitor = DP-2, 2560x1440@60, 0x0, 1

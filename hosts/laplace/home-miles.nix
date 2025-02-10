@@ -33,10 +33,7 @@
     librecad
   ];
 
-  services.protonmail-bridge = {
-    enable = true;
-    nonInteractive = true;
-  };
+  services.protonmail-bridge.enable = true;
 
   sdev.all = true;
 

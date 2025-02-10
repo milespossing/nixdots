@@ -20,7 +20,7 @@ in
 
       nonInteractive = mkOption {
         type = types.bool;
-        default = false;
+        default = true;
         description = "Start Bridge entirely noninteractively";
       };
 
@@ -42,7 +42,7 @@ in
     };
   };
 
-  ##### implementation
+  # implementation
   config = mkIf cfg.enable {
     home.packages = [ pkgs.protonmail-bridge ];
 
