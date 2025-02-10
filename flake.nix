@@ -5,6 +5,12 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixgl.url = "github:nix-community/nixGL";
+    hyprland.url = "github:hyprwm/Hyprland";
+    zen-browser.url = "github:youwen5/zen-browser-flake";
+    xremap-flake.url = "github:xremap/nix-flake";
+    swww.url = "github:LGFae/swww";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     sops-nix.url = "github:Mic92/sops-nix";
     nur = {
       url = "github:nix-community/NUR";
@@ -15,6 +21,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -25,71 +33,59 @@
       home-manager,
       sops-nix,
       nixos-wsl,
+      neovim-nightly-overlay,
+      nixgl,
       ...
     }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-
-      sharedOptions =
-        { lib, ... }:
-        {
-          options.myConfig = {
-            useHyprland = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "Whether to use Hyprland.";
-            };
-          };
-          config.userName = lib.mkOption {
-            type = lib.types.str;
-            default = "miles";
-            description = "Username";
-          };
-        };
+      pkgs = import nixpkgs {
+        system = system;
+        config.allowUnfree = true;
+        overlays = [ nixgl.overlay ];
+      };
     in
     {
       nixosConfigurations = {
         euler = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs sharedOptions; };
+          specialArgs = { inherit inputs; };
           modules = [
+            ./modules/core
             ./hosts/euler/configuration.nix
-            ./modules/kde.nix
+            ./modules/extra/zen-browser.nix
+            ./modules/wm/hyprland.nix
+            ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
             sops-nix.nixosModules.sops
           ];
         };
         laplace = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs sharedOptions; };
+          specialArgs = { inherit inputs pkgs; };
           modules = [
-            ./modules
+            ./modules/core
             ./hosts/laplace/configuration.nix
-            ./modules/kde.nix
+            ./hosts/laplace/hardware-configuration.nix
+            ./modules/wm/hyprland.nix
+            ./modules/extra/zen-browser.nix
+            ./modules/extra/syncthing.nix
+            inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
+            {
+              home-manager.useGlobalPkgs = true;
+              # home-manager.useUserPackages = true;
+              home-manager.users.miles = import ./hosts/laplace/home-miles.nix;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+            }
             nixos-hardware.nixosModules.framework-13-7040-amd
-          ];
-        };
-        wsl = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs sharedOptions; };
-          system = "x86_64-linux";
-          modules = [
-            nixos-wsl.nixosModules.default
-            ./hosts/wsl/configuration.nix
-            inputs.home-manager.nixosModules.default
           ];
         };
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
+        extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
         modules = [
           ./hosts/work-wsl/home.nix
         ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
       };
     };
 }

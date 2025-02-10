@@ -1,0 +1,2 @@
+Cursors
+- Need to be copied to ~/.local/share/icons or ~/.icons

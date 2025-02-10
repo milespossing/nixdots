@@ -2,6 +2,7 @@
 {
   imports = [
     ../../home
+    ../../home/modules/hyprland
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -14,16 +15,37 @@
     tetrio-desktop
   ];
 
-  neovim.use-fennel = true;
   mp.user-space.enable = true;
   sdev.racket.full = true;
   sdev.all = true;
 
-  services.protonmail-bridge.enable = true;
+  home.file.".config/wallpaper.png" = {
+    source = ../../home/dots/wallpapers-mocha/hor/pixel1.png;
+  };
 
-  services.emacs = {
-    enable = true;
-    package = pkgs.emacs;
+  home.file.".config/wallpaper-vert.png" = {
+    source = ../../home/dots/wallpapers-mocha/vert/city-pixels.png;
+  };
+
+  hyprland = {
+    pre-source = ''
+      monitor = DP-2, 2560x1440@60, 0x0, 1
+      monitor = DP-1, 2560x1440@60, 2560x0, 1, transform, 1
+
+      $mainMon = DP-2
+      $sideMon = DP-1
+
+      workspace = 1, monitor:$mainMon
+      workspace = 2, monitor:$sideMon
+    '';
+    pre-config = ''
+      exec-once=swww img -o DP-2 ~/.config/wallpaper.png
+      exec-once=swww img -o DP-1 ~/.config/wallpaper-vert.png
+
+      cursor {
+        no_hardware_cursors = true
+      }
+    '';
   };
 
   # This value determines the Home Manager release that your configuration is

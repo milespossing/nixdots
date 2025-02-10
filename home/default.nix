@@ -1,11 +1,9 @@
 {
-  config,
   pkgs,
   lib,
   ...
 }:
 {
-  options.neovim.use-fennel = lib.mkEnableOption "Enables the fennel version of nvim (unstable)";
   imports = [
     ./modules
     ./dir-colors.nix
@@ -26,7 +24,6 @@
     home.packages = with pkgs; [
       babashka
       bitwarden-cli
-      chafa
       cbonsai
       cmake
       comma
@@ -36,9 +33,8 @@
       lsof
       mosh
       neofetch
-      neovim
       rlwrap
-      rustup
+      socat
       tldr
       typer
       unzip
@@ -52,30 +48,17 @@
       VISUAL = "nvim";
     };
 
-    home.file.".config/nvim" = {
-      source = if config.neovim.use-fennel then ./dots/nvim-fennel else ./dots/nvim;
-      recursive = true;
-    };
-
-    home.activation.nvim-ts-update = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${pkgs.neovim}/bin/nvim --headless +":TSUpdate" +qall
-    '';
-
-    home.activation.nvim-fnl-compile = lib.mkIf config.neovim.use-fennel (
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        ${pkgs.neovim}/bin/nvim --headless +":FnlCompile!" +qall
-      ''
-    );
+    programs.neovim.enable = true;
+    # home.file.".config/nvim" = {
+    #   source = if config.neovim.use-fennel then ./dots/nvim-fennel else if config.neovim.use-lazy then ./dots/lazyvim else ./dots/nvim;
+    #   recursive = true;
+    # };
 
     programs.bat = {
       enable = true;
     };
 
     programs.ripgrep = {
-      enable = true;
-    };
-
-    programs.navi = {
       enable = true;
     };
 
@@ -111,10 +94,8 @@
 
     programs.zellij = {
       enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
       settings = {
-        theme = "nord";
+        theme = "catppuccin-mocha";
         default_shell = "fish";
       };
     };

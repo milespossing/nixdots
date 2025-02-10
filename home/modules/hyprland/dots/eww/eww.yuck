@@ -1,0 +1,31 @@
+
+(defwindow bar
+	:geometry (geometry :x "0" 
+						:y "0" 
+						:width "100%" 
+						:height "80px")
+	:monitor 1
+	:reserve (struts :distance "35px" 
+					 :side "left")
+	:wm-ignore false
+	:hexpand "false"
+	:vexpand "false"
+  (bar))
+
+(defwidget bar []
+  (box :class "main-bar"
+    (time)))
+
+(defwidget time []
+	(box	:orientation "v" 
+			:class "time" 
+			:valign "end"
+	(button	:onclick "scripts/popup calendar"	
+			:class "time-hour" hour)
+	(button	:onclick "scripts/popup calendar"	
+			:class "time-min"  min)))
+
+(defpoll hour	:interval "1s"	"date '+%H'")
+(defpoll min	:interval "1s"	"date '+%M'")
+        
+

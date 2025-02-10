@@ -100,5 +100,5 @@
   };
 
   # Enable QMK Support
-  hardware.keyboard.qmk.enable = true;
+  # hardware.keyboard.qmk.enable = true;
 }

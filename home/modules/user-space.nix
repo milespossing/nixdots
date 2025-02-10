@@ -12,23 +12,14 @@ in
   options.mp.user-space.enable = lib.mkEnableOption "Enable user-space dots, programs, and services";
 
   config = mkIf cfg.enable {
-    mp.rofi.enable = true;
     programs.emacs.enable = true;
 
     home.packages = with pkgs; [
-      firefox
-      chromium
-      (vivaldi.overrideAttrs (oldAttrs: {
-        dontWrapQtApps = false;
-        dontPatchELF = true;
-        nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ pkgs.kdePackages.wrapQtAppsHook ];
-      }))
       thunderbird
       protonmail-bridge
       discord
       element-desktop
       grim
-      nwg-drawer
       spotify
       vlc
       wl-clipboard
@@ -53,8 +44,9 @@ in
       settings = {
         confirm_os_window_close = 0;
         font_family = "DepartureMono Nerd Font";
+        background_opacity = 0.5;
       };
-      themeFile = "Catppuccin-Macchiato";
+      themeFile = "Catppuccin-Mocha";
       shellIntegration = {
         enableFishIntegration = true;
       };

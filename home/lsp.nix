@@ -15,6 +15,9 @@
     # Node & TS
     typescript-language-server
     nodePackages.prettier
+    # Rust
+    rust-analyzer
+    rustfmt
     # Misc.
     nginx-language-server
     nodePackages.vim-language-server

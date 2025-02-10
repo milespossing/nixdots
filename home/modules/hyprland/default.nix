@@ -9,28 +9,40 @@ let
   cfg = config.hyprland;
 in
 {
-  options.hyprland.enable = lib.mkEnableOption "Enable hyprland dots";
+  imports = [
+    ../rofi
+    ../waybar
+    ../eww.nix
+  ];
 
-  config = mkIf cfg.enable {
+  options.hyprland = {
+    pre-source = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+    };
+    post-source = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+    };
+    pre-config = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+    };
+  };
+
+  config = {
+    home.file.".config/hypr/conf/pre-source.conf".text = cfg.pre-source;
+    home.file.".config/hypr/conf/post-source.conf".text = cfg.post-source;
+    home.file.".config/hypr/conf/pre-config.conf".text = cfg.pre-config;
+
     home.packages = with pkgs; [
-      slurp
-      swayosd
-      swww
-      wl-clipboard
-      wlogout
+      playerctl
     ];
 
+    # TODO: Need to get the below active once stable
+
     home.file.".config/hypr" = {
-      source = ../../dots/hyprland;
-      recursive = true;
-    };
-
-    programs.eww = {
-      enable = true;
-    };
-
-    home.file.".config/eww" = {
-      source = ../../dots/eww;
+      source = dots/hypr;
       recursive = true;
     };
   };
