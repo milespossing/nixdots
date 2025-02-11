@@ -22,4 +22,5 @@ wk.add({
   { "<leader>wj", "<C-w>j", desc = "Window Down" },
   { "<leader>wl", "<C-w>l", desc = "Window Right" },
   { "<leader>wk", "<C-w>k", desc = "Window Up" },
+  { "<leader>h", group = "help" },
 })

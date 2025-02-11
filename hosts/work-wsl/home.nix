@@ -16,7 +16,8 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
-  neovim.use-fennel = true;
+  pathDirs = [ "$HOME/bin" ];
+
   mp.wsl.enable = true;
 
   programs.emacs.enable = true;
@@ -29,15 +30,21 @@
     recursive = true;
   };
 
-  posix.initExtra = ''
+  shell.initExtra = ''
     export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
     export WSL=1
+  '';
+
+  programs.fish.loginShellInit = ''
+    
   '';
 
   home.packages = with pkgs; [
     multimarkdown
     mermaid-cli
     fontconfig
+    wsl-open
+    xdg-utils
   ];
 
   services.syncthing = {

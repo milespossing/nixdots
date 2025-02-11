@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -10,8 +11,13 @@
     ./lsp.nix
     ./starship.nix
   ];
-  config = {
 
+  options.pathDirs = lib.mkOption {
+    type = lib.types.listOf lib.types.str;
+    default = [ "/usr/local/bin" ];
+  };
+
+  config = {
     nixpkgs.config.allowUnfreePredicate =
       pkg:
       builtins.elem (lib.getName pkg) [
@@ -20,6 +26,16 @@
         "spotify"
         "tetrio-desktop"
       ];
+
+    home.sessionVariables =
+      let
+        path = builtins.concatStringsSep ":" config.pathDirs;
+      in
+      {
+        PATH = "$PATH:${path}";
+        EDITOR = "nvim";
+        VISUAL = "nvim";
+      };
 
     home.packages = with pkgs; [
       babashka
@@ -43,16 +59,7 @@
       zulu
     ];
 
-    home.sessionVariables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
-    };
-
     programs.neovim.enable = true;
-    # home.file.".config/nvim" = {
-    #   source = if config.neovim.use-fennel then ./dots/nvim-fennel else if config.neovim.use-lazy then ./dots/lazyvim else ./dots/nvim;
-    #   recursive = true;
-    # };
 
     programs.bat = {
       enable = true;
@@ -90,7 +97,7 @@
       enable = true;
       gcmCoreIntegration.enable = true;
     };
-    mp.programs.tmux.enable = true;
+    programs.tmux.enable = true;
 
     programs.zellij = {
       enable = true;
@@ -99,6 +106,9 @@
         default_shell = "fish";
       };
     };
+
+    programs.zsh.enable = true;
+    programs.fish.enable = true;
 
     programs.lazygit = {
       enable = true;

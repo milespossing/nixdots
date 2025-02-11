@@ -6,15 +6,20 @@
 }:
 with lib;
 let
-  cfg = config.mp.programs.tmux;
+  cfg = config.programs.tmux;
+  tmux-which-key = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-which-key";
+    version = "unstable-2025-02-11";
+    src = pkgs.fetchFromGitHub {
+      owner = "alexwforsythe";
+      repo = "tmux-which-key";
+      rev = "1f419775caf136a60aac8e3a269b51ad10b51eb6";
+      sha256 = "sha256-X7FunHrAexDgAlZfN+JOUJvXFZeyVj9yu6WRnxMEA8E=";
+    };
+  };
 in
 {
-  options.mp.programs.tmux = {
-    enable = mkEnableOption "Enables tmux";
-  };
-
   config.programs.tmux = mkIf cfg.enable {
-    enable = true;
     keyMode = "vi";
     prefix = "C-b";
     clock24 = true;
@@ -30,7 +35,7 @@ in
     '';
     plugins = with pkgs; [
       {
-        plugin = tmuxPlugins.nord;
+        plugin = tmuxPlugins.catppuccin;
       }
       {
         plugin = tmuxPlugins.yank;
@@ -47,6 +52,12 @@ in
       {
         plugin = tmuxPlugins.better-mouse-mode;
         extraConfig = "set -g mouse";
+      }
+      {
+        plugin = tmuxPlugins.tmux-floax;
+      }
+      {
+        plugin = tmux-which-key;
       }
     ];
   };
