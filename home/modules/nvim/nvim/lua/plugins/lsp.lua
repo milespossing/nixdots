@@ -142,11 +142,6 @@ return {
           },
         },
       },
-      fuzzy = {
-        prebuilt_binaries = {
-          force_version = "v0.11.0",
-        },
-      },
     },
     opts_extend = { "sources.default" },
   },
