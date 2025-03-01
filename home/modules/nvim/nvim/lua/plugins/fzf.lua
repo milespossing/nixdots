@@ -82,6 +82,20 @@ return {
           require("fzf-lua").commands()
         end,
       },
+      {
+        "gj",
+        desc = "Jumps",
+        function()
+          require("fzf-lua").jumps()
+        end,
+      },
+      {
+        "<leader>sR",
+        desc = "Resume Search",
+        function()
+          require("fzf-lua").resume()
+        end,
+      },
     },
   },
 }

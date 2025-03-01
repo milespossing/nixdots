@@ -71,8 +71,17 @@ return {
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons", "MunifTanjim/nui.nvim" },
     keys = { { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" } },
+  },
+  {
+    "stevearc/oil.nvim",
+    opts = {},
+    dependencies = { "echasnovski/mini.icons" },
+    lazy = false,
+    keys = {
+      { "-", "<cmd>Oil<cr>", { desc = "Open parent directory" } },
+    },
   },
   -- TODO: Get this customized
   {
@@ -84,15 +93,15 @@ return {
   {
     "akinsho/bufferline.nvim",
     version = "*",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "echasnovski/mini.icons" },
   },
   {
     "folke/trouble.nvim",
     cmd = { "Trouble" },
     keys = {
-        { "<leader>tt", group = "Trouble" },
-        { "<leader>ttx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics" },
-        { "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
+      { "<leader>tt", group = "Trouble" },
+      { "<leader>ttx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics" },
+      { "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
     },
     opts = {
       modes = {
