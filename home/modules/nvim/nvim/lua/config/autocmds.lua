@@ -16,25 +16,9 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
-    local fzf = require("fzf-lua")
     local buf = args.buf
-    vim.keymap.set("n", "gd", function()
-      vim.lsp.buf.definition()
-    end, { buffer = buf, desc = "Go to definition" })
-    vim.keymap.set("n", "K", function()
-      vim.lsp.buf.hover()
-    end, { buffer = buf })
-    vim.keymap.set("n", "grr", function()
-      vim.lsp.buf.references()
-    end, { buffer = buf })
     vim.keymap.set("n", "grn", function()
       vim.lsp.buf.rename()
-    end, { buffer = buf })
-    vim.keymap.set("n", "<leader>sr", function()
-      fzf.lsp_references()
-    end, { buffer = buf })
-    vim.keymap.set("n", "<leader>sd", function()
-      fzf.lsp_definitions()
     end, { buffer = buf })
   end,
 })

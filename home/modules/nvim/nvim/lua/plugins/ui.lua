@@ -69,11 +69,11 @@ return {
       require("noice").setup(opts)
     end,
   },
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons", "MunifTanjim/nui.nvim" },
-    keys = { { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" } },
-  },
+  -- {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons", "MunifTanjim/nui.nvim" },
+  --   keys = { { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" } },
+  -- },
   {
     "stevearc/oil.nvim",
     opts = {},

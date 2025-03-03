@@ -5,6 +5,7 @@
 local Snacks = require("snacks")
 Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
 Snacks.toggle.line_number():map("<leader>ul")
+Snacks.toggle.zen():map("<leader>uz")
 
 local wk = require("which-key")
 
@@ -13,6 +14,7 @@ wk.add({
   { "<leader>w", group = "window", icon = "" },
   { "<leader>b", group = "buffer", icon = "" },
   { "<leader>t", group = "tools", icon = "󱁤" },
+  { "<leader>T", group = "toggle", icon = "󰔢" },
   { "<leader>o", group = "org", icon = "" },
   { "[", group = "prev" },
   { "]", group = "next" },
