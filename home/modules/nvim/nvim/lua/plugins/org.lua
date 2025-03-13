@@ -6,20 +6,11 @@ return {
       vim.opt.conceallevel = 2
       vim.opt.concealcursor = "nc"
     end,
-    config = function()
-      -- Setup orgmode
-      require("orgmode").setup({
-        org_agenda_files = "~/org/**/*",
-        org_default_notes_file = "~/org/inbox.org",
-      })
-
-      -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
-      -- add ~org~ to ignore_install
-      -- require('nvim-treesitter.configs').setup({
-      --   ensure_installed = 'all',
-      --   ignore_install = { 'org' },
-      -- })
-    end,
+    opts = {
+      org_agenda_files = "~/org/**/*",
+      org_default_notes_file = "~/org/inbox.org",
+      org_todo_keywords = { "TODO(t)", "WAITING(w)", "|", "DONE(d)", "CANCELLED(c)" },
+    },
   },
   {
     "chipsenkbeil/org-roam.nvim",
