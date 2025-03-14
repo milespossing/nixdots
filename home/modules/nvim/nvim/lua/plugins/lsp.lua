@@ -140,6 +140,12 @@ return {
             name = "conjure",
             module = "blink.compat.source",
           },
+          -- https://github.com/Saghen/blink.cmp/issues/795
+          cmdline = {
+            enabled = function()
+              return vim.fn.getcmdline():sub(1, 1) ~= "!"
+            end,
+          },
         },
       },
     },
