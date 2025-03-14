@@ -18,19 +18,6 @@ return {
           ["cmp.entry.get_documentation"] = true,
         },
       },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-            },
-          },
-          view = "mini",
-        },
-      },
       presets = {
         bottom_search = true,
         command_palette = true,
@@ -38,42 +25,7 @@ return {
         lsp_doc_border = false,
       },
     },
-    keys = {
-      { "<leader>tn", group = "noice" },
-      {
-        "<leader>tnh",
-        function()
-          require("noice").cmd("history")
-        end,
-        desc = "Noice History",
-      },
-      {
-        "<leader>tna",
-        function()
-          require("noice").cmd("all")
-        end,
-        desc = "Noice All",
-      },
-      {
-        "<leader>tnl",
-        function()
-          require("noice").cmd("last")
-        end,
-        desc = "Noice Last",
-      },
-    },
-    config = function(_, opts)
-      if vim.o.filetype == "lazy" then
-        vim.cmd([[messages clear]])
-      end
-      require("noice").setup(opts)
-    end,
   },
-  -- {
-  --   "nvim-neo-tree/neo-tree.nvim",
-  --   dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons", "MunifTanjim/nui.nvim" },
-  --   keys = { { "<leader>e", "<cmd>Neotree<cr>", desc = "NeoTree" } },
-  -- },
   {
     "stevearc/oil.nvim",
     opts = {},

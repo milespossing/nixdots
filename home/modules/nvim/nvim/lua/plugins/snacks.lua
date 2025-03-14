@@ -7,7 +7,6 @@ return {
     bigfile = { enabled = true },
     bufdelete = { enabled = true },
     dashboard = {
-      enabled = true,
       sections = {
         {
           cmd = "chafa ~/.config/nvim/night.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
@@ -65,13 +64,19 @@ return {
       },
     },
     dim = { enabled = true },
+    explorer = { enabled = true },
     git = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
     layout = { enabled = true },
+    lazygit = { enabled = true },
     notifier = { enabled = true },
     notify = { enabled = true },
-    picker = { enabled = true },
+    picker = {
+      db = {
+        sqlite3_path = os.getenv("LIBSQLITE"),
+      },
+    },
     quickfile = { enabled = true },
     scratch = { enabled = true },
     scroll = { enabled = true },
@@ -170,6 +175,13 @@ return {
       desc = "Recent",
     },
     -- git
+    {
+      "<leader>gg",
+      function()
+        Snacks.lazygit()
+      end,
+      desc = "Lazygit",
+    },
     {
       "<leader>gb",
       function()
