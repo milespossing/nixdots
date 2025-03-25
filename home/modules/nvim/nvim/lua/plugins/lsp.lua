@@ -1,14 +1,12 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    dependencies = {
-      { "saghen/blink.cmp" },
-    },
     event = "VeryLazy",
     opts = {
       servers = {
         csharp_ls = {},
         clojure_lsp = {},
+        eslint = {},
         fennel_ls = {},
         lua_ls = {
           settings = {
@@ -35,9 +33,16 @@ return {
     },
     config = function(_, opts)
       local lspconfig = require("lspconfig")
-      local blink = require("blink-cmp")
+      local has_cmp, cmp = pcall(require, "cmp_nvim_lsp")
+      local has_blink, blink = pcall(require, "blink.cmp")
       for server, config in pairs(opts.servers) do
-        config.capabilities = blink.get_lsp_capabilities(config.capabilities)
+        config.capabilities = vim.tbl_deep_extend(
+          "force",
+          {},
+          vim.lsp.protocol.make_client_capabilities(),
+          has_cmp and cmp.default_capabilities() or {},
+          has_blink and blink.get_lsp_capabilities(config.capabilities) or {}
+        )
         lspconfig[server].setup(config)
       end
     end,
@@ -61,11 +66,12 @@ return {
         clojure = { "cljfmt", prepend_args = { "fix" } },
         csharp = { "csharpier" },
         fennel = { "fnlfmt", prepend_args = { "--fix" } },
+        json = { "fixjson", prepend_args = { "--write " } },
         lua = { "stylua" },
         nix = { "nixfmt" },
         rust = { "rustfmt", prepend_args = { "--emit", "files" } },
-        typescript = { "prettier" },
-        typescriptreact = { "prettier" },
+        typescript = { "eslint_d" },
+        typescriptreact = { "eslint_d" },
       },
       formatters = {
         prettier = {
@@ -76,6 +82,7 @@ return {
             },
           },
         },
+        eslint_d = {},
       },
       default_format_opts = {
         lsp_format = "fallback",
@@ -83,15 +90,83 @@ return {
     },
   },
   {
+    "hrsh7th/nvim-cmp",
+    enabled = vim.g.use_cmp,
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+    },
+    opts = function()
+      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+      local cmp = require("cmp")
+      local defaults = require("cmp.config.default")()
+      local auto_select = true
+      return {
+        auto_brackets = {},
+        completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
+        preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
+        mapping = cmp.mapping.preset.insert({
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "path" },
+          { name = "conjure" },
+        }, {
+          { name = "buffer" },
+        }),
+        -- TODO
+        -- formatting = {
+        --   format = function(entry, item)
+        --     local icons = LazyVim.config.icons.kinds
+        --     if icons[item.kind] then
+        --       item.kind = icons[item.kind] .. item.kind
+        --     end
+        --
+        --     local widths = {
+        --       abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
+        --       menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
+        --     }
+        --
+        --     for key, width in pairs(widths) do
+        --       if item[key] and vim.fn.strdisplaywidth(item[key]) > width then
+        --         item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
+        --       end
+        --     end
+        --
+        --     return item
+        --   end,
+        -- },
+        experimental = {
+          ghost_text = vim.g.ai_cmp and {
+            hl_group = "CmpGhostText",
+          } or false,
+        },
+        sorting = defaults.sorting,
+      }
+    end,
+  },
+  {
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+  },
+  {
     "saghen/blink.compat",
+    enabled = vim.g.use_blink,
     version = "*",
-    lazy = true,
     opts = {
       debug = true,
     },
   },
   {
     "saghen/blink.cmp",
+    enabled = vim.g.use_blink,
     event = "InsertEnter",
     -- optional: provides snippets for the snippet source
     dependencies = {
@@ -101,32 +176,14 @@ return {
 
     -- use a release tag to download pre-built binaries
     version = "*",
-    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-    -- build = 'cargo build --release',
-    -- If you use nix, you can build from source using latest nightly rust with:
-    -- build = 'nix run .#build-plugin',
-
-    ---@module 'blink.cmp'
-    ---@type blink.cmp.Config
     opts = {
-      -- 'default' for mappings similar to built-in completion
-      -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
-      -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
-      -- See the full "keymap" documentation for information on defining your own keymap.
       keymap = { preset = "default" },
 
       appearance = {
-        -- Sets the fallback highlight groups to nvim-cmp's highlight groups
-        -- Useful for when your theme doesn't support blink.cmp
-        -- Will be removed in a future release
         use_nvim_cmp_as_default = false,
-        -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
         nerd_font_variant = "mono",
       },
 
-      -- Default list of enabled providers defined so that you can extend it
-      -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
         min_keyword_length = function(ctx)
           if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then

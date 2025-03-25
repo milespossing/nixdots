@@ -26,9 +26,8 @@
         # dotnet
         csharp-ls
         csharpier
-        # nix
-        nil
-        nixfmt-rfc-style
+        # json
+        fixjson
         # Lisps
         clojure-lsp
         cljfmt
@@ -37,9 +36,15 @@
         stylua
         fennel-ls
         fnlfmt
-        # Node & TS
+        # node
+        nodejs
+        # nix
+        nil
+        nixfmt-rfc-style
+        # Node, JS & TS
         typescript-language-server
         nodePackages.prettier
+        eslint_d
         # Rust
         cargo
         rust-analyzer
@@ -50,6 +55,7 @@
         typst-lsp
         tree-sitter-grammars.tree-sitter-typst
         yaml-language-server
+        vscode-langservers-extracted
       ];
     };
 

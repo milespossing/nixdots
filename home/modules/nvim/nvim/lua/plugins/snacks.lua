@@ -118,7 +118,7 @@ return {
       desc = "Command History",
     },
     {
-      "<leader>n",
+      "<leader>N",
       function()
         Snacks.picker.notifications()
       end,
@@ -425,7 +425,7 @@ return {
       desc = "Goto Declaration",
     },
     {
-      "gr",
+      "grr",
       function()
         Snacks.picker.lsp_references()
       end,
@@ -433,7 +433,7 @@ return {
       desc = "References",
     },
     {
-      "gI",
+      "gri",
       function()
         Snacks.picker.lsp_implementations()
       end,
@@ -473,6 +473,13 @@ return {
         Snacks.scratch.list()
       end,
       desc = "Select Scratch Buffer",
+    },
+    {
+      "<leader>st",
+      function()
+        Snacks.picker.treesitter()
+      end,
+      desc = "Treesitter Symbols",
     },
   },
 }
