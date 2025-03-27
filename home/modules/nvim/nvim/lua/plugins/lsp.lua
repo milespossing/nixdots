@@ -97,12 +97,14 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
+      "onsails/lspkind.nvim",
     },
     opts = function()
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
       local auto_select = true
+      local lspkind = require("lspkind")
       return {
         auto_brackets = {},
         completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
@@ -117,31 +119,25 @@ return {
           { name = "nvim_lsp" },
           { name = "path" },
           { name = "conjure" },
+          { name = "orgmode" },
         }, {
           { name = "buffer" },
         }),
-        -- TODO
-        -- formatting = {
-        --   format = function(entry, item)
-        --     local icons = LazyVim.config.icons.kinds
-        --     if icons[item.kind] then
-        --       item.kind = icons[item.kind] .. item.kind
-        --     end
-        --
-        --     local widths = {
-        --       abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
-        --       menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
-        --     }
-        --
-        --     for key, width in pairs(widths) do
-        --       if item[key] and vim.fn.strdisplaywidth(item[key]) > width then
-        --         item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
-        --       end
-        --     end
-        --
-        --     return item
-        --   end,
-        -- },
+        formatting = {
+          format = lspkind.cmp_format({
+            mode = "symbol",
+            maxwidth = {
+              menu = 50,
+              abbr = 50,
+            },
+            ellipsis_char = "...",
+            show_labelDetails = true,
+
+            before = function(_, vim_item)
+              return vim_item
+            end,
+          }),
+        },
         experimental = {
           ghost_text = vim.g.ai_cmp and {
             hl_group = "CmpGhostText",

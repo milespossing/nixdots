@@ -118,13 +118,6 @@ return {
       desc = "Command History",
     },
     {
-      "<leader>N",
-      function()
-        Snacks.picker.notifications()
-      end,
-      desc = "Notification History",
-    },
-    {
       "<leader>e",
       function()
         Snacks.explorer()
@@ -480,6 +473,13 @@ return {
         Snacks.picker.treesitter()
       end,
       desc = "Treesitter Symbols",
+    },
+    {
+      "<leader>T",
+      function()
+        Snacks.terminal()
+      end,
+      desc = "Open Terminal",
     },
   },
 }

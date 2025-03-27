@@ -37,3 +37,5 @@ vim.g.use_ai = true
 vim.g.ai_cmp = true
 vim.g.use_noice = false
 vim.g.use_cmp = true
+-- Whether we should be using blink
+vim.g.use_blink = false
