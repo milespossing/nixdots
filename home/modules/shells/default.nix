@@ -1,12 +1,8 @@
 {
-  config,
-  pkgs,
   lib,
   ...
 }:
 with lib;
-let
-in
 {
   imports = [
     ./fish.nix
