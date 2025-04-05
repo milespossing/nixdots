@@ -13,7 +13,6 @@
     ./hardware-configuration.nix
     ../../modules/extra/office.nix
     ../../modules/extra/firefox.nix
-    ../../modules/extra/virtualization.nix
     ../../modules/extra/wine.nix
     ../../modules/extra/steam.nix
     ../../modules/extra/video-editing.nix

@@ -8,7 +8,7 @@
   imports = [
     ./modules
     ./dir-colors.nix
-    ./lsp.nix
+    # ./lsp.nix
     ./starship.nix
   ];
 

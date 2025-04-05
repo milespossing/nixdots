@@ -7,7 +7,10 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixgl.url = "github:nix-community/nixGL";
     hyprland.url = "github:hyprwm/Hyprland";
-    zen-browser.url = "github:youwen5/zen-browser-flake";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     xremap-flake.url = "github:xremap/nix-flake";
     swww.url = "github:LGFae/swww";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
@@ -21,8 +24,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -68,6 +69,8 @@
             ./modules/wm/hyprland.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/syncthing.nix
+            ./modules/extra/miracast.nix
+            ./modules/extra/virtualization.nix
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {

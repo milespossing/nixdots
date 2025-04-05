@@ -52,7 +52,7 @@
         # Misc.
         nginx-language-server
         nodePackages.vim-language-server
-        typst-lsp
+        # typst-lsp
         tree-sitter-grammars.tree-sitter-typst
         yaml-language-server
         vscode-langservers-extracted
