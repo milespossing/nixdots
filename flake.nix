@@ -61,7 +61,7 @@
           ];
         };
         laplace = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs pkgs; };
+          specialArgs = { inherit inputs; };
           modules = [
             ./modules/core
             ./hosts/laplace/configuration.nix
@@ -74,8 +74,6 @@
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
-              home-manager.useGlobalPkgs = true;
-              # home-manager.useUserPackages = true;
               home-manager.users.miles = import ./hosts/laplace/home-miles.nix;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }

@@ -13,14 +13,14 @@
   ];
 
   options.waybar.custom.modules-left = lib.mkOption {
-    type = lib.types.listOf lib.types.string;
+    type = lib.types.listOf lib.types.str;
     default = [
       "hyprland/workspaces"
     ];
   };
 
   options.waybar.custom.modules-right = lib.mkOption {
-    type = lib.types.listOf lib.types.string;
+    type = lib.types.listOf lib.types.str;
     default = [
       "pulseaudio"
       "network"
@@ -56,9 +56,8 @@
             spotify = " ";
           };
           window-rewrite = {
-            "class<Vivaldi-stable>" = "󰖟 ";
-            "class<zen>" = "󰖟 ";
-            "class<zen> title<.*YouTube.*>" = " ";
+            "class<zen.*>" = "󰖟 ";
+            "class<zen.*> title<.*YouTube.*>" = " ";
             "class<kitty>" = " ";
             "class<kitty> title<nvim.*>" = " ";
             "class<thunderbird>" = " ";

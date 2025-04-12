@@ -38,5 +38,5 @@ with lib;
   services.spice-vdagentd.enable = true;
 
   # TODO: Going to want to make this respond to the default user name
-  users.users.miles.extraGroups = [ "docker" ];
+  users.users.miles.extraGroups = [ "docker" "libvirtd" ];
 }
