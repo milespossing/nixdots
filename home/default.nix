@@ -2,14 +2,16 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
   imports = [
     ./modules
     ./dir-colors.nix
-    # ./lsp.nix
     ./starship.nix
+    ./secrets.nix
+    inputs.sops-nix.homeManagerModules.sops
   ];
 
   options.pathDirs = lib.mkOption {
@@ -35,6 +37,7 @@
         PATH = "$PATH:${path}";
         EDITOR = "nvim";
         VISUAL = "nvim";
+        OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
       };
 
     home.packages = with pkgs; [

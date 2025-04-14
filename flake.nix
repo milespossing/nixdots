@@ -13,7 +13,6 @@
     };
     xremap-flake.url = "github:xremap/nix-flake";
     swww.url = "github:LGFae/swww";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     sops-nix.url = "github:Mic92/sops-nix";
     nur = {
       url = "github:nix-community/NUR";
@@ -34,7 +33,6 @@
       home-manager,
       sops-nix,
       nixos-wsl,
-      neovim-nightly-overlay,
       nixgl,
       ...
     }@inputs:
@@ -85,6 +83,7 @@
         extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
         modules = [
+          sops-nix.homeManagerModules.sops
           ./hosts/work-wsl/home.nix
         ];
       };
