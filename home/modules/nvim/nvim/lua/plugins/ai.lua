@@ -23,4 +23,20 @@ return {
       },
     },
   },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    enabled = vim.g.use_ai,
+    event = "VeryLazy",
+    opts = {
+      strategies = {
+        chat = {
+          adapter = "openai",
+        },
+      },
+    },
+  },
 }
