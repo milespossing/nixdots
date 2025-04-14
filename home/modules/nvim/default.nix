@@ -1,16 +1,12 @@
 {
   config,
   lib,
-  inputs,
   pkgs,
   ...
 }:
 {
   config = lib.mkIf config.programs.neovim.enable {
     programs.neovim = {
-      # Build nightly
-      package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
-
       # Make sure sqlite is available to nvim
       extraWrapperArgs = [
         "--set"
@@ -52,7 +48,7 @@
         # Misc.
         nginx-language-server
         nodePackages.vim-language-server
-        typst-lsp
+        # typst-lsp
         tree-sitter-grammars.tree-sitter-typst
         yaml-language-server
         vscode-langservers-extracted

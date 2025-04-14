@@ -33,6 +33,9 @@ vim.opt.foldlevel = 99 -- Open all folds by default
 vim.opt.foldlevelstart = 99 -- Open folds when a file is opened
 vim.opt.foldenable = true -- Enable folding
 
+vim.opt.conceallevel = 2
+vim.opt.concealcursor = 'nc'
+
 vim.g.use_ai = true
 vim.g.ai_cmp = true
 vim.g.use_noice = false

@@ -21,7 +21,8 @@
     # Misc.
     nginx-language-server
     nodePackages.vim-language-server
-    typst-lsp
+    # Removed :(
+    # typst-lsp
     tree-sitter-grammars.tree-sitter-typst
     yaml-language-server
   ];

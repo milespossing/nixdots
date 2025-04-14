@@ -28,6 +28,9 @@
     waybar
     wl-clipboard
     wlogout
+    # Hardward controls
+    bluetui
+    brightnessctl
   ];
 
   programs.hyprland = {
