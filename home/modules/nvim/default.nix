@@ -4,6 +4,15 @@
   pkgs,
   ...
 }:
+let
+  nvimBinary = "${config.programs.neovim.finalPackage}/bin/nvim";
+  openaiKeyPath = config.sops.secrets.openai_api_key.path;
+
+  wrappedNvim = pkgs.writeShellScriptBin "nvim" ''
+    export OPENAI_API_KEY=$(< ${openaiKeyPath})
+    exec ${nvimBinary} "$@"
+  '';
+in
 {
   config = lib.mkIf config.programs.neovim.enable {
     programs.neovim = {
@@ -60,5 +69,9 @@
       source = ./nvim;
       recursive = true;
     };
+
+    home.packages = [
+      wrappedNvim
+    ];
   };
 }
