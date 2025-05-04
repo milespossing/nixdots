@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 {
@@ -11,5 +12,7 @@
         file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
       }
     ];
+    sessionVariables = config.shell.envExtra;
+    initExtra = config.shell.initExtra;
   };
 }

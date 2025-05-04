@@ -37,7 +37,6 @@
         PATH = "$PATH:${path}";
         EDITOR = "nvim";
         VISUAL = "nvim";
-        OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
       };
 
     home.packages = with pkgs; [
