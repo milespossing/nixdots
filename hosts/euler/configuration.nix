@@ -91,6 +91,8 @@
     gimp
     sqlite
     qmk
+    ffmpeg-full
+    parallel
   ];
 
   services.pulseaudio.enable = false;

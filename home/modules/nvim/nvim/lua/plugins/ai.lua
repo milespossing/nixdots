@@ -36,6 +36,9 @@ return {
         chat = {
           adapter = "openai",
         },
+        inline = {
+          adapter = "openai",
+        },
       },
     },
   },

@@ -35,10 +35,6 @@
     export WSL=1
   '';
 
-  programs.fish.loginShellInit = ''
-    
-  '';
-
   home.packages = with pkgs; [
     multimarkdown
     mermaid-cli
