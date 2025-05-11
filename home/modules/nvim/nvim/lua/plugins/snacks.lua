@@ -460,6 +460,7 @@ return {
       end,
       desc = "LSP Workspace Symbols",
     },
+    -- Scratch
     {
       "<leader>.",
       function()
@@ -473,6 +474,14 @@ return {
         Snacks.scratch.list()
       end,
       desc = "Select Scratch Buffer",
+    },
+    -- Terminal
+    {
+      "<leader>T",
+      function()
+        Snacks.terminal()
+      end,
+      desc = "Toggle Terminal",
     },
   },
 }
