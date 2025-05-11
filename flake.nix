@@ -7,10 +7,12 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixgl.url = "github:nix-community/nixGL";
     hyprland.url = "github:hyprwm/Hyprland";
-    zen-browser.url = "github:youwen5/zen-browser-flake";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     xremap-flake.url = "github:xremap/nix-flake";
     swww.url = "github:LGFae/swww";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     sops-nix.url = "github:Mic92/sops-nix";
     nur = {
       url = "github:nix-community/NUR";
@@ -21,8 +23,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -33,7 +33,6 @@
       home-manager,
       sops-nix,
       nixos-wsl,
-      neovim-nightly-overlay,
       nixgl,
       ...
     }@inputs:
@@ -60,7 +59,7 @@
           ];
         };
         laplace = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs pkgs; };
+          specialArgs = { inherit inputs; };
           modules = [
             ./modules/core
             ./hosts/laplace/configuration.nix
@@ -68,11 +67,11 @@
             ./modules/wm/hyprland.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/syncthing.nix
+            ./modules/extra/miracast.nix
+            ./modules/extra/virtualization.nix
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
-              home-manager.useGlobalPkgs = true;
-              # home-manager.useUserPackages = true;
               home-manager.users.miles = import ./hosts/laplace/home-miles.nix;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
@@ -84,6 +83,7 @@
         extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
         modules = [
+          sops-nix.homeManagerModules.sops
           ./hosts/work-wsl/home.nix
         ];
       };

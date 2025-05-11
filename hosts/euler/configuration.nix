@@ -13,7 +13,6 @@
     ./hardware-configuration.nix
     ../../modules/extra/office.nix
     ../../modules/extra/firefox.nix
-    ../../modules/extra/virtualization.nix
     ../../modules/extra/wine.nix
     ../../modules/extra/steam.nix
     ../../modules/extra/video-editing.nix
@@ -92,9 +91,11 @@
     gimp
     sqlite
     qmk
+    ffmpeg-full
+    parallel
   ];
 
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   services.samba = {

@@ -2,14 +2,16 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
   imports = [
     ./modules
     ./dir-colors.nix
-    ./lsp.nix
     ./starship.nix
+    ./secrets.nix
+    inputs.sops-nix.homeManagerModules.sops
   ];
 
   options.pathDirs = lib.mkOption {
@@ -50,6 +52,7 @@
       mosh
       neofetch
       rlwrap
+      sd
       socat
       tldr
       typer

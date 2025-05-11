@@ -1,12 +1,9 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
 with lib;
-let
-in
 {
   imports = [
     ./fish.nix
@@ -31,8 +28,14 @@ in
       type = types.envVar;
       default = "/usr/local/bin";
     };
+    envExtra = mkOption {
+      type = with types; attrsOf str;
+      default = { };
+      description = "Extra environment variables for shells";
+    };
   };
   config = {
+    shell.envExtra.OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
     programs.nushell = {
       enable = true;
     };

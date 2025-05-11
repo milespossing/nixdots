@@ -1,16 +1,21 @@
 {
   config,
   lib,
-  inputs,
   pkgs,
   ...
 }:
+let
+  nvimBinary = "${config.programs.neovim.finalPackage}/bin/nvim";
+  openaiKeyPath = config.sops.secrets.openai_api_key.path;
+
+  wrappedNvim = pkgs.writeShellScriptBin "nvim" ''
+    export OPENAI_API_KEY=$(< ${openaiKeyPath})
+    exec ${nvimBinary} "$@"
+  '';
+in
 {
   config = lib.mkIf config.programs.neovim.enable {
     programs.neovim = {
-      # Build nightly
-      package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
-
       # Make sure sqlite is available to nvim
       extraWrapperArgs = [
         "--set"
@@ -26,9 +31,8 @@
         # dotnet
         csharp-ls
         csharpier
-        # nix
-        nil
-        nixfmt-rfc-style
+        # json
+        fixjson
         # Lisps
         clojure-lsp
         cljfmt
@@ -37,9 +41,15 @@
         stylua
         fennel-ls
         fnlfmt
-        # Node & TS
+        # node
+        nodejs
+        # nix
+        nil
+        nixfmt-rfc-style
+        # Node, JS & TS
         typescript-language-server
         nodePackages.prettier
+        eslint_d
         # Rust
         cargo
         rust-analyzer
@@ -47,9 +57,10 @@
         # Misc.
         nginx-language-server
         nodePackages.vim-language-server
-        typst-lsp
+        # typst-lsp
         tree-sitter-grammars.tree-sitter-typst
         yaml-language-server
+        vscode-langservers-extracted
       ];
     };
 
@@ -58,5 +69,9 @@
       source = ./nvim;
       recursive = true;
     };
+
+    home.packages = [
+      wrappedNvim
+    ];
   };
 }

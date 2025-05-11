@@ -1,10 +1,8 @@
 {
-  config,
   pkgs,
-  lib,
+  config,
   ...
 }:
-with lib;
 {
   programs.zsh = {
     plugins = [
@@ -14,5 +12,7 @@ with lib;
         file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
       }
     ];
+    sessionVariables = config.shell.envExtra;
+    initExtra = config.shell.initExtra;
   };
 }
