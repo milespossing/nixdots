@@ -52,6 +52,7 @@
       mosh
       neofetch
       rlwrap
+      sd
       socat
       tldr
       typer
