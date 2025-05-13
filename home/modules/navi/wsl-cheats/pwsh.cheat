@@ -1,0 +1,4 @@
+% pwsh
+
+# vsts auth
+pwsh.exe -wd $(wslvar USERPROFILE) -c npx vsts-npm-auth -c $(wslpath -w $(pwd)/.npmrc) -t $(wslpath -w "$HOME/.npmrc")

@@ -19,6 +19,8 @@ in
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
       nerd-fonts.meslo-lg
+
+      wslu
     ];
 
     fonts.fontconfig.enable = true;
