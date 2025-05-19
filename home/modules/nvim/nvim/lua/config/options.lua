@@ -5,6 +5,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.g.wsl = os.getenv("WSL")
+vim.g.windows = package.config:sub(1,1) == '\\'
+
 if os.getenv("WSL") then
     vim.g.clipboard = {
         name = 'WslClipboard',

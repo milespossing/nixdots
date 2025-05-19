@@ -1,6 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    enabled = not vim.g.vscode,
     event = "VeryLazy",
     opts = {
       servers = {
@@ -91,7 +92,7 @@ return {
   },
   {
     "hrsh7th/nvim-cmp",
-    enabled = vim.g.use_cmp,
+    enabled = vim.g.use_cmp and not vim.g.vscode,
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
@@ -147,14 +148,14 @@ return {
       }
     end,
   },
-  {
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-  },
+--   {
+--     "hrsh7th/cmp-nvim-lsp",
+--     "hrsh7th/cmp-buffer",
+--     "hrsh7th/cmp-path",
+--   },
   {
     "saghen/blink.compat",
-    enabled = vim.g.use_blink,
+    enabled = vim.g.use_blink and not vim.g.vscode,
     version = "*",
     opts = {
       debug = true,
@@ -162,7 +163,7 @@ return {
   },
   {
     "saghen/blink.cmp",
-    enabled = vim.g.use_blink,
+    enabled = vim.g.use_blink and not vim.g.vscode,
     event = "InsertEnter",
     -- optional: provides snippets for the snippet source
     dependencies = {

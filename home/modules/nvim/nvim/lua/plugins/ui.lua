@@ -1,10 +1,12 @@
 return {
   {
     "folke/which-key.nvim",
+    enabled = not vim.g.vscode,
     event = "VeryLazy",
   },
   {
     "folke/noice.nvim",
+    enabled = not vim.g.vscode,
     event = "VeryLazy",
     enabled = vim.g.use_noice,
     dependencies = {
@@ -29,6 +31,7 @@ return {
   },
   {
     "stevearc/oil.nvim",
+    enabled = not vim.g.vscode,
     opts = {},
     dependencies = { "echasnovski/mini.icons" },
     lazy = false,
@@ -39,17 +42,20 @@ return {
   -- TODO: Get this customized
   {
     "nvim-lualine/lualine.nvim",
+    enabled = not vim.g.vscode,
     config = function()
       require("lualine").setup()
     end,
   },
   {
     "akinsho/bufferline.nvim",
+    enabled = not vim.g.vscode,
     version = "*",
     dependencies = { "echasnovski/mini.icons" },
   },
   {
     "folke/trouble.nvim",
+    enabled = not vim.g.vscode,
     cmd = { "Trouble" },
     keys = {
       { "<leader>tt", group = "Trouble" },
@@ -64,7 +70,11 @@ return {
       },
     },
   },
-  { "MunifTanjim/nui.nvim", lazy = true },
+  {
+    "MunifTanjim/nui.nvim",
+    lazy = true,
+    enabled = not vim.g.vscode,
+  },
   {
     "folke/flash.nvim",
     event = "VeryLazy",

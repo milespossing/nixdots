@@ -1,5 +1,6 @@
 return {
   "folke/snacks.nvim",
+  enabled = not vim.g.vscode,
   lazy = false,
   priority = 1000,
   opts = {
@@ -7,15 +8,6 @@ return {
     bigfile = { enabled = true },
     bufdelete = { enabled = true },
     dashboard = {
-      sections = {
-        {
-          cmd = "chafa ~/.config/nvim/night.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
-          height = 17,
-          padding = 1,
-          section = "terminal",
-        },
-        { { gap = 1, padding = 1, section = "keys" }, { section = "startup" }, pane = 2 },
-      },
       preset = {
         keys = {
           {
@@ -31,6 +23,7 @@ return {
             icon = " ",
             key = "o",
             desc = "Org Capture",
+            enabled = not vim.g.windows,
             action = function()
               require("orgmode").action("capture.prompt")
             end,
@@ -55,6 +48,7 @@ return {
             icon = " ",
             key = "c",
             desc = "Configure",
+            enabled = not vim.g.windows,
             action = function()
               Snacks.picker.files({ cwd = "~/.nixdots" })
             end,
