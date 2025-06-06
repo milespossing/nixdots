@@ -19,4 +19,9 @@ return {
     -- Optional cmp-conjure integration
     dependencies = { "PaterJason/cmp-conjure" },
   },
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^6",
+    lazy = false,
+  },
 }

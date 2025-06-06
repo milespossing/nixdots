@@ -52,6 +52,7 @@
             ./modules/core
             ./hosts/euler/configuration.nix
             ./modules/extra/zen-browser.nix
+            ./modules/extra/secrets.nix
             ./modules/wm/hyprland.nix
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default

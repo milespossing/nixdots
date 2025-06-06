@@ -14,6 +14,9 @@ in
   config = mkIf cfg.enable {
     mp.programs.git.gcmCoreIntegration.enable = true;
 
+    home.programs.gpg.enable = true;
+    home.programs.password-store.enable = true;
+
     home.packages = with pkgs; [
       nerd-fonts.departure-mono
       nerd-fonts.fira-code

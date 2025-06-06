@@ -49,7 +49,7 @@
       in
       [
         "${automount_opts}"
-        "credentials=/etc/nixos/smb-secrets"
+        "credentials=/etc/nixos/smb-truenas"
         "uid=1000"
         "gid=100"
       ];

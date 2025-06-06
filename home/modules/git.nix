@@ -35,6 +35,7 @@ in
     home.sessionVariables = mkIf (!config.mp.wsl.enable) {
       GCM_CREDENTIAL_STORE = "gpg";
     };
+
     programs.git = {
       enable = true;
       userName = cfg.user;
@@ -69,17 +70,15 @@ in
         credential = {
           helper = mkIf cfg.gcmCoreIntegration.enable helperLocation;
           useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
-          "https://github.com" = {
-            helper = "!${pkgs.gh}/bin/gh auth git-credential";
-          };
-          "https://gist.github.com" = {
-            helper = "!${pkgs.gh}/bin/gh auth git-credential";
-          };
           "https://git.possing.tech" = {
             provider = "generic";
           };
         };
       };
+    };
+
+    programs.gh = {
+      enable = true;
     };
   };
 }

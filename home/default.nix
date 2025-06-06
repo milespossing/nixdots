@@ -122,14 +122,6 @@
       git = true;
     };
 
-    programs.gpg = {
-      enable = true;
-    };
-
-    programs.password-store = {
-      enable = true;
-    };
-
     programs.direnv = {
       enable = true;
       enableBashIntegration = true;
