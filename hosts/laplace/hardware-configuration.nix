@@ -30,6 +30,10 @@
 
   services.fwupd.enable = true;
 
+  services.devmon.enable = true;
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
+
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/36163be2-aa55-43bb-9e05-2ed8afb28b19";
     fsType = "ext4";

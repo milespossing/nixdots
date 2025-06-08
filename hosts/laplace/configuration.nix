@@ -1,5 +1,4 @@
 {
-  inputs,
   ...
 }:
 
@@ -34,6 +33,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "storage"
     ];
   };
 

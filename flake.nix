@@ -64,7 +64,7 @@
             ./modules/core
             ./hosts/laplace/configuration.nix
             ./hosts/laplace/hardware-configuration.nix
-            ./modules/wm/hyprland.nix
+            ./modules/wm/gnome.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/syncthing.nix
             ./modules/extra/miracast.nix
@@ -72,7 +72,7 @@
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
-              home-manager.users.miles = import ./hosts/laplace/home-miles.nix;
+              home-manager.users.miles = import ./hosts/laplace/home.nix;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
             nixos-hardware.nixosModules.framework-13-7040-amd

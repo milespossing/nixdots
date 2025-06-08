@@ -1,24 +1,18 @@
 {
-  config,
   pkgs,
-  outputs,
-  inputs,
   ...
 }:
 {
   imports = [
     ../../home
-    ../../home/modules/hyprland
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "mpossing";
-  home.homeDirectory = "/home/mpossing";
+  home.username = "miles";
+  home.homeDirectory = "/home/miles";
 
-  neovim.use-fennel = true;
   mp.user-space.enable = true;
-  # hyprland.enable = true;
   sdev.racket = {
     enable = true;
     full = true;
@@ -32,6 +26,10 @@
   services.protonmail-bridge.enable = true;
 
   sdev.all = true;
+
+  home.file.".config/wallpaper.png" = {
+    source = ../../home/dots/wallpapers-mocha/hor/pixel1.png;
+  };
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
