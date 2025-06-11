@@ -72,7 +72,6 @@ return {
       },
     },
     quickfile = { enabled = true },
-    scratch = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     terminal = { enabled = true },

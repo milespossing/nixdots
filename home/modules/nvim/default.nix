@@ -14,6 +14,7 @@ let
   '';
 in
 {
+  options.programs.neovim.lazy = lib.mkEnableOption "use lazy";
   config = lib.mkIf config.programs.neovim.enable {
     programs.neovim = {
       # Make sure sqlite is available to nvim
@@ -25,9 +26,11 @@ in
 
       # Everything the body needs
       extraPackages = with pkgs; [
-        chafa
+        curl
         gcc
         sqlite
+        # DAP
+        vscode-js-debug
         # dotnet
         csharp-ls
         csharpier
@@ -65,7 +68,10 @@ in
     };
 
     # Distribute dotfiles
-    home.file.".config/nvim" = {
+    home.file.".config/nvim" = if config.programs.neovim.lazy then {
+      source = ./lazyvim;
+      recursive = true;
+    } else {
       source = ./nvim;
       recursive = true;
     };
