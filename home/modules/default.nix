@@ -1,12 +1,13 @@
-{ pkgs, ... }:
+{ ... }:
 {
   imports = [
     ./development
     ./emacs.nix
     ./git.nix
+    ./navi
     ./nvim
     ./protonmail-bridge.nix
-    ./shells
+    ./shells.nix
     ./tmux.nix
     ./user-space.nix
     ./wsl.nix

@@ -1,7 +1,13 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 
 require("config.options")
-require("config.autocmds")
+if (not vim.g.vscode) then
+    require("config.autocmds")
+else
+    require("config.vscode")
+end
 require("config.lazy")
 
-vim.cmd.colorscheme("catppuccin")
+require("config.plugins")
+
+require("config.options")

@@ -1,7 +1,7 @@
 return {
   {
     "zbirenbaum/copilot.lua",
-    enabled = vim.g.use_ai,
+    enabled = vim.g.use_ai and not vim.g.vscode,
     cmd = "Copilot",
     build = ":Copilot auth",
     event = "BufReadPost",
@@ -29,7 +29,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
-    enabled = vim.g.use_ai,
+    enabled = vim.g.use_ai and not vim.g.vscode,
     event = "VeryLazy",
     opts = {
       strategies = {

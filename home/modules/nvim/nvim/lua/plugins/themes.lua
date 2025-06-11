@@ -1,7 +1,8 @@
 return {
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000, enabled = not vim.g.vscode },
   {
     "xiyaowong/transparent.nvim",
+    enabled = not vim.g.vscode,
     lazy = false,
     opts = {
       extra_groups = {
@@ -13,6 +14,7 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
         callback = function()
+          vim.cmd.colorscheme("catppuccin")
           local transparent = require("transparent")
           require("snacks.toggle")
             .new({

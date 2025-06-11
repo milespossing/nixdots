@@ -3,6 +3,7 @@ return {
     "Olical/conjure",
     ft = { "clojure", "fennel", "racket" }, -- etc
     lazy = true,
+    enabled = not vim.g.vscode,
     init = function()
       vim.g["conjure#filetypes"] = {
         "clojure",

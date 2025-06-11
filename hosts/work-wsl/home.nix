@@ -20,7 +20,7 @@
 
   mp.wsl.enable = true;
 
-  programs.emacs.enable = true;
+  programs.neovim.lazy = true;
   mp.programs.git.email = "milespossing@microsoft.com";
   sdev.all = true;
   sdev.racket.full = true;

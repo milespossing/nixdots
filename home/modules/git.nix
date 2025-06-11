@@ -59,6 +59,7 @@ in
         pull.rebase = false;
         diff.tool = "nvimdiff";
         merge.tool = "nvimdiff";
+        http.postBuffer = 524288000;
         mergetool = {
           keepBackup = false;
         };

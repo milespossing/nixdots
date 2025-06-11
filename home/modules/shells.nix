@@ -1,21 +1,15 @@
 {
+  pkgs,
   config,
   lib,
   ...
 }:
 with lib;
 {
-  imports = [
-    ./fish.nix
-    ./zsh.nix
-  ];
   options.shell = {
     aliases = mkOption {
       type = with types; attrsOf str;
       default = {
-        ls = "eza";
-        ll = "eza -l";
-        la = "eza -la";
         fzfp = "fzf --preview 'bat --color=always {}' --preview-window '~3'";
       };
     };
@@ -34,14 +28,35 @@ with lib;
       description = "Extra environment variables for shells";
     };
   };
+
   config = {
     shell.envExtra.OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
+
     programs.nushell = {
       enable = true;
     };
 
-    home.file.".scripts/fzf-git.sh" = {
-      source = ./fzf-git.sh;
+    programs.bash = {
+      enable = true;
+      shellAliases = config.shell.aliases;
+      initExtra = config.shell.initExtra;
+      sessionVariables = config.shell.envExtra;
+    };
+
+    programs.fish = {
+      enable = true;
+      generateCompletions = true;
+      shellAliases = config.shell.aliases;
+      shellInit = config.shell.initExtra;
+      plugins = [
+        {
+          name = "fzf-fish";
+          src = pkgs.fishPlugins.fzf-fish.src;
+        }
+      ];
+      interactiveShellInit = ''
+        set -g fish_key_bindings fish_vi_key_bindings
+      '';
     };
   };
 }

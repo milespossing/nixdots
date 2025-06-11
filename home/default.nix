@@ -52,6 +52,7 @@
       mosh
       neofetch
       rlwrap
+      sd
       socat
       tldr
       typer
@@ -108,9 +109,6 @@
         default_shell = "fish";
       };
     };
-
-    programs.zsh.enable = true;
-    programs.fish.enable = true;
 
     programs.lazygit = {
       enable = true;

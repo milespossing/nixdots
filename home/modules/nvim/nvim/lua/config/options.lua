@@ -5,16 +5,19 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.g.wsl = os.getenv("WSL")
+vim.g.windows = package.config:sub(1,1) == '\\'
+
 if os.getenv("WSL") then
     vim.g.clipboard = {
         name = 'WslClipboard',
         copy = {
-            ['+'] = 'clip.exe',
-            ['*'] = 'clip.exe',
+            ['+'] = 'win32yank.exe -i',
+            ['*'] = 'win32yank.exe -i',
         },
         paste = {
-            ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-            ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+            ['+'] = 'win32yank.exe -o --lf',
+            ['*'] = 'win32yank.exe -o --lf',
         },
         cache_enabled = false,
     }

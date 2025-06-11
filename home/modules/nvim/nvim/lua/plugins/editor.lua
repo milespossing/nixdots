@@ -84,9 +84,6 @@ return {
         goto_right = "g]",
       },
     },
-    config = function(_, opts)
-      require("mini.ai").setup(opts)
-    end,
   },
   {
     "MagicDuck/grug-far.nvim",
@@ -111,5 +108,5 @@ return {
     },
   },
   { "elkowar/yuck.vim" },
-  { "gpanders/nvim-parinfer" },
+  { "gpanders/nvim-parinfer", enabled = false },
 }
