@@ -8,7 +8,7 @@ let
   cheats = [
     {
       type = "local";
-      enabled = config.mp.wsl.enable;
+      enabled = true;
       source = ./wsl-cheats;
       destination = ".cheats/wsl";
     }
@@ -80,25 +80,4 @@ in
   };
 
   home.file = cheatsFiles;
-
-  # home.file = lib.flatten (lib.filter (entry: entry != null) (map (
-  #       cheat:
-  #       if cheat.type == "local" then
-  #         {
-  #           "${cheat.destination}" = {
-  #             source = cheat.source;
-  #             recursive = true;
-  #           };
-  #         }
-  #       else
-  #         null
-  #     ) cheats
-  #   )
-  # );
-
-  # home.file.".cheats/general" = {
-  #   source = ./cheats;
-  #   recursive = true;
-  # };
-
 }

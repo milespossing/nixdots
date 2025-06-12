@@ -96,10 +96,11 @@
       enableNushellIntegration = true;
     };
 
-    mp.programs.git = {
+    programs.git = {
       enable = true;
       gcmCoreIntegration.enable = true;
     };
+
     programs.tmux.enable = true;
 
     programs.zellij = {

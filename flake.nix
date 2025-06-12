@@ -53,9 +53,13 @@
             ./hosts/euler/configuration.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/secrets.nix
-            ./modules/wm/hyprland.nix
+            ./modules/wm/kde.nix
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
+            {
+              home-manager.users.miles = import ./home/hosts/euler.nix;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+            }
             sops-nix.nixosModules.sops
           ];
         };
