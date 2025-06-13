@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ pkgs, config, lib, ... }:
 with lib;
 let cfg = config.programs.git;
 in {
@@ -28,6 +28,7 @@ in {
           pager = "bat";
         };
         credential = {
+          helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
           useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
           "https://git.possing.tech" = { provider = "generic"; };
         };
