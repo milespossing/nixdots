@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   nvimBinary = "${config.programs.neovim.finalPackage}/bin/nvim";
   openaiKeyPath = config.sops.secrets.openai_api_key.path;
@@ -7,14 +12,16 @@ let
     export OPENAI_API_KEY=$(< ${openaiKeyPath})
     exec ${nvimBinary} "$@"
   '';
-in {
-  options.programs.neovim.lazy = lib.mkEnableOption "Use lazyvim";
-
+in
+{
   config = lib.mkIf config.programs.neovim.enable {
     programs.neovim = {
       # Make sure sqlite is available to nvim
-      extraWrapperArgs =
-        [ "--set" "LIBSQLITE" "${pkgs.sqlite.out}/lib/libsqlite3.so" ];
+      extraWrapperArgs = [
+        "--set"
+        "LIBSQLITE"
+        "${pkgs.sqlite.out}/lib/libsqlite3.so"
+      ];
 
       # Everything the body needs
       extraPackages = with pkgs; [
@@ -60,10 +67,7 @@ in {
     };
 
     # Distribute dotfiles
-    home.file.".config/nvim" = if config.programs.neovim.lazy then {
-      source = ./lazyvim;
-      recursive = true;
-    } else {
+    home.file.".config/nvim" = {
       source = ./nvim;
       recursive = true;
     };

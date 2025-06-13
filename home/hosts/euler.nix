@@ -1,20 +1,26 @@
-{ pkgs, ... }: {
-  imports = [ ../default.nix ../modules/nixos.nix ];
+{ pkgs, ... }:
+{
+  imports = [
+    ../default.nix
+    ../modules/nixos.nix
+    ../modules/neovim/home-built
+  ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "miles";
   home.homeDirectory = "/home/miles";
 
-  home.packages = with pkgs; [ calibre tetrio-desktop ];
+  home.packages = with pkgs; [
+    calibre
+    tetrio-desktop
+  ];
 
   programs.git.userEmail = "mp-complete@pm.me";
 
   mp.user-space.enable = true;
   sdev.racket.full = true;
   sdev.all = true;
-
-  programs.neovim.lazy = true;
 
   services.protonmail-bridge.enable = true;
 

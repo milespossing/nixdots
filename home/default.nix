@@ -62,8 +62,6 @@
       zulu
     ];
 
-    programs.neovim.enable = true;
-
     programs.bat = {
       enable = true;
     };
