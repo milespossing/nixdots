@@ -25,9 +25,11 @@ in
 
       # Everything the body needs
       extraPackages = with pkgs; [
-        chafa
+        curl
         gcc
         sqlite
+        # DAP
+        vscode-js-debug
         # dotnet
         csharp-ls
         csharpier
@@ -70,8 +72,6 @@ in
       recursive = true;
     };
 
-    home.packages = [
-      wrappedNvim
-    ];
+    home.packages = [ wrappedNvim ];
   };
 }

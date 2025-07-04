@@ -62,8 +62,6 @@
       zulu
     ];
 
-    programs.neovim.enable = true;
-
     programs.bat = {
       enable = true;
     };
@@ -96,10 +94,11 @@
       enableNushellIntegration = true;
     };
 
-    mp.programs.git = {
+    programs.git = {
       enable = true;
       gcmCoreIntegration.enable = true;
     };
+
     programs.tmux.enable = true;
 
     programs.zellij = {
@@ -118,14 +117,6 @@
       enable = true;
       icons = "auto";
       git = true;
-    };
-
-    programs.gpg = {
-      enable = true;
-    };
-
-    programs.password-store = {
-      enable = true;
     };
 
     programs.direnv = {

@@ -110,15 +110,6 @@
   };
 
 
-  ### Start comments
-
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    users = {
-      "miles" = import ./home.nix;
-    };
-  };
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 

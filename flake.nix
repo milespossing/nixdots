@@ -2,10 +2,14 @@
   description = "Nixos config flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixgl.url = "github:nix-community/nixGL";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nixgl.url = "github:nix-community/nixGL";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixvim-conf = {
+      url = "github:milespossing/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hyprland.url = "github:hyprwm/Hyprland";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -52,9 +56,14 @@
             ./modules/core
             ./hosts/euler/configuration.nix
             ./modules/extra/zen-browser.nix
-            ./modules/wm/hyprland.nix
+            ./modules/extra/secrets.nix
+            ./modules/wm/kde.nix
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
+            {
+              home-manager.users.miles = import ./home/hosts/euler.nix;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+            }
             sops-nix.nixosModules.sops
           ];
         };
@@ -73,7 +82,7 @@
             inputs.home-manager.nixosModules.default
             {
               home-manager.useGlobalPkgs = true;
-              home-manager.users.miles = import ./hosts/laplace/home.nix;
+              home-manager.users.miles = import ./home/hosts/laplace.nix;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
             nixos-hardware.nixosModules.framework-13-7040-amd

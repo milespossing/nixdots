@@ -2,6 +2,7 @@
 {
   imports = [
     ../../home
+    ../../home/modules/defaults/wsl.nix
   ];
 
   nix = {
@@ -18,10 +19,8 @@
 
   pathDirs = [ "$HOME/bin" ];
 
-  mp.wsl.enable = true;
-
-  programs.emacs.enable = true;
-  mp.programs.git.email = "milespossing@microsoft.com";
+  programs.neovim.lazy = true;
+  programs.git.userEmail = "milespossing@microsoft.com";
   sdev.all = true;
   sdev.racket.full = true;
 

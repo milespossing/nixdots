@@ -1,10 +1,12 @@
 {
+  inputs,
   pkgs,
   ...
 }:
 {
   imports = [
-    ../../home
+    ../default.nix
+    ../modules/nixos.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -18,12 +20,13 @@
     full = true;
   };
 
+  programs.git.userEmail = "mp-complete@pm.me";
+
   home.packages = with pkgs; [
     calibre
     librecad
+    inputs.nixvim-conf.packages.${system}.default
   ];
-
-  services.protonmail-bridge.enable = true;
 
   sdev.all = true;
 

@@ -1,28 +1,25 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
 with lib;
-let
-  cfg = config.mp.wsl;
-in
 {
-  options.mp.wsl.enable = lib.mkEnableOption "Enable wsl dots, programs, and services";
+  mp.git.gcmCoreIntegration.enable = true;
 
-  config = mkIf cfg.enable {
-    mp.programs.git.gcmCoreIntegration.enable = true;
+  home.programs.gpg.enable = true;
+  home.programs.password-store.enable = true;
 
-    home.packages = with pkgs; [
-      nerd-fonts.departure-mono
-      nerd-fonts.fira-code
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.meslo-lg
+  home.packages = with pkgs; [
+    nerd-fonts.departure-mono
+    nerd-fonts.fira-code
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.meslo-lg
 
-      wslu
-    ];
+    wslu
+  ];
 
-    fonts.fontconfig.enable = true;
-  };
+  fonts.fontconfig.enable = true;
+
+  programs.git.credential.helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
 }

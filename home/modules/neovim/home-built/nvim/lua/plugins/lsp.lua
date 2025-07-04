@@ -27,7 +27,7 @@ return {
           },
         },
         nil_ls = {},
-        rust_analyzer = {},
+        -- rust_analyzer = {},
         ts_ls = {},
         yamlls = {},
       },

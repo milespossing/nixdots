@@ -44,7 +44,7 @@ in
       settings = {
         confirm_os_window_close = 0;
         font_family = "DepartureMono Nerd Font";
-        background_opacity = 0.5;
+        background_opacity = 0.9;
       };
       themeFile = "Catppuccin-Mocha";
       shellIntegration = {
