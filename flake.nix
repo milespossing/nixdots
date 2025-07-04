@@ -72,6 +72,7 @@
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
+              home-manager.useGlobalPkgs = true;
               home-manager.users.miles = import ./hosts/laplace/home.nix;
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
