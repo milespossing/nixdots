@@ -82,7 +82,14 @@
             inputs.home-manager.nixosModules.default
             {
               home-manager.useGlobalPkgs = true;
-              home-manager.users.miles = import ./home/hosts/laplace.nix;
+              home-manager.users.miles =
+                { inputs, ... }:
+                {
+                  imports = [
+                    inputs.nixvim-conf.homeModules.${system}.default
+                    ./home/hosts/laplace.nix
+                  ];
+                };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
             nixos-hardware.nixosModules.framework-13-7040-amd

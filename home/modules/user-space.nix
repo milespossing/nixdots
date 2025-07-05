@@ -17,6 +17,7 @@ in
     home.packages = with pkgs; [
       thunderbird
       protonmail-bridge
+      proton-pass
       discord
       element-desktop
       grim

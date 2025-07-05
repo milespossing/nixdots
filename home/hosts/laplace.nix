@@ -22,10 +22,11 @@
 
   programs.git.userEmail = "mp-complete@pm.me";
 
+  velovim.enable = true;
+
   home.packages = with pkgs; [
     calibre
     librecad
-    inputs.nixvim-conf.packages.${system}.default
   ];
 
   sdev.all = true;
