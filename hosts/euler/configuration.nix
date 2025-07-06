@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  inputs,
   pkgs,
   ...
 }:
@@ -11,11 +10,11 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/extra/office.nix
     ../../modules/extra/firefox.nix
-    ../../modules/extra/wine.nix
+    ../../modules/extra/obs.nix
+    ../../modules/extra/office.nix
     ../../modules/extra/steam.nix
-    ../../modules/extra/video-editing.nix
+    ../../modules/extra/wine.nix
   ];
 
   nix.settings.experimental-features = [
@@ -108,7 +107,6 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
