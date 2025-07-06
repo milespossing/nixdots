@@ -21,6 +21,7 @@ in
       discord
       element-desktop
       grim
+      logseq
       spotify
       vlc
       wl-clipboard
