@@ -6,7 +6,7 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixvim-conf = {
+    velovim = {
       url = "github:milespossing/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -52,7 +52,14 @@
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
             {
-              home-manager.users.miles = import ./home/hosts/euler.nix;
+              home-manager.users.miles =
+                { inputs, ... }:
+                {
+                  imports = [
+                    inputs.velovim.homeModules.${system}.default
+                    ./home/hosts/euler.nix
+                  ];
+                };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
             sops-nix.nixosModules.sops
@@ -76,7 +83,7 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.nixvim-conf.homeModules.${system}.default
+                    inputs.velovim.homeModules.${system}.default
                     ./home/hosts/laplace.nix
                   ];
                 };

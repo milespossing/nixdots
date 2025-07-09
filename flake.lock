@@ -105,7 +105,7 @@
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
-          "nixvim-conf",
+          "velovim",
           "nixvim",
           "nixpkgs"
         ]
@@ -562,13 +562,13 @@
     "ixx": {
       "inputs": {
         "flake-utils": [
-          "nixvim-conf",
+          "velovim",
           "nixvim",
           "nuschtosSearch",
           "flake-utils"
         ],
         "nixpkgs": [
-          "nixvim-conf",
+          "velovim",
           "nixvim",
           "nuschtosSearch",
           "nixpkgs"
@@ -805,7 +805,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": [
-          "nixvim-conf",
+          "velovim",
           "nixpkgs"
         ],
         "nuschtosSearch": "nuschtosSearch",
@@ -825,34 +825,12 @@
         "type": "github"
       }
     },
-    "nixvim-conf": {
-      "inputs": {
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "nixvim": "nixvim"
-      },
-      "locked": {
-        "lastModified": 1751818327,
-        "narHash": "sha256-Jyw7CoP/6d12G6OIu83drZ8qvSXyslVdjZLxrzkucV0=",
-        "owner": "milespossing",
-        "repo": "nixvim",
-        "rev": "a721a40db4a98ce0b8c5d4365acf9fa312f5f09a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "milespossing",
-        "repo": "nixvim",
-        "type": "github"
-      }
-    },
     "nuschtosSearch": {
       "inputs": {
         "flake-utils": "flake-utils_3",
         "ixx": "ixx",
         "nixpkgs": [
-          "nixvim-conf",
+          "velovim",
           "nixvim",
           "nixpkgs"
         ]
@@ -902,8 +880,8 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
-        "nixvim-conf": "nixvim-conf",
         "sops-nix": "sops-nix",
+        "velovim": "velovim",
         "xremap-flake": "xremap-flake",
         "zen-browser": "zen-browser"
       }
@@ -1016,6 +994,28 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "velovim": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixvim": "nixvim"
+      },
+      "locked": {
+        "lastModified": 1751818327,
+        "narHash": "sha256-Jyw7CoP/6d12G6OIu83drZ8qvSXyslVdjZLxrzkucV0=",
+        "owner": "milespossing",
+        "repo": "nixvim",
+        "rev": "a721a40db4a98ce0b8c5d4365acf9fa312f5f09a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "milespossing",
+        "repo": "nixvim",
         "type": "github"
       }
     },
