@@ -7,7 +7,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim-conf = {
-      url = "github:milespossing/nixvim";
+      url = "github:milespossing/velovim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
