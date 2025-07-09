@@ -91,7 +91,7 @@
         inherit pkgs;
         modules = [
           sops-nix.homeManagerModules.sops
-          ./hosts/work-wsl/home.nix
+          ./home/hosts/work-wsl.nix
         ];
       };
     };

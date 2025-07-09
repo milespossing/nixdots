@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   imports = [
     ../../home
-    ../../home/modules/defaults/wsl.nix
+    ../../home/modules/neovim/home-built
   ];
 
   nix = {
@@ -19,15 +19,12 @@
 
   pathDirs = [ "$HOME/bin" ];
 
-  programs.neovim.lazy = true;
-  programs.git.userEmail = "milespossing@microsoft.com";
+  programs.git = {
+    userEmail = "milespossing@microsoft.com";
+    extraConfig.credential.helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+  };
   sdev.all = true;
   sdev.racket.full = true;
-
-  home.file.".scripts.d" = {
-    source = ./scripts;
-    recursive = true;
-  };
 
   shell.initExtra = ''
     export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
@@ -38,6 +35,7 @@
     multimarkdown
     mermaid-cli
     fontconfig
+    wslu
     wsl-open
     xdg-utils
   ];
