@@ -34,7 +34,7 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = system;
+        inherit system;
         config.allowUnfree = true;
         overlays = [ nixgl.overlay ];
       };
@@ -99,6 +99,11 @@
         modules = [
           sops-nix.homeManagerModules.sops
           ./hosts/work-wsl/home.nix
+        ];
+      };
+      devShells."${system}".default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          sops
         ];
       };
     };
