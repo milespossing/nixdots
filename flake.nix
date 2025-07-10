@@ -86,10 +86,11 @@
           ];
         };
       };
-      homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."mpossing" = { inputs, ... }: home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
         modules = [
+          inputs.velovim.homeModules.${system}.default
           sops-nix.homeManagerModules.sops
           ./home/hosts/work-wsl.nix
         ];
