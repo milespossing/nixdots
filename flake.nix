@@ -34,7 +34,7 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = system;
+        inherit system;
         config.allowUnfree = true;
         overlays = [ nixgl.overlay ];
       };
@@ -52,7 +52,14 @@
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
             {
-              home-manager.users.miles = import ./home/hosts/euler.nix;
+              home-manager.users.miles =
+                { inputs, ... }:
+                {
+                  imports = [
+                    inputs.velovim.homeModules.${system}.default
+                    ./home/hosts/euler.nix
+                  ];
+                };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
             sops-nix.nixosModules.sops
@@ -76,7 +83,7 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.nixvim-conf.homeModules.${system}.default
+                    inputs.velovim.homeModules.${system}.default
                     ./home/hosts/laplace.nix
                   ];
                 };
@@ -93,6 +100,11 @@
           inputs.velovim.homeModules.${system}.default
           sops-nix.homeManagerModules.sops
           ./home/hosts/work-wsl.nix
+        ];
+      };
+      devShells."${system}".default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          sops
         ];
       };
     };

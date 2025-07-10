@@ -48,9 +48,6 @@ in
         };
         credential = {
           useHttpPath = mkIf cfg.gcmCoreIntegration.enable true;
-          "https://git.possing.tech" = {
-            provider = "generic";
-          };
         };
       };
     };

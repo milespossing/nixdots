@@ -3,7 +3,6 @@
   imports = [
     ../default.nix
     ../modules/nixos.nix
-    ../modules/neovim/home-built
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -17,6 +16,8 @@
   ];
 
   programs.git.userEmail = "mp-complete@pm.me";
+
+  velovim.enable = true;
 
   mp.user-space.enable = true;
   sdev.racket.full = true;
