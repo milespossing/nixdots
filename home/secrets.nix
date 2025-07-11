@@ -7,11 +7,6 @@
         sopsFile = ../secrets/openai.yaml;
         path = "${config.home.homeDirectory}/.secrets/openai";
       };
-      github_hosts = {
-        sopsFile = ../secrets/github-hosts.yaml;
-        path = "${config.home.homeDirectory}/.config/gh/hosts.yml";
-        key = "";
-      };
     };
   };
 }
