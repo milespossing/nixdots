@@ -1,8 +1,7 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     ../../home
-    ../../home/modules/neovim/home-built
   ];
 
   nix = {
@@ -16,6 +15,8 @@
   # manage.
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
+
+  velovim.enable = true;
 
   pathDirs = [ "$HOME/bin" ];
 

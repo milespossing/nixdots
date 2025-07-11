@@ -6,7 +6,7 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixvim-conf = {
+    velovim = {
       url = "github:milespossing/velovim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -93,7 +93,7 @@
           ];
         };
       };
-      homeConfigurations."mpossing" = { inputs, ... }: home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
         modules = [
