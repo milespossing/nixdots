@@ -10,7 +10,7 @@
     ./modules
     ./dir-colors.nix
     ./starship.nix
-    ./secrets.nix
+    # ./secrets.nix
     inputs.sops-nix.homeManagerModules.sops
   ];
 

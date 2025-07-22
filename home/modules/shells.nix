@@ -30,8 +30,6 @@ with lib;
   };
 
   config = {
-    shell.envExtra.OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
-
     programs.nushell = {
       enable = true;
     };
