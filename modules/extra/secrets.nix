@@ -4,7 +4,7 @@
     age.keyFile = "/etc/nixos/keys.txt";
     secrets = {
       truenas = {
-        sopsFile = ../../secrets/truenas.yaml;
+        sopsFile = ../../secrets/general.yaml;
         path = "/etc/nixos/smb-truenas";
       };
       wireguard-il = {
