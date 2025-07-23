@@ -1006,11 +1006,11 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1753153076,
-        "narHash": "sha256-DqNtwF9BQ0D8BMAPRuT6957eH2TiFJAS80uWHz9X9ZA=",
+        "lastModified": 1753368729,
+        "narHash": "sha256-NOPHFSG/IdmhAT2LNn8ryV4gC3kzfzB9UMqldFRajaE=",
         "owner": "milespossing",
         "repo": "velovim",
-        "rev": "b7822d9256c3d8da994dd01750370c0b09462e0a",
+        "rev": "fbf207fe50a539370bab75a8bac309af44e22f52",
         "type": "github"
       },
       "original": {
