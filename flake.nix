@@ -74,7 +74,6 @@
             ./modules/wm/gnome.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/syncthing.nix
-            ./modules/extra/virtualization.nix
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
