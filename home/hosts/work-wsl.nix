@@ -16,7 +16,11 @@
   home.username = "mpossing";
   home.homeDirectory = "/home/mpossing";
 
-  velovim.enable = true;
+  # velovim.enable = true;
+  nvim.enable = true;
+  # Disable aliases to avoid /bin/vim collisions
+  programs.neovim.vimAlias = false;
+  programs.neovim.viAlias = false;
 
   pathDirs = [ "$HOME/bin" ];
 

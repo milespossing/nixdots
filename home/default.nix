@@ -57,7 +57,6 @@
       tldr
       typer
       unzip
-      vim
       wget
       zulu
     ];
