@@ -17,7 +17,7 @@
 
   programs.git.userEmail = "mp-complete@pm.me";
 
-  velovim.enable = true;
+  nvim.enable = true;
 
   mp.user-space.enable = true;
   sdev.racket.full = true;

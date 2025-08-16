@@ -12,8 +12,6 @@ in
   options.mp.user-space.enable = lib.mkEnableOption "Enable user-space dots, programs, and services";
 
   config = mkIf cfg.enable {
-    programs.emacs.enable = true;
-
     home.packages = with pkgs; [
       thunderbird
       protonmail-bridge

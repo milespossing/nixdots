@@ -1,7 +1,6 @@
 {
   imports = [
     ./development
-    ./emacs.nix
     ./git.nix
     ./navi
     ./shells.nix

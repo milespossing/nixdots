@@ -56,7 +56,7 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.velovim.homeModules.${system}.default
+                    inputs.my-nixcats.homeModules.default
                     ./home/hosts/euler.nix
                   ];
                 };
@@ -82,7 +82,7 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.velovim.homeModules.${system}.default
+                    inputs.my-nixcats.homeModules.default
                     ./home/hosts/laplace.nix
                   ];
                 };
@@ -96,7 +96,6 @@
         extraSpecialArgs = { inherit inputs; };
         inherit pkgs;
         modules = [
-          # inputs.velovim.homeModules.${system}.default
           inputs.my-nixcats.homeModules.default
           sops-nix.homeManagerModules.sops
           ./home/hosts/work-wsl.nix

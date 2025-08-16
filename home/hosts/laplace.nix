@@ -22,7 +22,7 @@
 
   programs.git.userEmail = "mp-complete@pm.me";
 
-  velovim.enable = true;
+  nvim.enable = true;
 
   home.packages = with pkgs; [
     calibre
