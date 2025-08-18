@@ -91,6 +91,35 @@
             nixos-hardware.nixosModules.framework-13-7040-amd
           ];
         };
+        wsl-work = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          system = system;
+          modules = [
+            inputs.nixos-wsl.nixosModules.wsl
+            {
+              system.stateVersion = "25.05";
+              wsl.enable = true;
+              wsl.defaultUser = "miles";
+              nix.settings.experimental-features = [
+                "nix-command"
+                "flakes"
+              ];
+            }
+            inputs.home-manager.nixosModules.default
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.users.miles =
+                { inputs, ... }:
+                {
+                  imports = [
+                    inputs.velovim.homeModules.${system}.default
+                    ./home/hosts/wsl-work.nix
+                  ];
+                };
+              home-manager.extraSpecialArgs = { inherit inputs; };
+            }
+          ];
+        };
       };
       homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = { inherit inputs; };
