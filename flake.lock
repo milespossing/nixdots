@@ -509,11 +509,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1755262222,
-        "narHash": "sha256-dHYIpWqAjqkJObJYdKDP+8tIiTdv/yjz9G5gGzdlLSQ=",
+        "lastModified": 1755525046,
+        "narHash": "sha256-ndmokP6/AogIZ1OVvmCN+QBVNQz4CZLfNbV5Uy63iE8=",
         "owner": "milespossing",
         "repo": "neovim",
-        "rev": "e95a1e5fbefda049aa394f0bbc19bd62f95a2b0a",
+        "rev": "1cc106038ac1da89da0d044a2e8adda4cc9df1a5",
         "type": "github"
       },
       "original": {
