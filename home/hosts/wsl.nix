@@ -15,7 +15,8 @@
 
   programs.git = {
     userEmail = "milespossing@microsoft.com";
-    extraConfig.credential.helper = "git-credential-manager.exe";
+    # For this to work we need windows to have installed gcm with scoop
+    extraConfig.credential.helper = "!git-credential-manager.exe";
   };
   sdev.all = true;
   sdev.racket.full = true;
