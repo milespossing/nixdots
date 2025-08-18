@@ -9,7 +9,7 @@
   home.username = "miles";
   home.homeDirectory = "/home/miles";
 
-  velovim.enable = true;
+  nvim.enable = true;
 
   pathDirs = [ "$HOME/bin" ];
 
