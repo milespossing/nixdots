@@ -113,7 +113,7 @@
                 {
                   imports = [
                     inputs.my-nixcats.homeModules.default
-                    ./home/hosts/work-wsl.nix
+                    ./home/hosts/wsl-work.nix
                   ];
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
