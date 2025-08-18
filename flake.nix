@@ -113,7 +113,7 @@
                 {
                   imports = [
                     inputs.velovim.homeModules.${system}.default
-                    ./home/hosts/wsl-work.nix
+                    ./home/hosts/work-wsl.nix
                   ];
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
