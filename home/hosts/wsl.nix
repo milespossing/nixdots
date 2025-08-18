@@ -15,13 +15,12 @@
 
   programs.git = {
     userEmail = "milespossing@microsoft.com";
-    extraConfig.credential.helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+    extraConfig.credential.helper = "git-credential-manager.exe";
   };
   sdev.all = true;
   sdev.racket.full = true;
 
   shell.initExtra = ''
-    export PATH="$PATH:$HOME/.scripts.d:$HOME/.drafts"
     export WSL=1
   '';
 

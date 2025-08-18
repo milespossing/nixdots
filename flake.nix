@@ -91,7 +91,7 @@
             nixos-hardware.nixosModules.framework-13-7040-amd
           ];
         };
-        wsl-work = nixpkgs.lib.nixosSystem {
+        wsl = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           system = system;
           modules = [
@@ -113,7 +113,7 @@
                 {
                   imports = [
                     inputs.my-nixcats.homeModules.default
-                    ./home/hosts/wsl-work.nix
+                    ./home/hosts/wsl.nix
                   ];
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
