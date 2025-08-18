@@ -112,7 +112,6 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.velovim.homeModules.${system}.default
                     ./home/hosts/work-wsl.nix
                   ];
                 };
