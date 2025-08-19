@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ../../home
@@ -9,14 +9,26 @@
   home.username = "miles";
   home.homeDirectory = "/home/miles";
 
-  nvim.enable = true;
+  nvim = {
+    enable = true;
+    categoryDefinitions.merge =
+      { ... }:
+      {
+        extraWrapperArgs = {
+          ai = [
+            "--set"
+            "AVANTE_OPENAI_PATH"
+            config.sops.secrets.openai_api_key.path
+          ];
+        };
+      };
+  };
 
   pathDirs = [ "$HOME/bin" ];
 
   programs.git = {
     userEmail = "milespossing@microsoft.com";
-    # For this to work we need windows to have installed gcm with scoop
-    extraConfig.credential.helper = "!git-credential-manager.exe";
+    extraConfig.credential.helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
   };
   sdev.all = true;
   sdev.racket.full = true;

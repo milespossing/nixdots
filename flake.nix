@@ -114,6 +114,7 @@
                   imports = [
                     inputs.my-nixcats.homeModules.default
                     ./home/hosts/wsl.nix
+                    ./home/secrets.nix
                   ];
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
