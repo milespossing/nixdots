@@ -9,7 +9,7 @@
   home.username = "miles";
   home.homeDirectory = "/home/miles";
 
-  nvim = {
+  nixcats-full = {
     enable = true;
     categoryDefinitions.merge =
       { ... }:
