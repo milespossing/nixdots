@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -15,8 +14,9 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = {
     programs.git = {
+      enable = true;
       userName = "Miles Possing";
       ignores = [
         "*~"
@@ -53,6 +53,10 @@ in
     };
 
     programs.gh = {
+      enable = true;
+    };
+
+    programs.lazygit = {
       enable = true;
     };
   };

@@ -14,7 +14,6 @@
   home.username = "miles";
   home.homeDirectory = "/home/miles";
 
-  mp.user-space.enable = true;
   sdev.racket = {
     enable = true;
     full = true;
@@ -28,8 +27,6 @@
     calibre
     librecad
   ];
-
-  sdev.all = true;
 
   home.file.".config/wallpaper.png" = {
     source = ../../home/dots/wallpapers-mocha/hor/pixel1.png;

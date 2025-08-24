@@ -1,12 +1,10 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
 with lib;
 let
-  cfg = config.programs.tmux;
   tmux-which-key = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "tmux-which-key";
     version = "unstable-2025-02-11";
@@ -19,7 +17,8 @@ let
   };
 in
 {
-  config.programs.tmux = mkIf cfg.enable {
+  programs.tmux = {
+    enable = true;
     keyMode = "vi";
     prefix = "C-b";
     clock24 = true;

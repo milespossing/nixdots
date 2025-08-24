@@ -1,27 +1,9 @@
 { pkgs, ... }:
 {
-  imports = [
-    ../default.nix
-    ../modules/nixos.nix
-  ];
-
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "miles";
   home.homeDirectory = "/home/miles";
-
-  home.packages = with pkgs; [
-    calibre
-    tetrio-desktop
-  ];
-
-  programs.git.userEmail = "mp-complete@pm.me";
-
-  nvim.enable = true;
-
-  mp.user-space.enable = true;
-  sdev.racket.full = true;
-  sdev.all = true;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

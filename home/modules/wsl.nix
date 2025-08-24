@@ -17,9 +17,16 @@ with lib;
     nerd-fonts.meslo-lg
 
     wslu
+    wsl-open
+    xdg-utils
   ];
 
   fonts.fontconfig.enable = true;
 
-  programs.git.credential.helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+  shell.initExtra = ''
+    export WSL=1
+  '';
+
+  programs.git.extraConfig.credential.helper =
+    "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
 }

@@ -10,7 +10,6 @@ let
 in
 {
   options.mp.sdev.dotnet = {
-    enable = mkEnableOption "Enables dotnet";
     version = mkOption {
       type = types.package;
       description = "Extra dotnet versions to install";
@@ -18,7 +17,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = {
     home.packages = [
       cfg.version
     ];

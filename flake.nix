@@ -47,18 +47,24 @@
             ./modules/core
             ./hosts/euler/configuration.nix
             ./modules/extra/zen-browser.nix
+            ./modules/extra/calibre.nix
             ./modules/extra/secrets.nix
             ./modules/wm/kde.nix
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
             {
               home-manager.users.miles =
-                { inputs, ... }:
+                { ... }:
                 {
                   imports = [
-                    inputs.my-nixcats.homeModules.default
-                    ./home/hosts/euler.nix
+                    ./home/modules/common.nix
+                    ./home/modules/development/all.nix
+                    ./home/modules/nixos.nix
+                    ./home/modules/user-space.nix
+                    ./home/modules/personal.nix
+                    ./home/modules/secrets.nix
                   ];
+                  home.stateVersion = "23.11"; # Please read the comment before changing.
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
@@ -79,12 +85,16 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.users.miles =
-                { inputs, ... }:
+                { ... }:
                 {
                   imports = [
-                    inputs.my-nixcats.homeModules.default
-                    ./home/hosts/laplace.nix
+                    ./home/modules/common.nix
+                    ./home/modules/development/all.nix
+                    ./home/modules/nixos.nix
+                    ./home/modules/user-space.nix
+                    ./home/modules/personal.nix
                   ];
+                  home.stateVersion = "23.11"; # Please read the comment before changing.
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
@@ -112,10 +122,13 @@
                 { inputs, ... }:
                 {
                   imports = [
-                    inputs.my-nixcats.homeModules.default
+                    ./home/modules/common.nix
+                    ./home/modules/development/all.nix
+                    ./home/modules/work.nix
                     ./home/hosts/wsl.nix
                     ./home/secrets.nix
                   ];
+                  home.stateVersion = "23.11"; # Please read the comment before changing.
                 };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
