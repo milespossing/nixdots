@@ -119,14 +119,14 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.users.miles =
-                { inputs, ... }:
+                { ... }:
                 {
                   imports = [
                     ./home/modules/common.nix
                     ./home/modules/development/all.nix
                     ./home/modules/work.nix
-                    ./home/hosts/wsl.nix
-                    ./home/secrets.nix
+                    ./home/modules/wsl.nix
+                    ./home/modules/secrets.nix
                   ];
                   home.stateVersion = "23.11"; # Please read the comment before changing.
                 };

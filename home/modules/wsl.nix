@@ -5,10 +5,8 @@
 }:
 with lib;
 {
-  mp.git.gcmCoreIntegration.enable = true;
-
-  home.programs.gpg.enable = true;
-  home.programs.password-store.enable = true;
+  programs.gpg.enable = true;
+  programs.password-store.enable = true;
 
   home.packages = with pkgs; [
     nerd-fonts.departure-mono
@@ -27,6 +25,8 @@ with lib;
     export WSL=1
   '';
 
-  programs.git.extraConfig.credential.helper =
-    "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+  programs.git.extraConfig.credential = {
+    helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
+    useHttpPath = true;
+  };
 }
