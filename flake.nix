@@ -20,10 +20,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -32,7 +28,6 @@
       nixpkgs,
       home-manager,
       sops-nix,
-      nixgl,
       ...
     }@inputs:
     let
@@ -40,8 +35,12 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ nixgl.overlay ];
       };
+      unfreePackages =
+        { ... }:
+        {
+          nixpkgs.config.allowUnfree = true;
+        };
     in
     {
       nixosConfigurations = {
@@ -109,6 +108,7 @@
           specialArgs = { inherit inputs; };
           system = system;
           modules = [
+            unfreePackages
             inputs.nixos-wsl.nixosModules.wsl
             {
               system.stateVersion = "25.05";
