@@ -49,8 +49,8 @@
           modules = [
             ./modules/core
             ./hosts/euler/configuration.nix
-            ./modules/extra/zen-browser.nix
-            ./modules/extra/calibre.nix
+            ./modules/extra/desktop.nix
+            ./modules/extra/3d-printing.nix
             ./modules/extra/secrets.nix
             ./modules/wm/kde.nix
             ./modules/extra/syncthing.nix
