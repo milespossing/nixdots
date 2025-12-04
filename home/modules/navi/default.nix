@@ -9,6 +9,12 @@ let
     {
       type = "local";
       enabled = true;
+      source = ./common;
+      destination = ".cheats/common";
+    }
+    {
+      type = "local";
+      enabled = true;
       source = ./wsl-cheats;
       destination = ".cheats/wsl";
     }
