@@ -39,6 +39,7 @@
     curl
     fd
     gcc
+    gojq
     lsof
     mosh
     neofetch
@@ -49,6 +50,7 @@
     typer
     unzip
     wget
+    yq
     zulu
   ];
 
