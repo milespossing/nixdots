@@ -26,16 +26,14 @@
     {
       nixos-hardware,
       nixpkgs,
-      home-manager,
       sops-nix,
       ...
     }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
+      overlays = [
+        (import ./overlays/calibre-8-16.nix)
+      ];
       unfreePackages =
         { ... }:
         {
@@ -47,6 +45,9 @@
         euler = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            {
+              nixpkgs.overlays = overlays;
+            }
             ./modules/core
             ./hosts/euler/configuration.nix
             ./modules/extra/desktop.nix
@@ -139,20 +140,18 @@
           ];
         };
       };
-      homeConfigurations."mpossing" = home-manager.lib.homeManagerConfiguration {
-        extraSpecialArgs = { inherit inputs; };
-        inherit pkgs;
-        modules = [
-          inputs.my-nixcats.homeModules.default
-          sops-nix.homeManagerModules.sops
-          ./home/hosts/work-wsl.nix
-        ];
-      };
-      devShells."${system}".default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          sops
-          age
-        ];
-      };
+      devShells."${system}".default =
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        pkgs.mkShell {
+          buildInputs = with pkgs; [
+            sops
+            age
+          ];
+        };
     };
 }
