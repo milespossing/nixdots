@@ -6,7 +6,7 @@
     hack-font
     material-design-icons
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     noto-fonts-cjk-sans
     nerd-fonts.departure-mono
     nerd-fonts.jetbrains-mono

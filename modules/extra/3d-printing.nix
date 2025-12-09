@@ -3,7 +3,7 @@
   environment.systemPackages = with pkgs; [
     freecad
     # FIXME: bambu-studio doesn't build correctly right now
-    # bambu-studio
+    bambu-studio
     orca-slicer
   ];
 }
