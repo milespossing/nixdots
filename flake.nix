@@ -110,6 +110,7 @@
           system = system;
           modules = [
             unfreePackages
+            ./modules/core/flakes.nix
             inputs.nixos-wsl.nixosModules.wsl
             {
               system.stateVersion = "25.05";

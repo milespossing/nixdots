@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./flakes.nix
     ./fonts.nix
     ./gpg.nix
     ./locale.nix
