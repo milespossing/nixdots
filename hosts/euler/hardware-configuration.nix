@@ -10,6 +10,9 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"

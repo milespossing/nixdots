@@ -110,16 +110,11 @@
           system = system;
           modules = [
             unfreePackages
-            ./modules/core/flakes.nix
+            ./modules/extra/wsl.nix
+            ./modules/core
             inputs.nixos-wsl.nixosModules.wsl
             {
               system.stateVersion = "25.05";
-              wsl.enable = true;
-              wsl.defaultUser = "miles";
-              nix.settings.experimental-features = [
-                "nix-command"
-                "flakes"
-              ];
             }
             inputs.home-manager.nixosModules.default
             {

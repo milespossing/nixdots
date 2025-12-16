@@ -22,6 +22,12 @@
     "flakes"
   ];
 
+  # misc.
+  services.xserver = {
+    xkb.layout = "us";
+    xkb.variant = "";
+  };
+
   # Bootloader.
   boot.loader = {
     efi = {

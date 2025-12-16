@@ -8,6 +8,12 @@
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
+  # misc.
+  services.xserver = {
+    xkb.layout = "us";
+    xkb.variant = "";
+  };
+
   services.xremap.config.modmap = [
     {
       name = "Global";
