@@ -25,7 +25,7 @@ with lib;
     export WSL=1
   '';
 
-  programs.git.extraConfig.credential = {
+  programs.git.settings.credential = {
     helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe";
     useHttpPath = true;
   };

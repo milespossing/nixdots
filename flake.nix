@@ -56,6 +56,7 @@
             ./modules/extra/desktop.nix
             ./modules/extra/3d-printing.nix
             ./modules/extra/secrets.nix
+            ./modules/extra/networking.nix
             ./modules/wm/kde.nix
             ./modules/extra/syncthing.nix
             inputs.home-manager.nixosModules.default
@@ -85,6 +86,7 @@
             ./hosts/laplace/configuration.nix
             ./hosts/laplace/hardware-configuration.nix
             ./modules/wm/gnome.nix
+            ./modules/extra/networking.nix
             ./modules/extra/zen-browser.nix
             ./modules/extra/syncthing.nix
             inputs.xremap-flake.nixosModules.default
@@ -121,25 +123,20 @@
               nixcats-full.enable = true;
             }
             inputs.nixos-wsl.nixosModules.wsl
-            {
-              system.stateVersion = "25.05";
-            }
             inputs.home-manager.nixosModules.default
-            (
-              { pkgs, ... }:
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.miles = {
-                  imports = with home-flake.homeManagerModules; [
-                    base
-                    wsl
-                    navi
-                  ];
-                  home.stateVersion = "25.11";
-                };
-              }
-            )
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.miles = {
+                imports = with home-flake.homeManagerModules; [
+                  base
+                  wsl
+                  navi
+                  work
+                ];
+                home.stateVersion = "25.11";
+              };
+            }
           ];
         };
       };

@@ -50,6 +50,7 @@
         base = import ./modules/base;
         wsl = import ./modules/wsl;
         navi = import ./modules/navi;
+        work = import ./modules/work;
       };
 
       lib.mkHome = mkHome;

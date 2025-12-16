@@ -1,17 +1,19 @@
 {
+  config,
   ...
 }:
 {
-  programs.git = {
-    enable = true;
-    settings = {
-      user.name = "Miles Possing";
-      aliases = {
-        s = "status";
-        c = "checkout";
-        d = "diff";
-      };
-      extraConfig = {
+  config = {
+    programs.git = {
+      enable = true;
+      settings = {
+        user.name = config.my.alias.name;
+        user.email = config.my.alias.email;
+        aliases = {
+          s = "status";
+          c = "checkout";
+          d = "diff";
+        };
         init.defaultBranch = "main";
         pull.rebase = false;
         diff.tool = "nvimdiff";
@@ -26,23 +28,23 @@
           pager = "bat";
         };
       };
+      ignores = [
+        "*~"
+        "*.swp"
+        ".\\#*"
+        "\\#*\\#"
+        "venv/"
+        ".direnv"
+        ".envrc"
+      ];
     };
-    ignores = [
-      "*~"
-      "*.swp"
-      ".\\#*"
-      "\\#*\\#"
-      "venv/"
-      ".direnv"
-      ".envrc"
-    ];
-  };
 
-  programs.gh = {
-    enable = true;
-  };
+    programs.gh = {
+      enable = true;
+    };
 
-  programs.lazygit = {
-    enable = true;
+    programs.lazygit = {
+      enable = true;
+    };
   };
 }
