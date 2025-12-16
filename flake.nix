@@ -131,8 +131,9 @@
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
                 home-manager.users.miles = {
-                  imports = [
-                    home-flake.homeManagerModules.base
+                  imports = with home-flake.homeManagerModules; [
+                    base
+                    wsl
                   ];
                   home.stateVersion = "25.11";
                 };

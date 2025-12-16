@@ -48,6 +48,7 @@
     {
       homeManagerModules = {
         base = import ./modules/base;
+        wsl = import ./modules/wsl;
       };
 
       lib.mkHome = mkHome;
