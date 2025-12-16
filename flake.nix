@@ -134,6 +134,7 @@
                   imports = with home-flake.homeManagerModules; [
                     base
                     wsl
+                    navi
                   ];
                   home.stateVersion = "25.11";
                 };
