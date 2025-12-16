@@ -20,6 +20,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-flake.url = "path:./home-flake";
   };
 
   outputs =
@@ -27,6 +28,8 @@
       nixos-hardware,
       nixpkgs,
       sops-nix,
+      home-flake,
+      my-nixcats,
       ...
     }@inputs:
     let
@@ -105,36 +108,44 @@
             nixos-hardware.nixosModules.framework-13-7040-amd
           ];
         };
-        wsl = nixpkgs.lib.nixosSystem {
+        # WSL
+        nixos = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           system = system;
           modules = [
             unfreePackages
             ./modules/extra/wsl.nix
             ./modules/core
+            my-nixcats.nixosModules.default
+            {
+              nixcats-full.enable = true;
+            }
             inputs.nixos-wsl.nixosModules.wsl
             {
               system.stateVersion = "25.05";
             }
             inputs.home-manager.nixosModules.default
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.users.miles =
-                { ... }:
-                {
+            (
+              { pkgs, ... }:
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.miles = {
                   imports = [
-                    ./home/modules/common.nix
-                    ./home/modules/development/all.nix
-                    ./home/modules/work.nix
-                    ./home/modules/wsl.nix
-                    ./home/modules/secrets.nix
+                    home-flake.homeManagerModules.base
                   ];
-                  home.stateVersion = "23.11"; # Please read the comment before changing.
+                  home.stateVersion = "25.11";
                 };
-              home-manager.extraSpecialArgs = { inherit inputs; };
-            }
+              }
+            )
           ];
         };
+      };
+      homeConfigurations.miles = home-flake.lib.mkHome {
+        inherit system;
+        pkgs = import nixpkgs { inherit system; };
+        username = "miles";
+        homeDirectory = "/home/miles";
       };
       devShells."${system}".default =
         let
