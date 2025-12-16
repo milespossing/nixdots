@@ -115,14 +115,8 @@
           specialArgs = { inherit inputs; };
           system = system;
           modules = [
-            unfreePackages
-            ./modules/extra/wsl.nix
             ./modules/core
-            my-nixcats.nixosModules.default
-            {
-              nixcats-full.enable = true;
-            }
-            inputs.nixos-wsl.nixosModules.wsl
+            ./modules/wsl
             inputs.home-manager.nixosModules.default
             {
               home-manager.useGlobalPkgs = true;
@@ -139,12 +133,6 @@
             }
           ];
         };
-      };
-      homeConfigurations.miles = home-flake.lib.mkHome {
-        inherit system;
-        pkgs = import nixpkgs { inherit system; };
-        username = "miles";
-        homeDirectory = "/home/miles";
       };
       devShells."${system}".default =
         let
