@@ -51,6 +51,8 @@
         wsl = import ./modules/wsl;
         navi = import ./modules/navi;
         work = import ./modules/work;
+        user-space = import ./modules/user-space;
+        zen-browser = import ./modules/zen-browser;
       };
 
       lib.mkHome = mkHome;

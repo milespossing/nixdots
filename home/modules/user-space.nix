@@ -30,19 +30,6 @@
     };
   };
 
-  programs.kitty = {
-    enable = true;
-    settings = {
-      confirm_os_window_close = 0;
-      font_family = "DepartureMono Nerd Font";
-      background_opacity = 0.95;
-    };
-    themeFile = "Catppuccin-Mocha";
-    shellIntegration = {
-      enableFishIntegration = true;
-    };
-  };
-
   home.file = {
     ".config/wallpapers" = {
       source = ../dots/wallpapers;

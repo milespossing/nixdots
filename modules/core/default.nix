@@ -5,15 +5,18 @@
     ./fonts.nix
     ./gpg.nix
     ./locale.nix
+    ./neovim.nix
     ./nh.nix
     ./programs.nix
+    ./ssh.nix
     ./user.nix
   ];
-
-  system.stateVersion = "25.11";
 
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
+
+  programs.fish.enable = true;
+  programs.firefox.enable = true;
 }

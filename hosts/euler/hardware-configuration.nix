@@ -106,6 +106,8 @@
     open = true;
   };
 
-  # Enable QMK Support
-  # hardware.keyboard.qmk.enable = true;
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  };
 }

@@ -1,5 +1,8 @@
-{ ... }:
+{ inputs, ... }:
 {
+  imports = [
+    inputs.sops-nix.nixosModules.sops
+  ];
   sops = {
     age.keyFile = "/etc/nixos/keys.txt";
     secrets = {

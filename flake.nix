@@ -27,9 +27,7 @@
     {
       nixos-hardware,
       nixpkgs,
-      sops-nix,
       home-flake,
-      my-nixcats,
       ...
     }@inputs:
     let
@@ -37,11 +35,6 @@
       overlays = [
         (import ./overlays/calibre-8-16.nix)
       ];
-      unfreePackages =
-        { ... }:
-        {
-          nixpkgs.config.allowUnfree = true;
-        };
     in
     {
       nixosConfigurations = {
@@ -52,31 +45,24 @@
               nixpkgs.overlays = overlays;
             }
             ./modules/core
-            ./hosts/euler/configuration.nix
-            ./modules/extra/desktop.nix
-            ./modules/extra/3d-printing.nix
-            ./modules/extra/secrets.nix
-            ./modules/extra/networking.nix
-            ./modules/wm/kde.nix
-            ./modules/extra/syncthing.nix
+            ./hosts/euler
+            ./modules/secrets
+            ./modules/kde
+            ./modules/office
+            ./modules/syncthing
             inputs.home-manager.nixosModules.default
             {
-              home-manager.users.miles =
-                { ... }:
-                {
-                  imports = [
-                    ./home/modules/common.nix
-                    ./home/modules/development/all.nix
-                    ./home/modules/nixos.nix
-                    ./home/modules/user-space.nix
-                    ./home/modules/personal.nix
-                    ./home/modules/secrets.nix
-                  ];
-                  home.stateVersion = "23.11"; # Please read the comment before changing.
-                };
+              home-manager.users.miles = {
+                imports = with home-flake.homeManagerModules; [
+                  base
+                  navi
+                  user-space
+                  zen-browser
+                ];
+                home.stateVersion = "25.11";
+              };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
-            sops-nix.nixosModules.sops
           ];
         };
         laplace = nixpkgs.lib.nixosSystem {
