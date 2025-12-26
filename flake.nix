@@ -69,31 +69,23 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./modules/core
-            ./hosts/laplace/configuration.nix
-            ./hosts/laplace/hardware-configuration.nix
+            ./hosts/laplace
+            nixos-hardware.nixosModules.framework-13-7040-amd
             ./modules/wm/gnome.nix
-            ./modules/extra/networking.nix
-            ./modules/extra/zen-browser.nix
-            ./modules/extra/syncthing.nix
             inputs.xremap-flake.nixosModules.default
             inputs.home-manager.nixosModules.default
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.users.miles =
-                { ... }:
-                {
-                  imports = [
-                    ./home/modules/common.nix
-                    ./home/modules/development/all.nix
-                    ./home/modules/nixos.nix
-                    ./home/modules/user-space.nix
-                    ./home/modules/personal.nix
-                  ];
-                  home.stateVersion = "23.11"; # Please read the comment before changing.
-                };
+              home-manager.users.miles = {
+                imports = with home-flake.homeManagerModules; [
+                  base
+                  navi
+                  user-space
+                  zen-browser
+                ];
+                home.stateVersion = "25.11";
+              };
               home-manager.extraSpecialArgs = { inherit inputs; };
             }
-            nixos-hardware.nixosModules.framework-13-7040-amd
           ];
         };
         # WSL

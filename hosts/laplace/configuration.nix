@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }:
 
@@ -14,14 +15,17 @@
     xkb.variant = "";
   };
 
-  services.xremap.config.modmap = [
-    {
-      name = "Global";
-      remap = {
-        "CapsLock" = "Esc";
-      };
-    }
-  ];
+  services.xremap = {
+    enable = true;
+    config.modmap = [
+      {
+        name = "Global";
+        remap = {
+          "CapsLock" = "Esc";
+        };
+      }
+    ];
+  };
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -42,6 +46,10 @@
       "storage"
     ];
   };
+
+  environment.systemPackages = with pkgs; [
+    spotify
+  ];
 
   system.stateVersion = "24.05"; # Did you read the comment?
 }
