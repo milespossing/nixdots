@@ -10,6 +10,7 @@
     ./programs.nix
     ./ssh.nix
     ./user.nix
+    ./wireguard.nix
   ];
 
   nix.settings.experimental-features = [
