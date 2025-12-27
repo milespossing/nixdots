@@ -2,7 +2,6 @@
   pkgs,
   ...
 }:
-
 {
   networking.hostName = "laplace"; # Define your hostname.
 
@@ -46,10 +45,6 @@
       "storage"
     ];
   };
-
-  environment.systemPackages = with pkgs; [
-    spotify
-  ];
 
   system.stateVersion = "24.05"; # Did you read the comment?
 }

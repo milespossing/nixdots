@@ -5,7 +5,6 @@
     bitwarden-cli
     cbonsai
     cmake
-    comma
     curl
     fd
     gcc

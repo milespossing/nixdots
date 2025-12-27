@@ -6,6 +6,8 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     my-nixcats = {
       url = "github:milespossing/neovim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -70,6 +72,7 @@
           modules = [
             ./modules/core
             ./hosts/laplace
+            ./modules/nix-index-database
             nixos-hardware.nixosModules.framework-13-7040-amd
             ./modules/wm/gnome.nix
             inputs.xremap-flake.nixosModules.default
