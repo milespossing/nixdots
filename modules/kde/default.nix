@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  imports = [ ../wayland ];
   programs.kdeconnect.enable = true;
 
   services.xserver.enable = true;

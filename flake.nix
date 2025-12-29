@@ -31,7 +31,6 @@
       ...
     }@inputs:
     let
-      system = "x86_64-linux";
       overlays = [
         (import ./overlays/calibre-8-16.nix)
       ];
@@ -50,6 +49,7 @@
             ./modules/kde
             ./modules/office
             ./modules/syncthing
+            ./modules/userland
             inputs.home-manager.nixosModules.default
             {
               home-manager.users.miles = {
@@ -99,7 +99,6 @@
         # WSL
         nixos = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
-          system = system;
           modules = [
             ./modules/core
             ./modules/wsl
@@ -120,18 +119,5 @@
           ];
         };
       };
-      devShells."${system}".default =
-        let
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        in
-        pkgs.mkShell {
-          buildInputs = with pkgs; [
-            sops
-            age
-          ];
-        };
     };
 }

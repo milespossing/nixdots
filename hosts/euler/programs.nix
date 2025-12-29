@@ -6,7 +6,6 @@
     qmk
     ffmpeg-full
     parallel
-    spotify
     freecad-wayland
     bambu-studio
     calibre
