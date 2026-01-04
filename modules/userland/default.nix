@@ -1,7 +1,3 @@
-{ pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    discord
-    spotify
-  ];
+  imports = [ ./programs.nix ];
 }
