@@ -73,6 +73,7 @@
             ./modules/core
             ./hosts/laplace
             ./modules/nix-index-database
+            ./modules/userland
             nixos-hardware.nixosModules.framework-13-7040-amd
             ./modules/wm/gnome.nix
             inputs.xremap-flake.nixosModules.default
