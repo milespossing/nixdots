@@ -97,8 +97,10 @@
         nixos = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            ./hosts/wsl-work
             ./modules/core
             ./modules/wsl
+            ./modules/syncthing
             inputs.home-manager.nixosModules.default
             {
               home-manager.useGlobalPkgs = true;
