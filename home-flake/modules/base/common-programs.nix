@@ -12,6 +12,7 @@
     lsof
     mosh
     neofetch
+    openpomodoro-cli
     rlwrap
     sd
     socat
