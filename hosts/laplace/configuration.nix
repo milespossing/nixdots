@@ -35,6 +35,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  my.flakePath = "/home/miles/.config/nixos";
 
   users.users.mpossing = {
     isNormalUser = true;
