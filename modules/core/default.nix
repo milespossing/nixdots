@@ -6,7 +6,6 @@
     ./gpg.nix
     ./locale.nix
     ./neovim.nix
-    ./nh.nix
     ./programs.nix
     ./ssh.nix
     ./user.nix

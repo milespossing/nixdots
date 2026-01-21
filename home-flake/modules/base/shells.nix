@@ -52,9 +52,6 @@ with lib;
           src = pkgs.fishPlugins.fzf-fish.src;
         }
       ];
-      interactiveShellInit = ''
-        set -g fish_key_bindings fish_vi_key_bindings
-      '';
     };
   };
 }

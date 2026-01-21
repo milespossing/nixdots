@@ -1,51 +1,10 @@
-{ pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    babashka
-    bitwarden-cli
-    cbonsai
-    cmake
-    curl
-    fd
-    gcc
-    gojq
-    lsof
-    mosh
-    neofetch
-    openpomodoro-cli
-    rlwrap
-    sd
-    socat
-    tldr
-    typer
-    unzip
-    wget
-    yq
-    zulu
-  ];
-
-  programs.bat = {
-    enable = true;
-  };
-
-  programs.ripgrep = {
-    enable = true;
-  };
-
-  programs.nnn = {
-    enable = true;
-  };
-
   programs.fzf = {
     enable = true;
     defaultCommand = "fd --type f";
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = true;
-  };
-
-  programs.jq = {
-    enable = true;
   };
 
   programs.zoxide = {
@@ -69,5 +28,4 @@
     enableNushellIntegration = true;
     nix-direnv.enable = true;
   };
-
 }

@@ -30,6 +30,7 @@
       nixos-hardware,
       nixpkgs,
       home-flake,
+      nix-index-database,
       ...
     }@inputs:
     let
@@ -52,6 +53,7 @@
             ./modules/office
             ./modules/syncthing
             ./modules/userland
+            ./modules/nixos-tools
             inputs.home-manager.nixosModules.default
             {
               home-manager.users.miles = {
@@ -101,6 +103,8 @@
             ./modules/core
             ./modules/wsl
             ./modules/syncthing
+            ./modules/nixos-tools
+            ./modules/dev
             inputs.home-manager.nixosModules.default
             {
               home-manager.useGlobalPkgs = true;
