@@ -30,22 +30,13 @@
       nixos-hardware,
       nixpkgs,
       home-flake,
-      nix-index-database,
       ...
     }@inputs:
-    let
-      overlays = [
-        (import ./overlays/calibre-8-16.nix)
-      ];
-    in
     {
       nixosConfigurations = {
         euler = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            {
-              nixpkgs.overlays = overlays;
-            }
             ./modules/core
             ./hosts/euler
             ./modules/secrets
@@ -74,9 +65,9 @@
           modules = [
             ./modules/core
             ./hosts/laplace
-            ./modules/nix-index-database
             ./modules/userland
             ./modules/syncthing
+            ./modules/nixos-tools
             nixos-hardware.nixosModules.framework-13-7040-amd
             ./modules/wm/gnome.nix
             inputs.xremap-flake.nixosModules.default
