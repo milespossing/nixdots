@@ -1,4 +1,4 @@
 {
-  my.flakePath = "/home/miles/.config/nix";
+  my.flakePath = "/home/miles/.config/nixos";
   system.stateVersion = "26.05";
 }
