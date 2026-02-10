@@ -2,10 +2,11 @@
   description = "Nixos config flake";
 
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
     nixgl.url = "github:nix-community/nixGL";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     my-nixcats = {
@@ -27,6 +28,7 @@
 
   outputs =
     {
+      flake-utils,
       nixos-hardware,
       nixpkgs,
       home-flake,
@@ -92,6 +94,12 @@
           modules = [
             ./hosts/wsl-work
             ./modules/core
+            {
+              nixpkgs.overlays = [
+                (import ./overlays/github-copilot-cli.nix)
+              ];
+            }
+            ./modules/ai
             ./modules/wsl
             ./modules/syncthing
             ./modules/nixos-tools
@@ -113,5 +121,19 @@
           ];
         };
       };
+      devShells = flake-utils.lib.eachDefaultSystemPassThrough (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        {
+          ${system}.default = pkgs.mkShell {
+            name = "test";
+            nativeBuildInputs = with pkgs; [
+              nodejs
+            ];
+          };
+        }
+      );
     };
 }
