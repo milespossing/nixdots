@@ -93,12 +93,8 @@
           specialArgs = { inherit inputs; };
           modules = [
             ./hosts/wsl-work
+            ./modules/work
             ./modules/core
-            {
-              nixpkgs.overlays = [
-                (import ./overlays/github-copilot-cli.nix)
-              ];
-            }
             ./modules/ai
             ./modules/wsl
             ./modules/syncthing
