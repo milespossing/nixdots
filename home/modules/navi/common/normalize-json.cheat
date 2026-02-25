@@ -1,5 +1,0 @@
-% normalize-json
-
-# Normalize JSON data by removing all comments and line breaks.
-; Normalize a json file
-cat <file> | sd '//.*$' '' | sd '\r?\n\s*' ' '

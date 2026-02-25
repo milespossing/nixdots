@@ -23,7 +23,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-flake.url = "path:./home-flake";
   };
 
   outputs =
@@ -31,7 +30,6 @@
       flake-utils,
       nixos-hardware,
       nixpkgs,
-      home-flake,
       ...
     }@inputs:
     {
@@ -50,11 +48,11 @@
             inputs.home-manager.nixosModules.default
             {
               home-manager.users.miles = {
-                imports = with home-flake.homeManagerModules; [
-                  base
-                  navi
-                  user-space
-                  zen-browser
+                imports = [
+                  ./modules/home/base
+                  ./modules/home/navi
+                  ./modules/home/user-space
+                  ./modules/home/zen-browser
                 ];
                 home.stateVersion = "25.11";
               };
@@ -76,11 +74,11 @@
             inputs.home-manager.nixosModules.default
             {
               home-manager.users.miles = {
-                imports = with home-flake.homeManagerModules; [
-                  base
-                  navi
-                  user-space
-                  zen-browser
+                imports = [
+                  ./modules/home/base
+                  ./modules/home/navi
+                  ./modules/home/user-space
+                  ./modules/home/zen-browser
                 ];
                 home.stateVersion = "25.11";
               };
@@ -92,7 +90,7 @@
         nixos = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            ./hosts/wsl-work
+            ./hosts/nixos
             ./modules/work
             ./modules/core
             ./modules/ai
@@ -104,12 +102,14 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.miles = {
-                imports = with home-flake.homeManagerModules; [
-                  base
-                  wsl
-                  navi
-                  work
+                imports = [
+                  ./hosts/nixos/home.nix
+                  ./modules/home/base
+                  ./modules/home/wsl
+                  ./modules/home/navi
+                  ./modules/home/work
                 ];
                 home.stateVersion = "25.11";
               };
@@ -124,9 +124,9 @@
         in
         {
           ${system}.default = pkgs.mkShell {
-            name = "test";
             nativeBuildInputs = with pkgs; [
               nodejs
+              sops
             ];
           };
         }
