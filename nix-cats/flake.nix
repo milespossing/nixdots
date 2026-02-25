@@ -222,6 +222,7 @@
               nvim-parinfer
 
               toggleterm-nvim
+              zellij-nav-nvim
 
               edgy-nvim
               neo-tree-nvim

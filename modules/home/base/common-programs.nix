@@ -1,5 +1,8 @@
 {
-  imports = [ ../zellij ];
+  imports = [
+    ../zellij
+    ../yazi
+  ];
 
   programs.fzf = {
     enable = true;
@@ -42,13 +45,5 @@
       filter_mode = "directory";
       filter_mode_shell_up_arrow = "session";
     };
-  };
-
-  programs.yazi = {
-    enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-    enableNushellIntegration = true;
-    shellWrapperName = "y";
   };
 }

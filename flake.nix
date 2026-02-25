@@ -51,93 +51,98 @@
     // {
       nixosConfigurations =
         let
-          zellijPluginsOverlay = import ./overlays/zellij-plugins.nix;
+          overlays = [ (import ./overlays/zellij-plugins.nix) ];
         in
         {
-        euler = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
-          modules = [
-            { nixpkgs.overlays = [ zellijPluginsOverlay ]; }
-            ./modules/core
-            ./hosts/euler
-            ./modules/secrets
-            ./modules/kde
-            ./modules/office
-            ./modules/syncthing
-            ./modules/userland
-            ./modules/nixos-tools
-            inputs.home-manager.nixosModules.default
-            {
-              home-manager.users.miles = {
-                imports = [
-                  ./modules/home/base
-                  ./modules/home/navi
-                  ./modules/home/user-space
-                  ./modules/home/zen-browser
-                ];
-                home.stateVersion = "25.11";
-              };
-              home-manager.extraSpecialArgs = { inherit inputs; };
-            }
-          ];
+          euler = nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs; };
+            modules = [
+              { nixpkgs.overlays = overlays; }
+              ./modules/core
+              ./hosts/euler
+              ./modules/secrets
+              ./modules/kde
+              ./modules/office
+              ./modules/syncthing
+              ./modules/userland
+              ./modules/nixos-tools
+              inputs.home-manager.nixosModules.default
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.miles = {
+                  imports = [
+                    ./modules/home/base
+                    ./modules/home/navi
+                    ./modules/home/user-space
+                    ./modules/home/zen-browser
+                  ];
+                  home.stateVersion = "25.11";
+                };
+                home-manager.extraSpecialArgs = { inherit inputs; };
+              }
+            ];
+          };
+          laplace = nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs; };
+            modules = [
+              { nixpkgs.overlays = overlays; }
+              ./modules/core
+              ./hosts/laplace
+              ./modules/userland
+              ./modules/syncthing
+              ./modules/nixos-tools
+              nixos-hardware.nixosModules.framework-13-7040-amd
+              ./modules/wm/gnome.nix
+              inputs.xremap-flake.nixosModules.default
+              inputs.home-manager.nixosModules.default
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.miles = {
+                  imports = [
+                    ./modules/home/base
+                    ./modules/home/navi
+                    ./modules/home/user-space
+                    ./modules/home/zen-browser
+                  ];
+                  home.stateVersion = "25.11";
+                };
+                home-manager.extraSpecialArgs = { inherit inputs; };
+              }
+            ];
+          };
+          # WSL
+          nixos = nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs; };
+            modules = [
+              { nixpkgs.overlays = overlays; }
+              ./hosts/nixos
+              ./modules/work
+              ./modules/core
+              ./modules/ai
+              ./modules/wsl
+              ./modules/syncthing
+              ./modules/nixos-tools
+              ./modules/dev
+              inputs.home-manager.nixosModules.default
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.extraSpecialArgs = { inherit inputs; };
+                home-manager.users.miles = {
+                  imports = [
+                    ./hosts/nixos/home.nix
+                    ./modules/home/base
+                    ./modules/home/wsl
+                    ./modules/home/navi
+                    ./modules/home/work
+                  ];
+                  home.stateVersion = "25.11";
+                };
+              }
+            ];
+          };
         };
-        laplace = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./modules/core
-            ./hosts/laplace
-            ./modules/userland
-            ./modules/syncthing
-            ./modules/nixos-tools
-            nixos-hardware.nixosModules.framework-13-7040-amd
-            ./modules/wm/gnome.nix
-            inputs.xremap-flake.nixosModules.default
-            inputs.home-manager.nixosModules.default
-            {
-              home-manager.users.miles = {
-                imports = [
-                  ./modules/home/base
-                  ./modules/home/navi
-                  ./modules/home/user-space
-                  ./modules/home/zen-browser
-                ];
-                home.stateVersion = "25.11";
-              };
-              home-manager.extraSpecialArgs = { inherit inputs; };
-            }
-          ];
-        };
-        # WSL
-        nixos = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
-          modules = [
-            { nixpkgs.overlays = [ zellijPluginsOverlay ]; }
-            ./hosts/nixos
-            ./modules/work
-            ./modules/core
-            ./modules/ai
-            ./modules/wsl
-            ./modules/syncthing
-            ./modules/nixos-tools
-            ./modules/dev
-            inputs.home-manager.nixosModules.default
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.miles = {
-                imports = [
-                  ./hosts/nixos/home.nix
-                  ./modules/home/base
-                  ./modules/home/wsl
-                  ./modules/home/navi
-                  ./modules/home/work
-                ];
-                home.stateVersion = "25.11";
-              };
-            }
-          ];
-        };
-      };
     };
 }
