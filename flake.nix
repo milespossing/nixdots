@@ -10,7 +10,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     my-nixcats = {
-      url = "github:milespossing/neovim";
+      url = "path:./nix-cats";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
@@ -30,13 +30,34 @@
       flake-utils,
       nixos-hardware,
       nixpkgs,
+      my-nixcats,
       ...
     }@inputs:
-    {
-      nixosConfigurations = {
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            nodejs
+            sops
+          ];
+        };
+        packages.nvim = my-nixcats.packages.${system}.default;
+      }
+    )
+    // {
+      nixosConfigurations =
+        let
+          zellijPluginsOverlay = import ./overlays/zellij-plugins.nix;
+        in
+        {
         euler = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            { nixpkgs.overlays = [ zellijPluginsOverlay ]; }
             ./modules/core
             ./hosts/euler
             ./modules/secrets
@@ -90,6 +111,7 @@
         nixos = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            { nixpkgs.overlays = [ zellijPluginsOverlay ]; }
             ./hosts/nixos
             ./modules/work
             ./modules/core
@@ -117,19 +139,5 @@
           ];
         };
       };
-      devShells = flake-utils.lib.eachDefaultSystemPassThrough (
-        system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        {
-          ${system}.default = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [
-              nodejs
-              sops
-            ];
-          };
-        }
-      );
     };
 }

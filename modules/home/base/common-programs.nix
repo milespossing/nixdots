@@ -1,4 +1,6 @@
 {
+  imports = [ ../zellij ];
+
   programs.fzf = {
     enable = true;
     defaultCommand = "fd --type f";
@@ -27,5 +29,26 @@
     # Don't need the fish integration bc it's automatically in there
     enableNushellIntegration = true;
     nix-direnv.enable = true;
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableNushellIntegration = true;
+    flags = [ "--disable-up-arrow" ];
+    settings = {
+      sync_frequency = "5m";
+      filter_mode = "directory";
+      filter_mode_shell_up_arrow = "session";
+    };
+  };
+
+  programs.yazi = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableNushellIntegration = true;
+    shellWrapperName = "y";
   };
 }

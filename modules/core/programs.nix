@@ -8,6 +8,7 @@
     wget
     curl
     htop
+    btop
     fd
     ripgrep
     sd
@@ -16,5 +17,12 @@
     gojq
     yq
     unzip
+    glow
+    dust
+    duf
+    procs
+    xh
+    hyperfine
+    tokei
   ];
 }

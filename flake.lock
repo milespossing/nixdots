@@ -134,18 +134,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1771602421,
-        "narHash": "sha256-TdxJ3gupaLA6C1A9lHvRhWyupO+ZrsCpgOn1up7ps6g=",
-        "owner": "milespossing",
-        "repo": "neovim",
-        "rev": "10d175c40459ed7cbae2761e8078bcbbe21f4361",
-        "type": "github"
+        "path": "./nix-cats",
+        "type": "path"
       },
       "original": {
-        "owner": "milespossing",
-        "repo": "neovim",
-        "type": "github"
-      }
+        "path": "./nix-cats",
+        "type": "path"
+      },
+      "parent": []
     },
     "nix-index-database": {
       "inputs": {

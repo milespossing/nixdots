@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   ...
 }:
 {
@@ -17,6 +18,7 @@
         init.defaultBranch = "main";
         pull.rebase = false;
         diff.tool = "nvimdiff";
+        diff.colorMoved = "default";
         merge.tool = "nvimdiff";
         http.postBuffer = 524288000;
         mergetool = {
@@ -25,7 +27,14 @@
         push.autoSetupRemote = true;
         core = {
           editor = "nvim";
-          pager = "bat";
+          pager = "delta";
+        };
+        interactive.diffFilter = "delta --color-only";
+        delta = {
+          navigate = true;
+          dark = true;
+          line-numbers = true;
+          syntax-theme = "Catppuccin Mocha";
         };
       };
       ignores = [
@@ -46,5 +55,9 @@
     programs.lazygit = {
       enable = true;
     };
+
+    home.packages = with pkgs; [
+      delta
+    ];
   };
 }
