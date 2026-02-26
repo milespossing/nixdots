@@ -3,6 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Pinned nixpkgs master for azure-cli fix (nixos/nixpkgs#493712)
+    # Remove once nixos-unstable includes azure-cli >= 2.82.0
+    nixpkgs-master.url = "github:nixos/nixpkgs/360b78b5de92154bbe2ae12a79eea01b35b2f5ec";
     flake-utils.url = "github:numtide/flake-utils";
     nixgl.url = "github:nix-community/nixGL";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
@@ -51,7 +54,10 @@
     // {
       nixosConfigurations =
         let
-          overlays = [ (import ./overlays/zellij-plugins.nix) ];
+          overlays = [
+            (import ./overlays/zellij-plugins.nix)
+            (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
+          ];
         in
         {
           euler = nixpkgs.lib.nixosSystem {

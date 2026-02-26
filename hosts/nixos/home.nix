@@ -1,4 +1,10 @@
-{ inputs, config, lib, pkgs, ... }:
+{
+  inputs,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
@@ -13,8 +19,14 @@
     };
   };
 
-  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sopsNix" ] ''
-    ${pkgs.gnupg}/bin/gpg --batch --import ${config.sops.secrets.gpg_key.path} 2>/dev/null || true
+  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sops-nix" "reloadSystemd" ] ''
+    if [ -f "${config.sops.secrets.gpg_key.path}" ]; then
+      ${pkgs.gnupg}/bin/gpg --batch --import ${config.sops.secrets.gpg_key.path} 2>/dev/null || true
+      KEY_FPR=$(${pkgs.gnupg}/bin/gpg --list-keys --with-colons 2>/dev/null | grep '^fpr' | head -1 | cut -d: -f10)
+      if [ -n "$KEY_FPR" ]; then
+        echo "$KEY_FPR:6:" | ${pkgs.gnupg}/bin/gpg --batch --import-ownertrust 2>/dev/null || true
+      fi
+    fi
   '';
 
   home.activation.initPasswordStore = lib.hm.dag.entryAfter [ "importGpgKey" ] ''
