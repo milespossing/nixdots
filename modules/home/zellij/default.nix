@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  imports = [ ./layouts.nix ];
+
   programs.zellij = {
     enable = true;
     enableBashIntegration = true;
