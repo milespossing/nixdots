@@ -19,7 +19,7 @@
     };
   };
 
-  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sops-nix" "reloadSystemd" ] ''
+  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sops-nix" ] ''
     if [ -f "${config.sops.secrets.gpg_key.path}" ]; then
       ${pkgs.gnupg}/bin/gpg --batch --import ${config.sops.secrets.gpg_key.path} 2>/dev/null || true
       KEY_FPR=$(${pkgs.gnupg}/bin/gpg --list-keys --with-colons 2>/dev/null | grep '^fpr' | head -1 | cut -d: -f10)
