@@ -19,11 +19,27 @@
         autolock
       }
       keybinds {
+        // autolock
         shared_except "locked" {
           bind "Ctrl h" { MoveFocusOrTab "Left"; }
           bind "Ctrl l" { MoveFocusOrTab "Right"; }
           bind "Ctrl j" { MoveFocus "Down"; }
           bind "Ctrl k" { MoveFocus "Up"; }
+          bind "Alt z" {
+            MessagePlugin "autolock" { payload "disable"; };
+            SwitchToMode "Locked";
+          }
+        }
+        locked {
+          bind "Alt z" {
+            MessagePlugin "autolock" { payload "disable"; };
+            SwitchToMode "Normal";
+          }
+        }
+        shared {
+          bind "Alt Shift z" {
+            MessagePlugin "autolock" { payload "enable"; };
+          }
         }
         normal {
           bind "Alt g" {
@@ -61,20 +77,10 @@
               in_place false
             };
           }
+          // autolock
           bind "Enter" {
             WriteChars "\u{000D}";
             MessagePlugin "autolock" {};
-          }
-        }
-        locked {
-          bind "Alt z" {
-            MessagePlugin "autolock" { payload "disable"; };
-            SwitchToMode "Normal";
-          }
-        }
-        shared {
-          bind "Alt Shift z" {
-            MessagePlugin "autolock" { payload "enable"; };
           }
         }
       }
