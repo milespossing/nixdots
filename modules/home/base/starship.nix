@@ -90,7 +90,4 @@
     };
     zig.symbol = " ";
   };
-
-  programs.bash.initExtra = ''eval "$(starship init bash)"'';
-  programs.zsh.initExtra = ''eval "$(starship init zsh)"'';
 }
