@@ -21,12 +21,18 @@ let
     export EDITOR="${nvim-remote-open}/bin/nvim-remote-open"
     exec yazi "$@"
   '';
+
+  opencode-ide = pkgs.writeShellScriptBin "opencode-ide" ''
+    export EDITOR="${nvim-remote-open}/bin/nvim-remote-open"
+    exec opencode "$@"
+  '';
 in
 {
   home.packages = [
     nvim-ide
     nvim-remote-open
     yazi-ide
+    opencode-ide
   ];
 
   programs.zellij.layouts = {
@@ -81,6 +87,35 @@ in
         }
         tab name="Git" {
           pane command="lazygit"
+        }
+        tab name="Shell" {
+          pane
+        }
+      }
+    '';
+
+    opencode = ''
+      layout {
+        default_tab_template {
+          pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+          }
+          children
+          pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+          }
+        }
+        tab name="OpenCode" focus=true {
+          pane split_direction="vertical" {
+            pane command="${opencode-ide}/bin/opencode-ide" size="60%"
+            pane command="${nvim-ide}/bin/nvim-ide" size="40%"
+          }
+        }
+        tab name="Git" {
+          pane command="lazygit"
+        }
+        tab name="Files" {
+          pane command="${yazi-ide}/bin/yazi-ide"
         }
         tab name="Shell" {
           pane

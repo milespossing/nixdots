@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     github-copilot-cli
+    opencode
   ];
 }

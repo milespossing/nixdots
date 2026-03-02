@@ -109,6 +109,7 @@
                   imports = [
                     ./modules/home/base
                     ./modules/home/navi
+                    ./modules/home/ai
                     ./modules/home/user-space
                     ./modules/home/zen-browser
                   ];
@@ -126,7 +127,6 @@
               ./hosts/nixos
               ./modules/work
               ./modules/core
-              ./modules/ai
               ./modules/wsl
               ./modules/syncthing
               ./modules/nixos-tools
@@ -142,6 +142,7 @@
                     ./modules/home/base
                     ./modules/home/wsl
                     ./modules/home/navi
+                    ./modules/home/ai
                     ./modules/home/work
                   ];
                   home.stateVersion = "25.11";
