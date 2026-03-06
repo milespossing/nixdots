@@ -159,7 +159,7 @@
               # nix
               nixd
               nix-doc
-              nixfmt-rfc-style
+              nixfmt
               # lua
               lua-language-server
               stylua
@@ -391,7 +391,7 @@
             name = defaultPackageName;
             packages = [ defaultPackage ];
             inputsFrom = [ ];
-            shellHook = '''';
+            shellHook = "";
           };
         };
 

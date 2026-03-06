@@ -44,22 +44,22 @@ in
       mgr.prepend_keymap = [
         {
           on = "<C-h>";
-          run = ''shell 'zellij action move-focus-or-tab left' --confirm'';
+          run = "shell 'zellij action move-focus-or-tab left' --confirm";
           desc = "Move zellij focus left";
         }
         {
           on = "<C-j>";
-          run = ''shell 'zellij action move-focus down' --confirm'';
+          run = "shell 'zellij action move-focus down' --confirm";
           desc = "Move zellij focus down";
         }
         {
           on = "<C-k>";
-          run = ''shell 'zellij action move-focus up' --confirm'';
+          run = "shell 'zellij action move-focus up' --confirm";
           desc = "Move zellij focus up";
         }
         {
           on = "<C-l>";
-          run = ''shell 'zellij action move-focus-or-tab right' --confirm'';
+          run = "shell 'zellij action move-focus-or-tab right' --confirm";
           desc = "Move zellij focus right";
         }
         {
