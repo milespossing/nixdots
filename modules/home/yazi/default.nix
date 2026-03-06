@@ -12,6 +12,12 @@ let
     rev = "b224ddfb4bb6a9b438ac00ccb607b0eb517207d2";
     hash = "sha256-hn6oEFCLhACPh8T/qoPVHbX8Npsjd1EDXsZlm9SzIII=";
   };
+  path-from-root = pkgs.fetchFromGitHub {
+    owner = "aresler";
+    repo = "path-from-root.yazi";
+    rev = "3daa62fa01681cff8bb62eb0bd72e59245486846";
+    hash = "sha256-2jW+NoEd5ZrcoPnS7Pv7xfWH/lypUJdjF7z3CYZM7Lg=";
+  };
 in
 {
   programs.yazi = {
@@ -28,6 +34,7 @@ in
       chmod = "${yazi-plugins}/chmod.yazi";
       smart-filter = "${yazi-plugins}/smart-filter.yazi";
       jump-to-char = "${yazi-plugins}/jump-to-char.yazi";
+      path-from-root = "${path-from-root}";
     };
     flavors = {
       macchiato = "${yazi-flavors}/catppuccin-macchiato.yazi";
@@ -54,6 +61,14 @@ in
           on = "<C-l>";
           run = ''shell 'zellij action move-focus-or-tab right' --confirm'';
           desc = "Move zellij focus right";
+        }
+        {
+          on = [
+            "c"
+            "r"
+          ];
+          run = "plugin path-from-root";
+          desc = "Copy path relative to git root";
         }
       ];
     };
