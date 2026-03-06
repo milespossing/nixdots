@@ -81,7 +81,12 @@ return {
     'folke/snacks.nvim',
     enabled = require('nixCatsUtils').enableForCategory 'editor',
     opts = {
-      picker = { enable = true },
+      picker = {
+        enable = true,
+        win = { input = { keys = {
+          ['gg'] = { 'toggle_live', mode = { 'n' }, desc = 'toggle live' },
+        } } },
+      },
     },
     keys = {
       {
