@@ -1,12 +1,15 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    thunderbird
+    vlc
     gimp
     sqlite
     qmk
     ffmpeg-full
     parallel
-    freecad-wayland
+    orca-slicer
+    # freecad-wayland
     bambu-studio
     calibre
     kvirc
