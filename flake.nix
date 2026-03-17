@@ -12,6 +12,10 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    alexandria = {
+      url = "github:milespossing/alexandria";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     my-nixcats = {
       url = "path:./nix-cats";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,6 +38,7 @@
       nixos-hardware,
       nixpkgs,
       my-nixcats,
+      alexandria,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
@@ -121,9 +126,14 @@
           };
           # WSL
           nixos = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
             specialArgs = { inherit inputs; };
             modules = [
               { nixpkgs.overlays = overlays; }
+              alexandria.nixosModules.default
+              {
+                services.alexandria.enable = true;
+              }
               ./hosts/nixos
               ./modules/work
               ./modules/core
