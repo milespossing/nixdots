@@ -6,6 +6,10 @@
     # Pinned nixpkgs master for azure-cli fix (nixos/nixpkgs#493712)
     # Remove once nixos-unstable includes azure-cli >= 2.82.0
     nixpkgs-master.url = "github:nixos/nixpkgs/360b78b5de92154bbe2ae12a79eea01b35b2f5ec";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-utils.url = "github:numtide/flake-utils";
     nixgl.url = "github:nix-community/nixGL";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
@@ -25,6 +29,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     xremap-flake.url = "github:xremap/nix-flake";
+    charmbracelet-nur = {
+      url = "github:charmbracelet/nur";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     sops-nix.url = "github:Mic92/sops-nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -39,6 +47,7 @@
       nixpkgs,
       my-nixcats,
       alexandria,
+      nur,
       ...
     }@inputs:
     flake-utils.lib.eachDefaultSystem (
@@ -64,6 +73,7 @@
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
+            nur.overlays.default
           ];
         in
         {
