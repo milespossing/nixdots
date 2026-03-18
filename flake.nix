@@ -142,9 +142,24 @@
             modules = [
               { nixpkgs.overlays = overlays; }
               alexandria.nixosModules.default
-              {
-                services.alexandria.enable = true;
-              }
+              (
+                { config, ... }:
+                {
+                  sops.age.keyFile = "/home/miles/.config/sops/age/keys.txt";
+                  sops.secrets."alexandria/github" = {
+                    sopsFile = ./modules/home/ai/api-keys.enc.yaml;
+                    key = "github";
+                  };
+                  sops.templates."alexandria-env".content = "GITHUB_TOKEN=${
+                    config.sops.placeholder."alexandria/github"
+                  }";
+                  services.alexandria = {
+                    enable = true;
+                    embed.backend = "ollama";
+                    environmentFile = config.sops.templates."alexandria-env".path;
+                  };
+                }
+              )
               ./hosts/nixos
               ./modules/work
               ./modules/core
@@ -171,7 +186,10 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
-                    my.ai.mcp.servers.alexandria = pkgs.agenticMcps.alexandria;
+                    my.ai.alexandria = {
+                      enable = true;
+                      embed.backend = "ollama";
+                    };
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;

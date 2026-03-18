@@ -13,7 +13,7 @@ in
 {
   agenticMcps = {
     # Alexandria — local semantic code-search MCP server.
-    # Requires the Alexandria NixOS service (services.alexandria.enable).
+    # Requires programs.alexandria.enable in home-manager (provides alex on PATH).
     # https://github.com/milespossing/alexandria
     alexandria = aiLib.mkLocalMcp {
       command = [

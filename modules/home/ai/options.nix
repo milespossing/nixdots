@@ -130,6 +130,31 @@ in
       enable = mkEnableOption "GitHub Copilot CLI";
     };
 
+    alexandria = {
+      enable = mkEnableOption "Alexandria semantic code search";
+      embed = {
+        backend = mkOption {
+          type = types.enum [
+            "ollama"
+            "openai"
+          ];
+          default = "ollama";
+          description = ''
+            Embedding backend. "ollama" uses a local Ollama instance;
+            "openai" uses any OpenAI-compatible API (e.g. GitHub Models).
+          '';
+        };
+        model = mkOption {
+          type = types.str;
+          default = "nomic-embed-text";
+          description = ''
+            Embedding model name. Use "nomic-embed-text" for Ollama or
+            "text-embedding-3-small" for OpenAI/GitHub Models.
+          '';
+        };
+      };
+    };
+
     aider = {
       enable = mkEnableOption "Aider AI pair programming";
       extraConfig = mkOption {
