@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773779289,
-        "narHash": "sha256-gXHXFjWZ+r67jtnSuSPkvAaq/LyXr6a42cCZrN5OeJU=",
+        "lastModified": 1773794192,
+        "narHash": "sha256-wE6cfbFuAiaHoJTfefPxFneVS3XO93/1dSg9cglnjxw=",
         "owner": "milespossing",
         "repo": "alexandria",
-        "rev": "21a7f04170b954d7a91acf97f2e13d39eb9a7b0b",
+        "rev": "a1fdb33cf5904010413854ebba15ff20501ca622",
         "type": "github"
       },
       "original": {

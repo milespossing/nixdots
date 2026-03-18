@@ -62,6 +62,8 @@
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
+            (import ./overlays/agent-skills)
+            (import ./overlays/agent-mcps)
           ];
         in
         {
@@ -110,16 +112,25 @@
               {
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.miles = {
-                  imports = [
-                    ./modules/home/base
-                    ./modules/home/navi
-                    ./modules/home/ai
-                    ./modules/home/user-space
-                    ./modules/home/zen-browser
-                  ];
-                  home.stateVersion = "25.11";
-                };
+                home-manager.users.miles =
+                  { pkgs, ... }:
+                  {
+                    imports = [
+                      ./modules/home/base
+                      ./modules/home/navi
+                      ./modules/home/ai
+                      ./modules/home/user-space
+                      ./modules/home/zen-browser
+                    ];
+                    my.ai.aider.enable = true;
+                    my.ai.opencode.enable = true;
+                    my.ai.copilot-cli.enable = true;
+                    my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
+                    my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
+                    my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
+                    my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
+                    home.stateVersion = "25.11";
+                  };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
             ];
@@ -146,17 +157,27 @@
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
                 home-manager.extraSpecialArgs = { inherit inputs; };
-                home-manager.users.miles = {
-                  imports = [
-                    ./hosts/nixos/home.nix
-                    ./modules/home/base
-                    ./modules/home/wsl
-                    ./modules/home/navi
-                    ./modules/home/ai
-                    ./modules/home/work
-                  ];
-                  home.stateVersion = "25.11";
-                };
+                home-manager.users.miles =
+                  { pkgs, ... }:
+                  {
+                    imports = [
+                      ./hosts/nixos/home.nix
+                      ./modules/home/base
+                      ./modules/home/wsl
+                      ./modules/home/navi
+                      ./modules/home/ai
+                      ./modules/home/work
+                    ];
+                    my.ai.aider.enable = true;
+                    my.ai.opencode.enable = true;
+                    my.ai.copilot-cli.enable = true;
+                    my.ai.mcp.servers.alexandria = pkgs.agenticMcps.alexandria;
+                    my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
+                    my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
+                    my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
+                    my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
+                    home.stateVersion = "25.11";
+                  };
               }
             ];
           };

@@ -1,27 +1,12 @@
-{ pkgs, lib, ... }:
-let
-  # LSP servers scoped exclusively to OpenCode's PATH
-  opencode-lsps = with pkgs; [
-    nixd
-    lua-language-server
-    gopls
-    typescript-language-server
-    clojure-lsp
+{ lib, pkgs, ... }:
+{
+  imports = [
+    ./options.nix
+    ./secrets.nix
+    ./opencode.nix
+    ./aider.nix
+    ./copilot-cli.nix
   ];
 
-  opencode-wrapped = pkgs.symlinkJoin {
-    name = "opencode-wrapped";
-    paths = [ pkgs.opencode ];
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/opencode \
-        --prefix PATH : ${lib.makeBinPath opencode-lsps}
-    '';
-  };
-in
-{
-  home.packages = [
-    pkgs.github-copilot-cli
-    opencode-wrapped
-  ];
+  _module.args.aiLib = import ./lib.nix { inherit lib pkgs; };
 }
