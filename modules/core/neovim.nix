@@ -1,5 +1,6 @@
 {
   inputs,
+  pkgs,
   ...
 }:
 {
@@ -7,4 +8,5 @@
   nixcats-full = {
     enable = true;
   };
+  environment.systemPackages = [ pkgs.nvim-next ];
 }

@@ -34,6 +34,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix.url = "github:Mic92/sops-nix";
+    # Neovim nightly for nvim-next — do NOT follow nixpkgs (tree-sitter hash mismatch)
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    # fennel-ls docsets for Neovim API completions/hover
+    fennel-ls-nvim-docs = {
+      url = "git+https://git.sr.ht/~micampe/fennel-ls-nvim-docs";
+      flake = false;
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,6 +49,7 @@
 
   outputs =
     {
+      self,
       flake-utils,
       nixos-hardware,
       nixpkgs,
@@ -63,6 +71,14 @@
           ];
         };
         packages.nvim = my-nixcats.packages.${system}.default;
+        packages.nvim-next = (import nixpkgs { inherit system; }).callPackage ./modules/neovim {
+          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
+          fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
+        };
+        apps.nvim-next = {
+          type = "app";
+          program = "${self.packages.${system}.nvim-next}/bin/nvim";
+        };
       }
     )
     // {
@@ -73,6 +89,21 @@
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
+            (final: prev: {
+              nvim-next = final.symlinkJoin {
+                name = "nvim-next";
+                paths = [
+                  (final.callPackage ./modules/neovim {
+                    neovim-unwrapped =
+                      inputs.neovim-nightly-overlay.packages.${final.stdenv.hostPlatform.system}.neovim;
+                    fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
+                  })
+                ];
+                postBuild = ''
+                  mv $out/bin/nvim $out/bin/nvim-next
+                '';
+              };
+            })
             nur.overlays.default
           ];
         in
