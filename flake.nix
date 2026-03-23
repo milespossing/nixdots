@@ -182,25 +182,6 @@
             specialArgs = { inherit inputs; };
             modules = [
               { nixpkgs.overlays = overlays; }
-              alexandria.nixosModules.default
-              (
-                { config, ... }:
-                {
-                  sops.age.keyFile = "/home/miles/.config/sops/age/keys.txt";
-                  sops.secrets."alexandria/github" = {
-                    sopsFile = ./modules/home/ai/api-keys.enc.yaml;
-                    key = "github";
-                  };
-                  sops.templates."alexandria-env".content = "GITHUB_TOKEN=${
-                    config.sops.placeholder."alexandria/github"
-                  }";
-                  services.alexandria = {
-                    enable = true;
-                    embed.backend = "ollama";
-                    environmentFile = config.sops.templates."alexandria-env".path;
-                  };
-                }
-              )
               ./hosts/nixos
               ./modules/work
               ./modules/core
