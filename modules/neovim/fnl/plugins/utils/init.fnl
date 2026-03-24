@@ -1,7 +1,10 @@
-
-[{:import :plugins.utils.fzf-lua}
+[{:name :flash.nvim}
+ {:import :plugins.utils.fzf-lua}
  {:import :plugins.utils.which-key}
- {:name :nfnl}
- {:name :conjure :fp [:clojure :fennel]}
- {:name :dial-nvim :keys [:<C-a> :<C-x>]}]
+ {:name :conjure
+  :ft [:clojure :fennel]}
+ {:name :dial-nvim :keys [:<C-a> :<C-x>]}
+ {:name :comment.nvim}
+ {:name :nvim-surround}
+ {:name :grug-far.nvim}]
 

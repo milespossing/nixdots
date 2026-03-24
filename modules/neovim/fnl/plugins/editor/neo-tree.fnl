@@ -7,6 +7,9 @@
                                            cmd (.. "TermNew dir=" path " name=" path)]
                                        (vim.cmd cmd)))
                                 :desc "Open in terminal"}}}
+   :filesystem {:follow_current_file {:enabled true}}
+   :buffers {:follow_current_file {:enabled true
+                                   :leave_dirs_open false}}
    :sources [:filesystem
              :buffers
              :git_status
@@ -15,6 +18,6 @@
 (fn after [] (let [neo-tree (require :neo-tree)
                    keymap (require :lib.keymap)]
               (neo-tree.setup opts)
-              (keymap.map :n :<leader>ee "<cmd>Neotree toggle<cr>" { :desc "File Explorer"})))
+              (keymap.map :<leader>ee "<cmd>Neotree toggle<cr>" { :desc "File Explorer"})))
          
 {:name :neo-tree.nvim :after after}

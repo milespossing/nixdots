@@ -22,3 +22,5 @@ vim.schedule(function()
 end)
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+vim.opt.laststatus = 3
+vim.opt.splitkeep = "screen"

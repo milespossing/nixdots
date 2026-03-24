@@ -52,9 +52,9 @@
 
 (fn before []
   ;; Incremental selection keymaps
-  (keymap.map :n :<C-space> init-selection {:desc "Incremental selection"})
-  (keymap.map :x :<C-space> node-incremental {:desc "Expand selection"})
-  (keymap.map :x :<bs> node-decremental {:desc "Shrink selection"}))
+  (keymap.map :<C-space> init-selection {:desc "Incremental selection"})
+  (keymap.map :<C-space> node-incremental {:mode :x :desc "Expand selection"})
+  (keymap.map :<bs> node-decremental {:mode :x :desc "Shrink selection"}))
 
 {:name :nvim-treesitter
  :event :DeferredUIEnter

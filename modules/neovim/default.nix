@@ -106,6 +106,11 @@ let
     fd
     ripgrep
 
+    luajitPackages.fennel
+
+    tree-sitter
+
+    typescript-language-server
     lua-language-server
     fennel-ls-wrapped
     fnlfmt

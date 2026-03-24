@@ -15,8 +15,6 @@ vim.loader.enable()
 -- Core options and leader keys
 require 'config.options'
 
-require 'config.lualine'
-
 -- blink.cmp setup (start plugin — must be configured before LSP)
 require('blink.cmp').setup(require 'config.blink-cmp')
 

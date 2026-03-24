@@ -4,4 +4,5 @@
 
 (let [opts {:provider_selector (fn [] [:treesitter :indent])}]
  {:name :nvim-ufo
+  :event :DeferredUIEnter
   :after after})

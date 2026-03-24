@@ -1,17 +1,34 @@
 { pkgs }:
 with pkgs.vimPlugins;
+let
+  treesitter = nvim-treesitter.withPlugins (
+    plugins: with plugins; [
+      nix
+      lua
+      fennel
+      c_sharp
+      javascript
+      typescript
+      clojure
+      regex
+      bash
+    ]
+  );
+in
 {
   # Plugins loaded at startup (always on rtp).
   # Keep this minimal — only plugins that must be available
   # before init.lua runs or that cannot be deferred.
   start = [
     lze
-    blink-cmp
-    which-key-nvim
-    vim-startuptime
-    lualine-nvim
+
     alpha-nvim
+    blink-cmp
+    nui-nvim
+    nvim-notify
     nvim-web-devicons
+    vim-startuptime
+    which-key-nvim
   ];
 
   # Plugins loaded on demand via lze (packadd).
@@ -19,19 +36,23 @@ with pkgs.vimPlugins;
   # Lazy-load triggers are defined in lua/plugins/*.lua specs.
   opt = [
     catppuccin-nvim
-    nvim-treesitter.withAllGrammars
-    fzf-lua
-    nfnl
+    comment-nvim
+    conjure
+    dial-nvim
+    edgy-nvim
     flash-nvim
-    neo-tree-nvim
-    nvim-surround
+    fzf-lua
     grug-far-nvim
+    lualine-nvim
+    mini-nvim
+    neo-tree-nvim
+    noice-nvim
+    nvim-surround
     nvim-ufo
-    trouble-nvim
     nvim-paredit
     nvim-parinfer
-    conjure
-    mini-nvim
-    dial-nvim
+    treesitter
+    trouble-nvim
+    zellij-nav-nvim
   ];
 }
