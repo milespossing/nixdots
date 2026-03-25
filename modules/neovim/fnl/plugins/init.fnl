@@ -1,5 +1,9 @@
 [{:import :plugins.utils}
+ {:import :plugins.coding}
  {:import :plugins.editor}
  {:import :plugins.theme}
  {:import :plugins.ui}
- {:import :plugins.zellij}]
+ {:import :plugins.zellij}
+ {:import :plugins.git}
+ {:import :plugins.conform}
+ {:import :plugins.lint}]

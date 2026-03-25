@@ -37,20 +37,25 @@ in
   opt = [
     catppuccin-nvim
     comment-nvim
+    conform-nvim
     conjure
     dial-nvim
     edgy-nvim
     flash-nvim
     fzf-lua
+    gitsigns-nvim
     grug-far-nvim
+    indent-blankline-nvim
     lualine-nvim
     mini-nvim
     neo-tree-nvim
     noice-nvim
+    nvim-lint
     nvim-surround
     nvim-ufo
     nvim-paredit
     nvim-parinfer
+    todo-comments-nvim
     treesitter
     trouble-nvim
     zellij-nav-nvim
