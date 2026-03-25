@@ -1,4 +1,4 @@
-openclaw-gateway-host: ENC[AES256_GCM,data:Bmd+MupTd0SQUVPsGwqWIw6vZGFkjEGRON+XOw==,iv:QM2PgwjiZMCsA//1ygE9pWD0u+pJd6qkD7nydpPFhoo=,tag:EcggRTRzi7tWK44SL5gLWA==,type:str]
+openclaw-gateway-host: ENC[AES256_GCM,data:e5TmbIEOAz98BJq5H1Og3r7gbfsNBw==,iv:3OSWyqJFIBcbPae0pXtz64vEUzZ+lt77JFz3JqjCJJY=,tag:nTNmQs1rS6aKylXE3O0RDg==,type:str]
 openclaw-gateway-port: ENC[AES256_GCM,data:q44Y,iv:t50NcH2H+t5ofJLRHrHsFG2LaH104BvcSP68E1YlopM=,tag:veDytAEuH46DZ8lC7r4ZJQ==,type:str]
 openclaw-gateway-token: ENC[AES256_GCM,data:IhZGHDQV1lCdTHSxJnX+B5axFg0+/poh1Jk4RmEpSj0g+9DG1MxqxVmQgC5yEKkH,iv:YL4XNJwW5+Tf/H8GGa4atbDQSvovq9Xxtra8Fi0kj9g=,tag:61GsdeqObLQSoDuWOUzJPA==,type:str]
 sops:
@@ -12,7 +12,7 @@ sops:
             cXVBNTA1TnRUVkhUY29ZaGRaNjFiV0kKWhKQGgYIIkF4ZOV+/o1gONqZK2oRbNQS
             TTcK8atzH9gB0BZ94PgyTsH0bLM3gLLHmJIEJ6ZNk8B5pF4HSdPocQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-03-25T15:54:51Z"
-    mac: ENC[AES256_GCM,data:nM5kvjG58MEd+WyiU+105Q3ZP7qrMaVeZS+u/Qx6vd3DhgYdzY3t2WjQMnH1+iKoQ18izTl7Cn70EK60Tq0/LVcc1joVLDjRzJ9Wiit8ZVXahBAYwMp58L4sWw7qGcJEPQy9n3LvT1G8y09/nNhbFGFZ98Qryfp+tGrnaJrtxzw=,iv:kHNN6Qs4YzbpqZMSVoRx7o8kNpv/GUxuwFuyQ+38QnU=,tag:PZ4gcvNpVOUK4sJWBKQu5A==,type:str]
+    lastmodified: "2026-03-25T16:12:13Z"
+    mac: ENC[AES256_GCM,data:9iWrLxniPrHsnJfuEWIXlpHLqxoo8GX7FSaNbeC4x7tp4Tkrd+igb+87UkkQto8arww7MAPq0v1EwCGkLYobMM5LcwdhDb6q31U1zMp5IKhbteJBnt3kmyN7fPcWBkcw6FYvp0JSIaxM7zuOhQhCPlwZAACbok2lmJRyWSGXVLE=,iv:8OHob/mkmU98td2yyUGGpXOSfb4kPk3XH2dnL9awv7Y=,tag:AGD0P5rvy1KIrpvBxHStvA==,type:str]
     unencrypted_suffix: _unencrypted
     version: 3.12.2
