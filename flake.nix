@@ -34,6 +34,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix.url = "github:Mic92/sops-nix";
+    nix-openclaw.url = "github:openclaw/nix-openclaw";
+    nix-openclaw.inputs.nixpkgs.follows = "nixpkgs";
     # Neovim nightly for nvim-next — do NOT follow nixpkgs (tree-sitter hash mismatch)
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # fennel-ls docsets for Neovim API completions/hover
@@ -90,6 +92,7 @@
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
+            inputs.nix-openclaw.overlays.default
             (final: prev: {
               nvim-next = final.symlinkJoin {
                 name = "nvim-next";
@@ -116,6 +119,8 @@
               ./modules/core
               ./hosts/euler
               ./modules/secrets
+              ./modules/openclaw-node
+              { my.openclaw-node = { enable = true; displayName = "euler"; }; }
               ./modules/kde
               ./modules/office
               ./modules/syncthing
@@ -187,6 +192,16 @@
               ./modules/work
               ./modules/core
               ./modules/wsl
+              ./modules/openclaw-node
+              {
+                my.openclaw-node = {
+                  enable = true;
+                  displayName = "nixos";
+                };
+                # System-level sops age key — needed for openclaw-node secrets.
+                # Adjust path if your WSL age key lives elsewhere.
+                sops.age.keyFile = "/home/miles/.config/sops/age/keys.txt";
+              }
               ./modules/syncthing
               ./modules/nixos-tools
               ./modules/dev
