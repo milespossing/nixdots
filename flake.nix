@@ -198,6 +198,20 @@
                   enable = true;
                   displayName = "nixos";
                   tls = true;
+                  exec = {
+                    security = "allowlist";
+                    ask = "on-miss";
+                    autoAllowSkills = true;
+                    agents.main = {
+                      security = "allowlist";
+                      ask = "on-miss";
+                      autoAllowSkills = true;
+                      allowlist = [
+                        { pattern = "/usr/bin/az"; }
+                        { pattern = "/usr/bin/git"; }
+                      ];
+                    };
+                  };
                 };
                 # System-level sops age key — needed for openclaw-node secrets.
                 # Adjust path if your WSL age key lives elsewhere.

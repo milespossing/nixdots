@@ -14,6 +14,85 @@
 }:
 let
   cfg = config.my.openclaw-node;
+
+  # Build the exec-approvals.json structure from Nix options.
+  execApprovalsJson = {
+    version = 1;
+    defaults = {
+      inherit (cfg.exec) security ask askFallback autoAllowSkills;
+    };
+  } // lib.optionalAttrs (cfg.exec.agents != { }) {
+    agents = lib.mapAttrs (
+      _name: agentCfg:
+      {
+        inherit (agentCfg) security ask askFallback autoAllowSkills;
+      }
+      // lib.optionalAttrs (agentCfg.allowlist != [ ]) {
+        allowlist = map (entry: {
+          inherit (entry) pattern;
+        }) agentCfg.allowlist;
+      }
+    ) cfg.exec.agents;
+  };
+
+  # Submodule for per-agent exec approval settings.
+  agentExecModule = lib.types.submodule {
+    options = {
+      security = lib.mkOption {
+        type = lib.types.enum [
+          "deny"
+          "allowlist"
+          "full"
+        ];
+        default = cfg.exec.security;
+        description = "Exec security mode for this agent.";
+      };
+
+      ask = lib.mkOption {
+        type = lib.types.enum [
+          "off"
+          "on-miss"
+          "always"
+        ];
+        default = cfg.exec.ask;
+        description = "Approval prompt behaviour for this agent.";
+      };
+
+      askFallback = lib.mkOption {
+        type = lib.types.enum [
+          "deny"
+          "allowlist"
+          "full"
+        ];
+        default = cfg.exec.askFallback;
+        description = "Fallback when no approval UI is available for this agent.";
+      };
+
+      autoAllowSkills = lib.mkOption {
+        type = lib.types.bool;
+        default = cfg.exec.autoAllowSkills;
+        description = "Auto-allow commands from installed skills for this agent.";
+      };
+
+      allowlist = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options.pattern = lib.mkOption {
+              type = lib.types.str;
+              description = "Glob pattern for an allowed executable path.";
+              example = "/usr/bin/git";
+            };
+          }
+        );
+        default = [ ];
+        description = "Allowlisted executable patterns for this agent.";
+        example = [
+          { pattern = "/usr/bin/git"; }
+          { pattern = "/usr/bin/az"; }
+        ];
+      };
+    };
+  };
 in
 {
   options.my.openclaw-node = {
@@ -61,6 +140,74 @@ in
         "abc123"
       ];
     };
+
+    # -- Exec approval settings ------------------------------------------------
+
+    exec = {
+      security = lib.mkOption {
+        type = lib.types.enum [
+          "deny"
+          "allowlist"
+          "full"
+        ];
+        default = "deny";
+        description = ''
+          Default exec security mode for the node host.
+          - deny: block all host exec requests.
+          - allowlist: allow only allowlisted commands.
+          - full: allow everything.
+        '';
+      };
+
+      ask = lib.mkOption {
+        type = lib.types.enum [
+          "off"
+          "on-miss"
+          "always"
+        ];
+        default = "on-miss";
+        description = ''
+          Default approval prompt behaviour.
+          - off: never prompt.
+          - on-miss: prompt when allowlist does not match.
+          - always: prompt on every command.
+        '';
+      };
+
+      askFallback = lib.mkOption {
+        type = lib.types.enum [
+          "deny"
+          "allowlist"
+          "full"
+        ];
+        default = "deny";
+        description = "Fallback when no approval UI is available.";
+      };
+
+      autoAllowSkills = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Auto-allow commands from installed agent skills.";
+      };
+
+      agents = lib.mkOption {
+        type = lib.types.attrsOf agentExecModule;
+        default = { };
+        description = ''
+          Per-agent exec approval overrides. Keys are agent names (e.g. "main").
+        '';
+        example = {
+          main = {
+            security = "allowlist";
+            ask = "on-miss";
+            allowlist = [
+              { pattern = "/usr/bin/git"; }
+              { pattern = "/usr/bin/az"; }
+            ];
+          };
+        };
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -88,12 +235,21 @@ in
     # -- package on PATH -----------------------------------------------------
     environment.systemPackages = [ cfg.package ];
 
+    # -- exec approvals config -----------------------------------------------
+    # Write ~/.openclaw/exec-approvals.json for the node user.
+    # Uses a systemd tmpfiles rule so it's created before the service starts.
+    systemd.tmpfiles.rules = [
+      "d /home/${cfg.user}/.openclaw 0700 ${cfg.user} users -"
+      "f /home/${cfg.user}/.openclaw/exec-approvals.json 0600 ${cfg.user} users - ${builtins.toJSON execApprovalsJson}"
+    ];
+
     # -- systemd service -----------------------------------------------------
     systemd.services.openclaw-node = {
       description = "OpenClaw node host (${cfg.displayName})";
       after = [
         "network-online.target"
         "sops-nix.service"
+        "systemd-tmpfiles-setup.service"
       ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
