@@ -1,0 +1,8 @@
+# Placeholder — encrypt with: sops modules/openclaw-node/gateway.enc.yaml
+# Required keys:
+#   openclaw-gateway-host: "<ip-or-hostname-of-107-openclaw>"
+#   openclaw-gateway-port: "18789"
+#   openclaw-gateway-token: "<your-gateway-token>"
+openclaw-gateway-host: REPLACE_ME
+openclaw-gateway-port: "18789"
+openclaw-gateway-token: REPLACE_ME
