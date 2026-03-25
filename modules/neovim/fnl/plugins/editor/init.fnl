@@ -3,4 +3,5 @@
  {:name :nvim-paredit}
  {:import :plugins.editor.treesitter}
  {:import :plugins.editor.trouble}
+ {:import :plugins.editor.todo-comments}
  {:name :nvim-parinfer}]

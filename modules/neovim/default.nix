@@ -110,11 +110,22 @@ let
 
     tree-sitter
 
+    # LSP servers
     typescript-language-server
     lua-language-server
     fennel-ls-wrapped
-    fnlfmt
     nixd
+
+    # Formatters
+    fnlfmt
+    nixfmt-rfc-style
+    prettierd
+    stylua
+
+    # Linters
+    statix
+    deadnix
+    eslint_d
   ];
 in
 pkgs.wrapNeovimUnstable neovim-unwrapped (
