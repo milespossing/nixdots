@@ -121,6 +121,8 @@
               ./modules/secrets
               ./modules/openclaw-node
               { my.openclaw-node = { enable = true; displayName = "euler"; tls = true; }; }
+              ./modules/radicale
+              { my.radicale.enable = true; }
               ./modules/kde
               ./modules/office
               ./modules/syncthing

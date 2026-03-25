@@ -32,7 +32,7 @@
   networking.wireguard.enable = true;
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 8080 ];
+    allowedTCPPorts = [ 8080 5232 ];
   };
 
   # Set your time zone.
