@@ -46,12 +46,17 @@ in
       '';
     };
 
+    tls = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Use TLS (wss://) for the gateway connection. Required for HTTPS public URLs.";
+    };
+
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
       description = "Extra arguments passed to `openclaw node run`.";
       example = [
-        "--tls"
         "--tls-fingerprint"
         "abc123"
       ];
@@ -107,6 +112,7 @@ in
             "--display-name"
             ''"${cfg.displayName}"''
           ]
+          ++ lib.optionals cfg.tls [ "--tls" ]
           ++ cfg.extraArgs
         );
         EnvironmentFile = config.sops.templates."openclaw-node-env".path;
