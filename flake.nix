@@ -120,7 +120,7 @@
               ./hosts/euler
               ./modules/secrets
               ./modules/openclaw-node
-              { my.openclaw-node = { enable = true; displayName = "euler"; }; }
+              { my.openclaw-node = { enable = true; displayName = "euler"; tls = true; }; }
               ./modules/kde
               ./modules/office
               ./modules/syncthing
@@ -197,6 +197,7 @@
                 my.openclaw-node = {
                   enable = true;
                   displayName = "nixos";
+                  tls = true;
                 };
                 # System-level sops age key — needed for openclaw-node secrets.
                 # Adjust path if your WSL age key lives elsewhere.
