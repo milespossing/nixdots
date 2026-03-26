@@ -55,6 +55,7 @@ in
     nvim-ufo
     nvim-paredit
     nvim-parinfer
+    snacks-nvim
     todo-comments-nvim
     treesitter
     trouble-nvim
