@@ -6,5 +6,4 @@
  {:import :plugins.ui}
  {:import :plugins.zellij}
  {:import :plugins.git}
- {:import :plugins.conform}
- {:import :plugins.lint}]
+ {:import :plugins.conform}]
