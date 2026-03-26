@@ -23,7 +23,6 @@ in
     lze
 
     alpha-nvim
-    blink-cmp
     nui-nvim
     nvim-notify
     nvim-web-devicons
@@ -35,6 +34,7 @@ in
   # Each entry here is a vim plugin derivation.
   # Lazy-load triggers are defined in lua/plugins/*.lua specs.
   opt = [
+    blink-cmp
     catppuccin-nvim
     comment-nvim
     conform-nvim

@@ -1,4 +1,5 @@
-[{:import :plugins.utils}
+[{:import :plugins.lsp}
+ {:import :plugins.utils}
  {:import :plugins.coding}
  {:import :plugins.editor}
  {:import :plugins.theme}

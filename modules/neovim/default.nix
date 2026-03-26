@@ -118,7 +118,7 @@ let
 
     # Formatters
     fnlfmt
-    nixfmt-rfc-style
+    nixfmt
     prettierd
     stylua
 

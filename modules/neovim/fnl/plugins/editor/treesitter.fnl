@@ -39,16 +39,23 @@
                          :callback #(when (not (: (vim.fn.mode) :match "[vV\x16]"))
                                       (set node-stack []))})
 
+(fn start-ts [buf]
+  (when (pcall vim.treesitter.start buf)
+    (set (. vim.bo buf :indentexpr)
+         "v:lua.require'nvim-treesitter'.indentexpr()")))
+
 (fn after []
   (let [ts (require :nvim-treesitter)]
     (ts.setup {}))
 
-  ;; Enable treesitter highlighting and indentation for supported filetypes
-  (au.on! [:FileType]
-          {:callback (fn [args]
-                       (when (pcall vim.treesitter.start args.buf)
-                         (set (. vim.bo args.buf :indentexpr)
-                              "v:lua.require'nvim-treesitter'.indentexpr()")))}))
+  ;; Enable treesitter highlighting and indentation for future filetypes
+  (au.on! [:FileType] {:callback (fn [args] (start-ts args.buf))})
+
+  ;; Kick treesitter for buffers that loaded before this spec ran
+  (each [_ buf (ipairs (vim.api.nvim_list_bufs))]
+    (when (and (vim.api.nvim_buf_is_loaded buf)
+              (~= (. vim.bo buf :filetype) ""))
+      (start-ts buf))))
 
 (fn before []
   ;; Incremental selection keymaps

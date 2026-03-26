@@ -15,14 +15,10 @@ vim.loader.enable()
 -- Core options and leader keys
 require 'config.options'
 
--- blink.cmp setup (start plugin — must be configured before LSP)
-require('blink.cmp').setup(require 'config.blink-cmp')
-
 -- Load all plugin specs via lze (opt plugins only)
+-- blink.cmp + LSP are loaded lazily on BufReadPost via plugins.lsp
 local lze = require 'lze'
 lze.load 'plugins'
-
-require 'config.lsp'
 
 require 'config.keymaps'
 
