@@ -9,6 +9,9 @@
 -- no runtime dependency. Use nfnl macros in .fnl files via:
 --   (import-macros {: if-let : when-let} :nfnl.macros)
 
+-- Track startup time for dashboard stats
+vim.g.start_time = vim.fn.reltime()
+
 -- Enable the native Lua module cache (before any requires)
 vim.loader.enable()
 
