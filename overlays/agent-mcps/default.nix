@@ -21,5 +21,18 @@ in
         "serve"
       ];
     };
+
+    # Work IQ — Microsoft 365 data via M365 Copilot Chat API.
+    # Requires M365 Copilot license and tenant admin consent.
+    # https://github.com/microsoft/work-iq
+    workiq = aiLib.mkLocalMcp {
+      command = [
+        "npx"
+        "-y"
+        "@microsoft/workiq@latest"
+        "mcp"
+      ];
+      package = final.nodejs;
+    };
   };
 }

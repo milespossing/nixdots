@@ -243,6 +243,7 @@
                       enable = true;
                       embed.backend = "ollama";
                     };
+                    my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;

@@ -170,7 +170,7 @@ in
     mcp.servers = mkOption {
       type = types.attrsOf mcpServerType;
       default = { };
-      description = "MCP servers. Currently consumed by OpenCode; written to its global config.";
+      description = "MCP servers shared across agents. Written to OpenCode's config and Copilot CLI's mcp-config.json.";
     };
 
     skills = mkOption {
@@ -178,8 +178,9 @@ in
       default = { };
       description = ''
         Agent skills deployed as SKILL.md files.
-        Each key becomes a directory under ~/.config/opencode/skills/<name>/SKILL.md.
-        Skills are discovered on-demand by OpenCode's skill tool.
+        Each key becomes a skill directory for all enabled agents:
+        - OpenCode: ~/.config/opencode/skills/<name>/SKILL.md
+        - Copilot CLI: loaded via --plugin-dir as a bundled plugin
       '';
     };
 
