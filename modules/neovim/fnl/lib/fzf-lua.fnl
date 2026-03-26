@@ -1,7 +1,7 @@
-
 (local M {})
 (fn fzf-exec [fn-name]
   ((. (require :fzf-lua) fn-name)))
+
 (local fns [:files
             :oldfiles
             :buffers
@@ -10,6 +10,7 @@
             :colorschemes
             :grep
             [:grep-visual :grep_visual]
+            [:live-grep :live_grep]
             :resume
             :jumps
             :marks
