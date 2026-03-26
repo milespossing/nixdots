@@ -19,7 +19,7 @@ in
     inputs.sops-nix.homeManagerModules.sops
   ];
 
-  config = lib.mkIf (cfg.opencode.enable || cfg.copilot-cli.enable || cfg.alexandria.enable) {
+  config = lib.mkIf (cfg.opencode.enable || cfg.copilot-cli.enable) {
     sops = {
       age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
 
