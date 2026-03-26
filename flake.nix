@@ -16,10 +16,6 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-    alexandria = {
-      url = "github:milespossing/alexandria";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     my-nixcats = {
       url = "path:./nix-cats";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -56,7 +52,6 @@
       nixos-hardware,
       nixpkgs,
       my-nixcats,
-      alexandria,
       nur,
       ...
     }@inputs:
@@ -120,7 +115,13 @@
               ./hosts/euler
               ./modules/secrets
               ./modules/openclaw-node
-              { my.openclaw-node = { enable = true; displayName = "euler"; tls = true; }; }
+              {
+                my.openclaw-node = {
+                  enable = true;
+                  displayName = "euler";
+                  tls = true;
+                };
+              }
               ./modules/kde
               ./modules/office
               ./modules/syncthing
@@ -192,31 +193,6 @@
               ./modules/work
               ./modules/core
               ./modules/wsl
-              ./modules/openclaw-node
-              {
-                my.openclaw-node = {
-                  enable = true;
-                  displayName = "nixos";
-                  tls = true;
-                  exec = {
-                    security = "allowlist";
-                    ask = "on-miss";
-                    autoAllowSkills = true;
-                    agents.main = {
-                      security = "allowlist";
-                      ask = "on-miss";
-                      autoAllowSkills = true;
-                      allowlist = [
-                        { pattern = "/usr/bin/az"; }
-                        { pattern = "/usr/bin/git"; }
-                      ];
-                    };
-                  };
-                };
-                # System-level sops age key — needed for openclaw-node secrets.
-                # Adjust path if your WSL age key lives elsewhere.
-                sops.age.keyFile = "/home/miles/.config/sops/age/keys.txt";
-              }
               ./modules/syncthing
               ./modules/nixos-tools
               ./modules/dev
@@ -239,10 +215,6 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
-                    my.ai.alexandria = {
-                      enable = true;
-                      embed.backend = "ollama";
-                    };
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
