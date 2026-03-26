@@ -1,68 +1,67 @@
 ;; Dashboard (alpha-nvim)
 ;; Catppuccin-macchiato–friendly startup screen with quick actions.
 
+(local leader :SPC)
+
+(fn text [text ?opts]
+  (let [opts (or ?opts {})]
+    {:type :text :val text : opts}))
+
+(fn padding [?val]
+  (let [val (or ?val 0)]
+    {:type :padding : val}))
+
+(fn button [val on-press ?opts]
+  {:type :button : val :on_press on-press :opts (or ?opts {})})
+
+(fn menu-button [shortcut txt ?on-press]
+  (let [on-press (or ?on-press
+                     (let [key (vim.api.nvim_replace_termcodes (.. (-> shortcut
+                                                                       (: :gsub
+                                                                          "%s"
+                                                                          "")
+                                                                       (: :gsub
+                                                                          leader
+                                                                          :<leader>))
+                                                                   :<Ignore>)
+                                                               true false true)]
+                       #(vim.api.nvim_feedkeys key :t false)))]
+    (button txt on-press {:position :center
+                          : shortcut
+                          :cursor 3
+                          :width 50
+                          :align_shortcut :right
+                          :hl_shortcut :Keyword})))
+
+(fn group [val ?opts]
+  {:type :group : val :opts (or ?opts {})})
+
+(fn config [layout ?opts]
+  {: layout :opts (or ?opts {})})
+
 (let [alpha (require :alpha)
-      dashboard (require :alpha.themes.dashboard)]
-
-  ;; ── Header ──────────────────────────────────────────────
-  (set dashboard.section.header.val
-       ["                                   "
-        "   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆          "
-        "    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦       "
-        "          ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷    ⠻⠿⢿⣿⣧⣄     "
-        "           ⣸⣿⣿⢧ ⢻⠻⣿⣿⣷⣄⣀⠄⠢⣀⡀⠈⠙⠿⠄    "
-        "          ⢠⣿⣿⣿⠈    ⣻⣿⣿⣿⣿⣿⣿⣿⣛⣳⣤⣀⣀   "
-        "   ⢠⣧⣶⣥⡤⢄ ⣸⣿⣿⠂  ⠤⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣧⣤ "
-        "   ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧ "
-        "   ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡐⠿⣿⣿⣿⣿⣿⠟⠉   ⢀⣿⣿⣿⣿⣿⣿⣿⡿⠃ "
-        "   ⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣤⠉⡉⠉⠁   ⢀⡀⣿⣿⣿⣿⣿⡿⠟⣡⣶⣿ "
-        "    ⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠛⠋⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣼⣿⣿⣿⣿ "
-        "      ⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣼⣿⣿⣿⣿⣿ "
-        "        ⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁ ⣼⣿⣿⣿⣿⣿⣿ "
-        "          ⠈⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⣉⡀   ⣿⣿⣿⣿⣿⣿⣿⣿ "
-        "  ⠄⠄⠄⠄⠄⠄⠄⠄ ⠈⠙⢿⣿⣿⣿⣿⣿⣿⡿⠟⢁⣴⣿⣿⣿   ⣿⣿⣿⣿⣿⣿⣿⣿ "
-        "            ⠈⠛⠛⠛⠛⠛⣿⣿⣿⣿⣿⡀  ⢹⣿⣿⣿⣿⣿⣿⣿ "
-        "                                   "])
-
-  (set dashboard.section.header.opts.hl :AlphaHeader)
-
-  ;; ── Buttons ─────────────────────────────────────────────
-  ;; Matches actual keymaps from config/keymaps.fnl & which-key groups
-  (set dashboard.section.buttons.val
-       [(dashboard.button "f" "  Find file"        :<leader>ff)
-        (dashboard.button "r" "  Recent files"     :<leader>fr)
-        (dashboard.button "/" "  Grep text"        "<leader>/")
-        (dashboard.button "b" "  Buffers"          "<leader>,")
-        (dashboard.button "n" "  New file"         :<cmd>ene<cr>)
-        (dashboard.button "q" "  Quit"             :<cmd>qa<cr>)])
-
-  ;; ── Footer ──────────────────────────────────────────────
-  ;; Show loaded plugin count + Neovim version
-  (let [version (vim.version)
-        ver-str (string.format "v%d.%d.%d" version.major version.minor version.patch)
-        plugins-dir (vim.fn.stdpath :data)
-        pack-dir (.. plugins-dir "/site/pack")
-        start-count (length (vim.fn.glob (.. pack-dir "/*/start/*") false true))
-        opt-count (length (vim.fn.glob (.. pack-dir "/*/opt/*") false true))
-        footer (string.format "⚡ %d plugins (%d lazy)  │  Neovim %s" (+ start-count opt-count) opt-count ver-str)]
-    (set dashboard.section.footer.val [footer]))
-
-  (set dashboard.section.footer.opts.hl :AlphaFooter)
-
-  ;; ── Highlights ──────────────────────────────────────────
-  ;; Tie into catppuccin palette groups for a cohesive look.
-  (vim.api.nvim_set_hl 0 :AlphaHeader  {:link :Keyword})
-  (vim.api.nvim_set_hl 0 :AlphaFooter  {:link :Comment})
-  ;; Style the shortcut keys in buttons
-  (vim.api.nvim_set_hl 0 :AlphaShortcut {:link :Type})
-
-  ;; ── Layout ──────────────────────────────────────────────
-  (set dashboard.config.layout
-       [{:type :padding :val 4}
-        dashboard.section.header
-        {:type :padding :val 2}
-        dashboard.section.buttons
-        {:type :padding :val 2}
-        dashboard.section.footer])
-
-  (alpha.setup dashboard.config))
+      fzf-lua (require :lib.fzf-lua)]
+  (local header (text ["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
+                       "⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣶⠾⠿⠛⠛⠛⠛⠛⠛⠿⠷⣶⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀"
+                       "⠀⠀⠀⠀⠀⣠⣴⡿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣶⣄⠀⠀⠀⠀⠀"
+                       "⠀⠀⠀⣠⣾⠟⠉⠀⠀⠀⠀⢿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣷⣄⠀⠀⠀"
+                       "⠀⠀⣴⡿⠋⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣦⠀⠀"
+                       "⠀⣼⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀"
+                       "⢰⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡇"
+                       "⣾⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿"
+                       "⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⡟⠘⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿"
+                       "⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⠟⠀⠀⠘⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿"
+                       "⢸⣿⡀⠀⠀⠀⠀⠀⢀⣾⣿⣿⠏⠀⠀⠀⠀⠹⣿⣿⣿⣷⣀⣀⣀⣀⡀⠀⠀⠀⣿⡟"
+                       "⠀⢿⣷⡀⠀⠀⠀⢀⣾⣿⣿⠏⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⣼⡿⠁"
+                       "⠀⠈⢻⣷⡄⠀⠀⠚⠛⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠛⠛⠛⠛⠛⠀⢀⣼⡿⠁⠀"
+                       "⠀⠀⠀⠹⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⠟⠁⠀⠀"
+                       "⠀⠀⠀⠀⠈⠛⢿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣿⠟⠁⠀⠀⠀⠀"
+                       "⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣿⣶⣦⣤⣤⣤⣠⣤⣤⣤⣶⣾⠿⠟⠉⠀⠀⠀⠀⠀⠀⠀"
+                       "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠛⠛⠛⠛⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+                      {:position :center :hl :Type}))
+  (local buttons
+         (group [(menu-button (string.format "%s f f" leader) :files)
+                 (menu-button (string.format "%s f r" leader) :old_files)
+                 (menu-button (string.format "%s /" leader) :live_grep)
+                 (menu-button (string.format "%s ," leader) :buffers)]))
+  (alpha.setup (config [(padding 2) header (padding 3) buttons] {:margin 5})))
