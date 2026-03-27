@@ -6,4 +6,6 @@
  {:import :plugins.ui}
  {:import :plugins.zellij}
  {:import :plugins.git}
- {:import :plugins.conform}]
+ {:import :plugins.conform}
+ {:import :plugins.debug}
+ {:import :plugins.test}]

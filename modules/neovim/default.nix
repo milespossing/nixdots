@@ -126,6 +126,14 @@ let
     statix
     deadnix
     eslint_d
+
+    # Debug adapters
+    vscode-js-debug
+
+    # kulala (HTTP client) runtime deps
+    openssl
+    grpcurl
+    websocat
   ];
 in
 pkgs.wrapNeovimUnstable neovim-unwrapped (

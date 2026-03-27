@@ -1,8 +1,22 @@
 { pkgs }:
 with pkgs.vimPlugins;
 let
+  treesitter-kulala-http-grammar = pkgs.tree-sitter.buildGrammar {
+    language = "kulala_http";
+    version = "5.3.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "mistweaverco";
+      repo = "kulala.nvim";
+      rev = "902fc21e8a3fee7ccace37784879327baa6d1ece";
+      hash = "sha256-whQpwZMEvD62lgCrnNryrEvfSwLJJ+IqVCywTq78Vf8=";
+    };
+    location = "lua/tree-sitter";
+  };
+
   treesitter = nvim-treesitter.withPlugins (
-    plugins: with plugins; [
+    plugins:
+    with plugins;
+    [
       nix
       lua
       fennel
@@ -13,6 +27,7 @@ let
       regex
       bash
     ]
+    ++ [ treesitter-kulala-http-grammar ]
   );
 in
 {
@@ -47,15 +62,22 @@ in
     gitsigns-nvim
     grug-far-nvim
     indent-blankline-nvim
+    kulala-nvim
     lualine-nvim
     mini-nvim
     neo-tree-nvim
     noice-nvim
+    nvim-dap
+    nvim-dap-ui
+    nvim-dap-virtual-text
     nvim-lint
     nvim-surround
     nvim-ufo
     nvim-paredit
     nvim-parinfer
+    neotest
+    neotest-vitest
+    FixCursorHold-nvim
     todo-comments-nvim
     treesitter
     trouble-nvim
