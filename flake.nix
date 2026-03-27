@@ -32,7 +32,7 @@
     sops-nix.url = "github:Mic92/sops-nix";
     nix-openclaw.url = "github:openclaw/nix-openclaw";
     nix-openclaw.inputs.nixpkgs.follows = "nixpkgs";
-    # Neovim nightly for nvim-next — do NOT follow nixpkgs (tree-sitter hash mismatch)
+    # Neovim nightly for nvim — do NOT follow nixpkgs (tree-sitter hash mismatch)
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # fennel-ls docsets for Neovim API completions/hover
     fennel-ls-nvim-docs = {
@@ -68,14 +68,14 @@
             sops
           ];
         };
-        packages.nvim = my-nixcats.packages.${system}.default;
-        packages.nvim-next = (import nixpkgs { inherit system; }).callPackage ./modules/neovim {
+        packages.nvim-old = my-nixcats.packages.${system}.default;
+        packages.nvim = (import nixpkgs { inherit system; }).callPackage ./modules/neovim {
           neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
           fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
         };
-        apps.nvim-next = {
+        apps.nvim = {
           type = "app";
-          program = "${self.packages.${system}.nvim-next}/bin/nvim";
+          program = "${self.packages.${system}.nvim}/bin/nvim";
         };
       }
     )
@@ -89,8 +89,8 @@
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             (final: prev: {
-              nvim-next = final.symlinkJoin {
-                name = "nvim-next";
+              nvim = final.symlinkJoin {
+                name = "nvim";
                 paths = [
                   (final.callPackage ./modules/neovim {
                     neovim-unwrapped =
@@ -98,9 +98,6 @@
                     fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
                   })
                 ];
-                postBuild = ''
-                  mv $out/bin/nvim $out/bin/nvim-next
-                '';
               };
             })
             nur.overlays.default
