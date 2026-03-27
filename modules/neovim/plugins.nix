@@ -23,6 +23,7 @@ in
     lze
 
     alpha-nvim
+    snacks-nvim
     nui-nvim
     nvim-notify
     nvim-web-devicons
@@ -55,7 +56,6 @@ in
     nvim-ufo
     nvim-paredit
     nvim-parinfer
-    snacks-nvim
     todo-comments-nvim
     treesitter
     trouble-nvim

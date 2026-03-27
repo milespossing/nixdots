@@ -17,6 +17,7 @@ vim.loader.enable()
 
 -- Core options and leader keys
 require 'config.options'
+require 'config.snacks'
 
 -- Load all plugin specs via lze (opt plugins only)
 -- blink.cmp + LSP are loaded lazily on BufReadPost via plugins.lsp

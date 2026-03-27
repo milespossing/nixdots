@@ -1,8 +1,12 @@
 ;; LSP configuration
 
 (fn attach-base [_ buf]
-  (let [km (require :lib.keymap)]
+  (let [km (require :lib.keymap)
+        picker (require :lib.picker)]
     (km.group :<leader>c :Code)
+    (km.map :gd #(picker.lsp-definitions) {:desc "Lsp Definitions"})
+    (km.map :grr #(picker.lsp-references) {:desc "Lsp References"})
+    (km.map :xs #(picker.lsp-document-symbols) {:desc "Document symbols"})
     (km.map :<leader>ca vim.lsp.buf.code_action
             {:desc "Lsp Code Action" :buffer buf})))
 

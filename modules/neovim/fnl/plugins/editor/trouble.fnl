@@ -2,9 +2,6 @@
   (let [trouble (require :trouble)
         key (require :lib.keymap)]
     (trouble.setup {:modes {:lsp {:win {:position :right}}}})
-    (key.map :<leader>xx "<cmd>Trouble diagnostics toggle<cr>")
-    (let [config (require :fzf-lua.config)
-          actions (. (require :trouble.sources.fzf) :actions)]
-      (set config.defaults.actions.files.ctrl-t actions.open))))
+    (key.map :<leader>xx "<cmd>Trouble diagnostics toggle<cr>")))
 
 {:name :trouble.nvim :event :DeferredUIEnter : after}

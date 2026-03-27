@@ -3,6 +3,25 @@
 ;; Nav
 (let [km (require :lib.keymap)
       plugin-utils (require :lib.plugin-utils)]
+  (km.group :<leader>f :file)
+  (km.group :<leader>h :help {:icon " "})
+  (km.group :<leader>s :search)
+  (km.group "[" :prev)
+  (km.group "]" :next)
+  (km.group :<leader>c :code)
+  (km.group :<leader>d :debug)
+  (km.group :<leader>g :git)
+  (km.group :<leader>gh :hunks)
+  (km.group :<leader>o :toggle)
+  (km.group :<leader>u :ui)
+  (km.group :<leader>x :diagnostics)
+  (km.group :<leader>w :window
+            {:expand (fn []
+                       ((. (require :which-key.extras) :expand :win)))})
+  (km.group :<leader>b :buffer
+            {:expand (fn []
+                       ((. (require :which-key.extras) :expand :buf)))})
+  (km.hydra :<c-w><space> :<c-w>)
   (if vim.env.ZELLIJ
       (let [zj (require :lib.zellij)]
         (km.group :<c-w>z :Zellij)
@@ -33,20 +52,23 @@
   (km.map :s #(plugin-utils.flash.jump) {:desc :Flash :mode [:n :x :o]})
   (km.map :S #(plugin-utils.flash.treesitter)
           {:desc "Flash Treesitter" :mode [:n :x :o]})
-  (let [fzf-lua (require :lib.fzf-lua)]
-    (km.map :<leader>ff #(fzf-lua.files) {:desc "Find files"})
-    (km.map :<leader>fr #(fzf-lua.oldfiles) {:desc "Recent Files"})
-    (km.map "<leader>," #(fzf-lua.buffers) {:desc "Find buffers"})
-    (km.map :<leader>hh #(fzf-lua.help-tags) {:desc "Find help tags"})
-    (km.map :<leader>hk #(fzf-lua.keymaps) {:desc "Find keymaps"})
-    (km.map :<leader>hc #(fzf-lua.colorschemes) {:desc :Colorschemes})
-    (km.map :<leader>/ #(fzf-lua.live-grep))
-    (km.map :<leader>/ #(fzf-lua.grep-visual) {:mode :v :desc "Grep selection"})
-    (km.map :<leader>sR #(fzf-lua.resume) {:desc "Resume Search"})
-    (km.map :<leader>sj #(fzf-lua.jumps) {:desc "Search jumps"})
-    (km.map :<leader>sm #(fzf-lua.marks) {:desc "Search Marks"})
-    (km.map :<leader>sh #(fzf-lua.search_history) {:desc "Search history"})
-    (km.map :<leader>sz #(fzf-lua.undotree) {:desc :Undotree}))
+  (let [picker (require :lib.picker)]
+    (km.map :<leader>ff #(picker.files) {:desc "Find files"})
+    (km.map :<leader>fr #(picker.recent) {:desc "Recent Files"})
+    (km.map "<leader>," #(picker.buffers) {:desc "Find buffers"})
+    (km.map :<leader>hh #(picker.help) {:desc "Find help tags"})
+    (km.map :<leader>hk #(picker.keymaps) {:desc "Find keymaps"})
+    (km.map :<leader>hc #(picker.colorschemes) {:desc :Colorschemes})
+    (km.map :<leader>/ #(picker.grep))
+    (km.map :<leader>sg #(picker.grep) {:desc "Live Grep"})
+    (km.map :<leader>sG #(picker.grep {:live false}) {:desc :Grep})
+    (km.map :<leader>sw #(picker.grep-word)
+            {:mode [:n :x] :desc "Grep selection or word"})
+    (km.map :<leader>sR #(picker.resume) {:desc "Resume Search"})
+    (km.map :<leader>sj #(picker.jumps) {:desc "Search jumps"})
+    (km.map :<leader>sm #(picker.marks) {:desc "Search Marks"})
+    (km.map :<leader>sh #(picker.search-history) {:desc "Search history"})
+    (km.map :<leader>sz #(picker.undo) {:desc :Undotree}))
   (km.map :gs "<Plug>(nvim-surround-normal)" {:desc :Surround})
   (km.map :gss "<Plug>(nvim-surround-normal-cur)" {:desc "Surround Current"})
   (km.map :gsS "<Plug>(nvim-surround-normal-line)" {:desc "Surround Line"})
