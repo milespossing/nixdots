@@ -223,5 +223,52 @@
             ];
           };
         };
+          # HTPC — couch-friendly media center
+          htpc = nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs; };
+            modules = [
+              { nixpkgs.overlays = overlays; }
+              ./modules/core
+              ./hosts/htpc
+              ./modules/htpc
+              {
+                my.htpc = {
+                  enable = true;
+                  mediaDir = "/srv/media";
+                  jellyfin.enable = true;
+                  steam.enable = true;
+                  steam.autoStart = true;
+                  # kiosk.enable = true;  # Uncomment to boot straight into Steam Big Picture
+                };
+              }
+              ./modules/openclaw-node
+              {
+                my.openclaw-node = {
+                  enable = true;
+                  displayName = "htpc";
+                  tls = true;
+                };
+                sops.age.keyFile = "/home/miles/.config/sops/age/keys.txt";
+              }
+              ./modules/syncthing
+              ./modules/nixos-tools
+              inputs.home-manager.nixosModules.default
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.extraSpecialArgs = { inherit inputs; };
+                home-manager.users.miles =
+                  { pkgs, ... }:
+                  {
+                    imports = [
+                      ./modules/home/base
+                      ./modules/home/navi
+                    ];
+                    home.stateVersion = "25.11";
+                  };
+              }
+            ];
+          };
+        };
     };
 }
