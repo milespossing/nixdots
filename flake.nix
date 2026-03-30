@@ -63,10 +63,16 @@
             sops
           ];
         };
-        packages.nvim = (import nixpkgs { inherit system; }).callPackage ./modules/neovim {
-          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
-          fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
-        };
+        packages.nvim =
+          (import nixpkgs {
+            inherit system;
+            overlays = [ (import ./overlays/neotest-fix.nix) ];
+          }).callPackage
+            ./modules/neovim
+            {
+              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
+              fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
+            };
         apps.nvim = {
           type = "app";
           program = "${self.packages.${system}.nvim}/bin/nvim";
@@ -79,6 +85,7 @@
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
+            (import ./overlays/neotest-fix.nix)
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default

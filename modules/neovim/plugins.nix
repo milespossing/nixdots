@@ -23,6 +23,7 @@ let
       c_sharp
       javascript
       typescript
+      tsx
       clojure
       regex
       bash
@@ -44,6 +45,10 @@ in
     nvim-web-devicons
     vim-startuptime
     which-key-nvim
+
+    # Treesitter parsers must be on the rtp at startup so that
+    # neotest's headless subprocess can find them.
+    treesitter
   ];
 
   # Plugins loaded on demand via lze (packadd).
@@ -79,7 +84,6 @@ in
     neotest-vitest
     FixCursorHold-nvim
     todo-comments-nvim
-    treesitter
     trouble-nvim
     zellij-nav-nvim
   ];

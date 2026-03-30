@@ -24,6 +24,14 @@
       {:adapters [vitest]
        :consumers {:trouble trouble-consumer}})
 
+    ;; Neotest's subprocess spawns nvim with -u NONE and can't find
+    ;; Nix-managed treesitter grammars (separate store path). The
+    ;; fallback (child_failed) doesn't trigger because the error is
+    ;; thrown via nio futures instead of returned. Disable subprocess
+    ;; so discovery uses the main process instead.
+    (let [subprocess (require :neotest.lib.subprocess)]
+      (set subprocess.enabled (fn [] false)))
+
     (vim.api.nvim_create_autocmd :FileType
       {:pattern [:neotest-output]
        :callback (fn [ev]
