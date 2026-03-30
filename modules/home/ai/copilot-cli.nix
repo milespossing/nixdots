@@ -38,7 +38,8 @@ let
   mcpConfigJson = builtins.toJSON { mcpServers = mcpJson; };
 
   # Build a Copilot CLI plugin derivation from shared skills.
-  # Structure: .claude-plugin/marketplace.json + skills/<name>/SKILL.md
+  # --plugin-dir looks for plugin.json (not marketplace.json) at:
+  #   plugin.json | .github/plugin/plugin.json | .claude-plugin/plugin.json
   mkSkillMd =
     name: skill:
     let
@@ -58,27 +59,18 @@ let
 
   skillNames = builtins.attrNames cfg.skills;
 
-  marketplace = builtins.toJSON {
+  pluginJson = builtins.toJSON {
     name = "nix-managed-skills";
-    metadata = {
-      description = "Agent skills managed declaratively via NixOS/home-manager";
-      version = "1.0.0";
-    };
-    plugins = [
-      {
-        name = "nix-managed-skills";
-        description = "Skills from my.ai.skills";
-        source = "./";
-        skills = map (n: "./skills/${n}") skillNames;
-      }
-    ];
+    description = "Agent skills managed declaratively via NixOS/home-manager";
+    version = "1.0.0";
+    skills = map (n: "./skills/${n}") skillNames;
   };
 
   skillsPlugin = pkgs.runCommand "copilot-skills-plugin" { } (
     ''
       mkdir -p $out/.claude-plugin
-      cat > $out/.claude-plugin/marketplace.json <<'MANIFEST'
-      ${marketplace}
+      cat > $out/.claude-plugin/plugin.json <<'MANIFEST'
+      ${pluginJson}
       MANIFEST
     ''
     + lib.concatStringsSep "\n" (
