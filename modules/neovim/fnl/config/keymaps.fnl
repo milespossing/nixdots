@@ -31,6 +31,8 @@
         (km.map :<c-j> :<cmd>ZellijNavigateDown<cr> {:desc "Navigate down"})
         (km.map :<c-k> :<cmd>ZellijNavigateUp<cr> {:desc "Navigate up"}) ; tabs
         (km.map :<c-w>zt #(zj.new-tab) {:desc "New zellij tab"}) ; panes
+        (km.map :<c-t> #(zj.new-tab) {:desc "New zellij tab"})
+        (km.map :<a-f> #(zj.toggle-floating) {:desc "Toggle floating panes"})
         (km.map :<a-n> #(zj.new-pane))
         (km.map :<c-w>zp #(zj.new-pane) {:desc "New pane"}) ; pane sizing
         (km.map :<c-w>zh #(zj.increase :left) {:desc "Increase pane left"})

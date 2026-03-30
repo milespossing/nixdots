@@ -17,6 +17,9 @@
 (fn M.new-tab []
   (M.action :new-tab))
 
+(fn M.toggle-floating []
+  (M.action :toggle-floating-panes))
+
 (fn M.new-pane [?direction]
   (let [direction (or ?direction :down)]
     (M.action :new-pane :--direction direction)))
