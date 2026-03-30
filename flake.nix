@@ -173,6 +173,7 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
+                    my.ai.crush.enable = true;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
@@ -216,6 +217,7 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
+                    my.ai.crush.enable = true;
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;

@@ -130,6 +130,10 @@ in
       enable = mkEnableOption "GitHub Copilot CLI";
     };
 
+    crush = {
+      enable = mkEnableOption "Charmbracelet Crush AI agent";
+    };
+
     aider = {
       enable = mkEnableOption "Aider AI pair programming";
       extraConfig = mkOption {
