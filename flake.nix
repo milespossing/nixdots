@@ -133,6 +133,7 @@
                   imports = [
                     ./modules/home/base
                     ./modules/home/navi
+                    ./modules/home/helix
                     ./modules/home/user-space
                     ./modules/home/zen-browser
                   ];
@@ -165,6 +166,7 @@
                       ./modules/home/base
                       ./modules/home/navi
                       ./modules/home/ai
+                      ./modules/home/helix
                       ./modules/home/user-space
                       ./modules/home/zen-browser
                     ];
@@ -208,6 +210,7 @@
                       ./modules/home/wsl
                       ./modules/home/navi
                       ./modules/home/ai
+                      ./modules/home/helix
                       ./modules/home/work
                     ];
                     my.ai.aider.enable = true;
