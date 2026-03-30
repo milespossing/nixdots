@@ -16,10 +16,6 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-    my-nixcats = {
-      url = "path:./nix-cats";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,7 +47,6 @@
       flake-utils,
       nixos-hardware,
       nixpkgs,
-      my-nixcats,
       nur,
       ...
     }@inputs:
@@ -68,7 +63,6 @@
             sops
           ];
         };
-        packages.nvim-old = my-nixcats.packages.${system}.default;
         packages.nvim = (import nixpkgs { inherit system; }).callPackage ./modules/neovim {
           neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
           fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
