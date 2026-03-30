@@ -11,7 +11,8 @@
              :input {}
              :notify {}
              :notifier {}
-             :bufdelete {}})
+             :bufdelete {}
+             :toggle {}})
 
 (local snacks (require :snacks))
 

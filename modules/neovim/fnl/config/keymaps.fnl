@@ -13,6 +13,7 @@
   (km.group :<leader>g :git)
   (km.group :<leader>gh :hunks)
   (km.group :<leader>o :toggle)
+  (km.group :<leader>oc :conform)
   (km.group :<leader>u :ui)
   (km.group :<leader>x :diagnostics)
   (km.group :<leader>w :window
@@ -51,6 +52,18 @@
         (km.map :<C-l> :<C-w>l {:desc "Navigate right"})
         (km.map :<C-j> :<C-w>j {:desc "Navigate down"})
         (km.map :<C-k> :<C-w>k {:desc "Navigate up"})))
+  ;; Toggles
+  (let [snacks (require :snacks)]
+    (km.toggle :<leader>ocf {:name "Format on Save"
+                             :get #(not vim.g.disable_autoformat)
+                             :set #(set vim.g.disable_autoformat (not $1))})
+    (km.toggle :<leader>od (snacks.toggle.diagnostics))
+    (km.toggle :<leader>oi (snacks.toggle.inlay_hints))
+    (km.toggle :<leader>os (snacks.toggle.option :spell {:name :Spelling}))
+    (km.toggle :<leader>ow (snacks.toggle.option :wrap {:name "Word Wrap"}))
+    (km.toggle :<leader>or
+               (snacks.toggle.option :relativenumber
+                                     {:name "Relative Numbers"})))
   (km.map :s #(plugin-utils.flash.jump) {:desc :Flash :mode [:n :x :o]})
   (km.map :S #(plugin-utils.flash.treesitter)
           {:desc "Flash Treesitter" :mode [:n :x :o]})
