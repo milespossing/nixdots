@@ -13,6 +13,17 @@ let
     location = "lua/tree-sitter";
   };
 
+  treesitter-org-grammar = pkgs.tree-sitter.buildGrammar {
+    language = "org";
+    version = "2.0.3";
+    src = pkgs.fetchFromGitHub {
+      owner = "nvim-orgmode";
+      repo = "tree-sitter-org";
+      rev = "2.0.3";
+      hash = "sha256-Ok4BlEshQSAxxIdqPWgYx82ksqm6XJ5G9oXpD94Oozg=";
+    };
+  };
+
   treesitter = nvim-treesitter.withPlugins (
     plugins:
     with plugins;
@@ -28,7 +39,10 @@ let
       regex
       bash
     ]
-    ++ [ treesitter-kulala-http-grammar ]
+    ++ [
+      treesitter-kulala-http-grammar
+      treesitter-org-grammar
+    ]
   );
 in
 {
@@ -76,6 +90,7 @@ in
     nvim-dap-ui
     nvim-dap-virtual-text
     nvim-lint
+    pkgs.vimPlugins.orgmode
     nvim-surround
     nvim-ufo
     nvim-paredit
