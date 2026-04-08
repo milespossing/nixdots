@@ -178,6 +178,7 @@
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
                     my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
+                    my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
                     home.stateVersion = "25.11";
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
@@ -223,6 +224,7 @@
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
                     my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
+                    my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
                     home.stateVersion = "25.11";
                   };
               }

@@ -40,5 +40,8 @@ in
       path = "skills/ddevaal/azure-cli/SKILL.md";
       hash = "sha256-7jOOGiZmMXJTfIM2f6Do45/F9CiknrIgjUlXQAxxQZk=";
     };
+
+    # PR Review — interactive Azure DevOps pull request review workflow.
+    pr-review = aiLib.mkSkillFromFile ./pr-review/SKILL.md;
   };
 }
