@@ -13,7 +13,19 @@
   wsl = {
     enable = true;
     defaultUser = config.my.username;
+    wslConf.automount.options = "metadata,umask=22,fmask=11";
   };
+
+  # Allow running unpatched dynamically-linked binaries (e.g. .NET tools
+  # installed via corporate installers like PathInstaller/agency).
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc
+    openssl
+    icu
+    zlib
+    curl
+  ];
 
   # Secret Service provider backed by pass/GPG (replaces gnome-keyring)
   services.dbus.packages = [ pkgs.pass-secret-service ];

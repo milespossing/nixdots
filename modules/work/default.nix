@@ -4,6 +4,7 @@
     # Tools
     (azure-cli.withExtensions [
       azure-cli.extensions.azure-devops
+      azure-cli.extensions.kusto
     ])
   ];
 }

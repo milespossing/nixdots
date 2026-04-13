@@ -28,8 +28,6 @@
     sops-nix.url = "github:Mic92/sops-nix";
     nix-openclaw.url = "github:openclaw/nix-openclaw";
     nix-openclaw.inputs.nixpkgs.follows = "nixpkgs";
-    # Neovim nightly for nvim — do NOT follow nixpkgs (tree-sitter hash mismatch)
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     # fennel-ls docsets for Neovim API completions/hover
     fennel-ls-nvim-docs = {
       url = "git+https://git.sr.ht/~micampe/fennel-ls-nvim-docs";
@@ -76,7 +74,6 @@
           }).callPackage
             ./modules/neovim
             {
-              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${system}.neovim;
               fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
             };
         apps.nvim = {
@@ -105,8 +102,6 @@
                 name = "nvim";
                 paths = [
                   (final.callPackage ./modules/neovim {
-                    neovim-unwrapped =
-                      inputs.neovim-nightly-overlay.packages.${final.stdenv.hostPlatform.system}.neovim;
                     fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
                   })
                 ];
@@ -278,6 +273,7 @@
                     my.ai.copilot-cli.enable = true;
                     my.ai.crush.enable = true;
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
+                    my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;

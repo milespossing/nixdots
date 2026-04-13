@@ -34,5 +34,10 @@ in
       ];
       package = final.nodejs;
     };
+
+    # ICM — Incident management MCP server (Azure HTTP endpoint).
+    icm = aiLib.mkRemoteMcp {
+      url = "https://icm-mcp-prod.azure-api.net/v1/";
+    };
   };
 }
