@@ -66,7 +66,6 @@
         packages.nvim =
           (import nixpkgs {
             inherit system;
-            overlays = [ (import ./overlays/neotest-fix.nix) ];
           }).callPackage
             ./modules/neovim
             {
@@ -85,7 +84,6 @@
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
-            (import ./overlays/neotest-fix.nix)
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
@@ -120,7 +118,7 @@
                   tls = true;
                 };
               }
-              ./modules/kde
+              ./modules/wm/hyprland.nix
               ./modules/office
               ./modules/syncthing
               ./modules/userland
@@ -134,10 +132,15 @@
                     ./modules/home/base
                     ./modules/home/navi
                     ./modules/home/helix
+                    ./modules/home/ai
                     ./modules/home/user-space
+                    ./modules/home/hyprland
                     ./modules/home/zen-browser
+                    ./hosts/euler/monitors.nix
                   ];
                   home.stateVersion = "25.11";
+                  my.ai.crush.enable = true;
+                  my.zellij.autoStart = false;
                 };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }

@@ -108,7 +108,7 @@
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings = true;
-    open = true;
+    open = false;
   };
 
   environment.sessionVariables = {
