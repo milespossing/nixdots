@@ -118,7 +118,7 @@
                   tls = true;
                 };
               }
-              ./modules/wm/hyprland.nix
+              ./modules/wm/sway.nix
               ./modules/office
               ./modules/syncthing
               ./modules/userland
@@ -134,9 +134,9 @@
                     ./modules/home/helix
                     ./modules/home/ai
                     ./modules/home/user-space
-                    ./modules/home/hyprland
+                    ./modules/home/sway
                     ./modules/home/zen-browser
-                    ./hosts/euler/monitors.nix
+                    ./hosts/euler/sway-monitors.nix
                   ];
                   home.stateVersion = "25.11";
                   my.ai.crush.enable = true;
