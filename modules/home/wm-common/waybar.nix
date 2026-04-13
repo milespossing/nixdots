@@ -9,9 +9,14 @@
         height = 36;
         spacing = 4;
         modules-left = [
+          "hyprland/workspaces"
+          "hyprland/submap"
           "sway/workspaces"
           "sway/mode"
+          "niri/workspaces"
+          "hyprland/window"
           "sway/window"
+          "niri/window"
         ];
         modules-center = [ "clock" ];
         modules-right = [
@@ -24,6 +29,34 @@
           "bluetooth"
           "tray"
         ];
+
+        "hyprland/workspaces" = {
+          format = "{icon}";
+          format-icons = {
+            "1" = "一";
+            "2" = "二";
+            "3" = "三";
+            "4" = "四";
+            "5" = "五";
+            "6" = "六";
+            "7" = "七";
+            "8" = "八";
+            "9" = "九";
+            "10" = "十";
+          };
+          on-click = "activate";
+          sort-by-number = true;
+        };
+
+        "hyprland/submap" = {
+          format = "  {}";
+          tooltip = false;
+        };
+
+        "hyprland/window" = {
+          max-length = 40;
+          separate-outputs = true;
+        };
 
         "sway/workspaces" = {
           format = "{icon}";
@@ -49,6 +82,31 @@
         };
 
         "sway/window" = {
+          max-length = 40;
+        };
+
+        "niri/workspaces" = {
+          format = "{icon}";
+          format-icons = {
+            "1" = "一";
+            "2" = "二";
+            "3" = "三";
+            "4" = "四";
+            "5" = "五";
+            "6" = "六";
+            "7" = "七";
+            "8" = "八";
+            "9" = "九";
+            "main" = "一";
+            "browser" = "二";
+            "dev" = "三";
+            "chat" = "四";
+            "media" = "五";
+          };
+        };
+
+        "niri/window" = {
+          format = "{}";
           max-length = 40;
         };
 
@@ -155,6 +213,7 @@
         transition: all 0.3s ease;
       }
 
+      #workspaces button.active,
       #workspaces button.focused {
         color: #cba6f7;
         border-bottom: 2px solid #cba6f7;
@@ -165,6 +224,7 @@
         color: #f5e0dc;
       }
 
+      #submap,
       #mode {
         color: #f38ba8;
         font-weight: bold;

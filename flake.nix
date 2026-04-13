@@ -39,6 +39,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -106,7 +110,7 @@
           euler = nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs; };
             modules = [
-              { nixpkgs.overlays = overlays; }
+              { nixpkgs.overlays = overlays ++ [ inputs.niri.overlays.niri ]; }
               ./modules/core
               ./hosts/euler
               ./modules/secrets
@@ -118,7 +122,7 @@
                   tls = true;
                 };
               }
-              ./modules/wm/sway.nix
+              ./modules/wm/all.nix
               ./modules/office
               ./modules/syncthing
               ./modules/userland
@@ -134,9 +138,14 @@
                     ./modules/home/helix
                     ./modules/home/ai
                     ./modules/home/user-space
+                    ./modules/home/wm-common
+                    ./modules/home/hyprland
                     ./modules/home/sway
+                    ./modules/home/niri
                     ./modules/home/zen-browser
+                    ./hosts/euler/monitors.nix
                     ./hosts/euler/sway-monitors.nix
+                    ./hosts/euler/niri-monitors.nix
                   ];
                   home.stateVersion = "25.11";
                   my.ai.crush.enable = true;

@@ -16,6 +16,4 @@
       drun-display-format = "{name}";
     };
   };
-
-  home.packages = with pkgs; [ papirus-icon-theme ];
 }

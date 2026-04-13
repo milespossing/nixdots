@@ -17,6 +17,8 @@ in
 {
   wayland.windowManager.sway = {
     enable = true;
+    package = pkgs.swayfx;
+    checkConfig = false;
     systemd.enable = true;
 
     config = {
@@ -252,6 +254,29 @@ in
         }
       ];
     };
+
+    extraConfig = ''
+      # SwayFX visual enhancements
+      shadows enable
+      shadow_blur_radius 12
+      shadow_color #1a1a2ecc
+      shadow_inactive_color #1a1a2e66
+
+      corner_radius 10
+
+      blur enable
+      blur_radius 6
+      blur_passes 3
+      blur_noise 0.02
+      blur_brightness 0.9
+
+      default_dim_inactive 0.15
+      dim_inactive_colors.unfocused #1e1e2ecc
+
+      layer_effects "waybar" shadows enable; corner_radius 0; blur enable
+      layer_effects "rofi" shadows enable; corner_radius 12; blur enable
+      layer_effects "notifications" shadows enable; corner_radius 10; blur enable
+    '';
 
     extraSessionCommands = ''
       export LIBVA_DRIVER_NAME=nvidia
