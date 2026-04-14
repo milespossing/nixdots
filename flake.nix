@@ -133,14 +133,6 @@
               ./modules/network
               ./hosts/euler
               ./modules/secrets
-              ./modules/openclaw-node
-              {
-                my.openclaw-node = {
-                  enable = true;
-                  displayName = "euler";
-                  tls = true;
-                };
-              }
               ./modules/wm/all.nix
               ./modules/office
               ./modules/syncthing
