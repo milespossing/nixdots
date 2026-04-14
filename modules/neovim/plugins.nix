@@ -38,6 +38,8 @@ let
       clojure
       regex
       bash
+      json
+      yaml
     ]
     ++ [
       treesitter-kulala-http-grammar
@@ -63,6 +65,9 @@ in
     # Treesitter parsers must be on the rtp at startup so that
     # neotest's headless subprocess can find them.
     treesitter
+
+    # Schema catalog for JSON/YAML LSPs (OpenAPI, etc.)
+    SchemaStore-nvim
   ];
 
   # Plugins loaded on demand via lze (packadd).

@@ -115,6 +115,8 @@ let
     lua-language-server
     fennel-ls-wrapped
     nixd
+    vscode-langservers-extracted
+    yaml-language-server
 
     # Formatters
     fnlfmt
