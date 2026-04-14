@@ -27,7 +27,6 @@
 
   # Enable networking
   networking.hostName = "euler"; # Define your hostname.
-  networking.networkmanager.enable = true;
   services.resolved.enable = true;
   networking.wireguard.enable = true;
   networking.firewall = {

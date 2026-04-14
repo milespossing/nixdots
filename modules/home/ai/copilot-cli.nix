@@ -100,6 +100,80 @@ let
     lib.mapAttrsToList (_: srv: srv.package) enabledMcpServers
   );
 
+  # Default notification hooks using notify-send
+  notifyHooks = lib.optionalAttrs cop.notifications.enable {
+    sessionEnd = [
+      {
+        type = "command";
+        bash = ''
+          INPUT=$(cat)
+          REASON=$(echo "$INPUT" | ${lib.getExe pkgs.jq} -r '.reason')
+          case "$REASON" in
+            complete)
+              ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency normal --icon dialog-positive \
+                "Task Complete" "Copilot finished working." ;;
+            error)
+              ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency critical --icon dialog-error \
+                "Session Error" "Copilot session ended with an error." ;;
+            abort|timeout)
+              ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency normal --icon dialog-warning \
+                "Session Ended" "Copilot session was ''${REASON}." ;;
+            user_exit)
+              ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency low --icon dialog-information \
+                "Session Closed" "Copilot session ended." ;;
+          esac
+        '';
+        timeoutSec = 5;
+      }
+    ];
+    errorOccurred = [
+      {
+        type = "command";
+        bash = ''
+          INPUT=$(cat)
+          MSG=$(echo "$INPUT" | ${lib.getExe pkgs.jq} -r '.error.message // "Unknown error"')
+          ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency critical --icon dialog-error \
+            "Error" "$MSG"
+        '';
+        timeoutSec = 5;
+      }
+    ];
+    postToolUse = [
+      {
+        type = "command";
+        bash = ''
+          INPUT=$(cat)
+          TOOL=$(echo "$INPUT" | ${lib.getExe pkgs.jq} -r '.toolName')
+          if [ "$TOOL" = "ask_user" ]; then
+            ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency normal --icon dialog-question \
+              "Input Needed" "Copilot is waiting for your response."
+          fi
+        '';
+        timeoutSec = 5;
+      }
+    ];
+  };
+
+  # Merge notification hooks with user-defined hooks (user hooks take precedence)
+  allHooks = lib.recursiveUpdate notifyHooks cop.hooks;
+
+  # Nix-managed config overlay merged into ~/.copilot/config.json at launch.
+  # Only the "hooks" key is managed; auth/model/tokens remain mutable.
+  hooksOverlay = pkgs.writeText "copilot-hooks-overlay.json" (builtins.toJSON { hooks = allHooks; });
+
+  mergeHooksScript = pkgs.writeShellScript "copilot-merge-hooks" ''
+    COPILOT_CFG="$HOME/.copilot/config.json"
+    if [ -f "$COPILOT_CFG" ]; then
+      ${lib.getExe pkgs.jq} -s '.[0] * .[1]' "$COPILOT_CFG" ${hooksOverlay} > "$COPILOT_CFG.tmp" \
+        && mv "$COPILOT_CFG.tmp" "$COPILOT_CFG"
+    else
+      mkdir -p "$HOME/.copilot"
+      cp ${hooksOverlay} "$COPILOT_CFG"
+    fi
+  '';
+
+  hooksRun = lib.optionalString (allHooks != { }) "--run ${mergeHooksScript}";
+
   copilot-wrapped = pkgs.symlinkJoin {
     name = "copilot-wrapped";
     paths = [ pkgs.github-copilot-cli ];
@@ -120,6 +194,7 @@ let
         wrapProgram $out/bin/copilot \
           ${pluginArgs} \
           ${pathPrefix} \
+          ${hooksRun} \
           ${secretsRun}
       '';
   };

@@ -177,6 +177,7 @@
           format-ethernet = "󰈀  {ipaddr}";
           format-disconnected = "󰤭  disconnected";
           tooltip-format = "{ifname}: {ipaddr}/{cidr}";
+          on-click = "nm-connection-editor";
         };
 
         bluetooth = {

@@ -128,6 +128,28 @@ in
 
     copilot-cli = {
       enable = mkEnableOption "GitHub Copilot CLI";
+      hooks = mkOption {
+        type = types.attrsOf (types.listOf (types.attrsOf types.anything));
+        default = { };
+        description = ''
+          Copilot CLI hooks keyed by event name (sessionStart, sessionEnd,
+          userPromptSubmitted, preToolUse, postToolUse, errorOccurred).
+          Each event maps to a list of hook objects ({ type, bash, timeoutSec, … }).
+          Merged into ~/.copilot/config.json on activation.
+        '';
+        example = {
+          sessionEnd = [
+            {
+              type = "command";
+              bash = "notify-send 'Done'";
+              timeoutSec = 5;
+            }
+          ];
+        };
+      };
+      notifications = {
+        enable = mkEnableOption "desktop notifications via Copilot CLI hooks (notify-send)";
+      };
     };
 
     crush = {

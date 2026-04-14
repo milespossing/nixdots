@@ -130,6 +130,7 @@
                 ];
               }
               ./modules/core
+              ./modules/network
               ./hosts/euler
               ./modules/secrets
               ./modules/openclaw-node
@@ -171,6 +172,7 @@
                     home.stateVersion = "25.11";
                     my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
+                    my.ai.copilot-cli.notifications.enable = true;
                     my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
                     my.zellij.autoStart = false;
                   };
@@ -192,6 +194,7 @@
                 ];
               }
               ./modules/core
+              ./modules/network
               ./hosts/laplace
               ./modules/userland
               ./modules/syncthing
@@ -225,6 +228,7 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
+                    my.ai.copilot-cli.notifications.enable = true;
                     my.ai.crush.enable = true;
                     my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
                     my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
@@ -233,6 +237,7 @@
                     my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
                     my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
                     home.stateVersion = "25.11";
+                    my.zellij.autoStart = false;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
