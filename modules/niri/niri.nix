@@ -5,8 +5,6 @@
   extraConfig ? "",
 }:
 let
-  baseKdl = builtins.readFile ./config.kdl;
-
   screenshot-region = pkgs.writeShellScript "niri-screenshot-region" ''
     grim -g "$(slurp)" - | swappy -f -
   '';
@@ -21,37 +19,34 @@ let
     ${pkgs.awww}/bin/awww img "$img" --transition-type grow --transition-pos cursor --transition-duration 2
   '';
 
-  # KDL blocks that need Nix store paths
-  nixBinds = ''
-    // ── Nix-generated binds (store paths) ─────────────────────────────
-    binds {
-        Mod+Return { spawn "${pkgs.kitty}/bin/kitty"; }
-        Mod+E      { spawn "${pkgs.kitty}/bin/kitty" "-e" "yazi"; }
-        Mod+D      { spawn "${pkgs.rofi}/bin/rofi" "-show" "drun" "-show-icons"; }
-
-        Mod+Shift+V { spawn "sh" "-c" "cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | cliphist decode | wl-copy"; }
-        Mod+Shift+C { spawn "${color-picker}"; }
-        Mod+Shift+W { spawn "${wallpaper-cycle}"; }
-    }
-  '';
-
-  nixSpawn = ''
-    // ── Nix-generated spawn-at-startup ────────────────────────────────
-    spawn-at-startup "${pkgs.waybar}/bin/waybar"
-    spawn-at-startup "nm-applet" "--indicator"
-    spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--type" "text" "--watch" "cliphist" "store"
-    spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--type" "image" "--watch" "cliphist" "store"
-    spawn-at-startup "/run/current-system/sw/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-    spawn-at-startup "${pkgs.awww}/bin/awww-daemon"
-    spawn-at-startup "${pkgs.awww}/bin/awww" "img" "~/Pictures/wallpaper.png" "--transition-type" "grow" "--transition-duration" "2"
-  '';
-
-  fullConfig = builtins.concatStringsSep "\n" [
-    baseKdl
-    nixBinds
-    nixSpawn
-    extraConfig
-  ];
+  # Substitute placeholders in config.kdl with Nix store paths
+  fullConfig =
+    builtins.replaceStrings
+      [
+        "@KITTY@"
+        "@ROFI@"
+        "@WAYBAR@"
+        "@WL_PASTE@"
+        "@AWWW_DAEMON@"
+        "@AWWW@"
+        "@COLOR_PICKER@"
+        "@WALLPAPER_CYCLE@"
+        "@CLIPHIST_CMD@"
+      ]
+      [
+        "${pkgs.kitty}/bin/kitty"
+        "${pkgs.rofi}/bin/rofi"
+        "${pkgs.waybar}/bin/waybar"
+        "${pkgs.wl-clipboard}/bin/wl-paste"
+        "${pkgs.awww}/bin/awww-daemon"
+        "${pkgs.awww}/bin/awww"
+        (toString color-picker)
+        (toString wallpaper-cycle)
+        "cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | cliphist decode | wl-copy"
+      ]
+      (builtins.readFile ./config.kdl)
+    + "\n"
+    + extraConfig;
 in
 wlib.evalPackage [
   wlib.wrapperModules.niri

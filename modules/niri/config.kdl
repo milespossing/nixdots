@@ -2,7 +2,8 @@
 // See: https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
 //
 // Host-specific output/monitor config is appended by Nix via extraConfig.
-// Spawn-at-startup commands that need Nix store paths are also appended.
+// Placeholders (@KITTY@, @ROFI@, etc.) are substituted by niri.nix with
+// Nix store paths at build time.
 
 prefer-no-csd
 hotkey-overlay {
@@ -26,17 +27,13 @@ input {
             layout "us"
         }
     }
-    focus-follows-mouse {
-        enable
-    }
-    warp-mouse-to-focus {
-        enable
-    }
+    focus-follows-mouse
+    warp-mouse-to-focus
     workspace-auto-back-and-forth
 }
 
 cursor {
-    size 24
+    xcursor-size 24
     hide-when-typing
     hide-after-inactive-ms 5000
 }
@@ -97,11 +94,13 @@ animations {
     }
 
     window-open {
-        easing duration-ms=200 curve="ease-out-expo"
+        duration-ms 200
+        curve "ease-out-expo"
     }
 
     window-close {
-        easing duration-ms=150 curve="ease-out-quad"
+        duration-ms 150
+        curve "ease-out-quad"
     }
 
     horizontal-view-movement {
@@ -120,6 +119,16 @@ animations {
         spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
     }
 }
+
+// ── Spawn at startup ──────────────────────────────────────────────────
+// Nix store paths substituted at build time
+spawn-at-startup "@WAYBAR@"
+spawn-at-startup "nm-applet" "--indicator"
+spawn-at-startup "@WL_PASTE@" "--type" "text" "--watch" "cliphist" "store"
+spawn-at-startup "@WL_PASTE@" "--type" "image" "--watch" "cliphist" "store"
+spawn-at-startup "/run/current-system/sw/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "@AWWW_DAEMON@"
+spawn-at-startup "@AWWW@" "img" "~/Pictures/wallpaper.png" "--transition-type" "grow" "--transition-duration" "2"
 
 // ── Window rules ──────────────────────────────────────────────────────
 window-rule {
@@ -171,16 +180,20 @@ workspace "chat"
 workspace "media"
 
 // ── Keybinds ──────────────────────────────────────────────────────────
-// NOTE: binds that reference Nix store paths (spawn kitty, rofi, etc.)
-// are appended by the Nix wrapper via extraConfig.
-
 binds {
+    // Launch
+    Mod+Return { spawn "@KITTY@"; }
+    Mod+E      { spawn "@KITTY@" "-e" "yazi"; }
+    Mod+D      { spawn "@ROFI@" "-show" "drun" "-show-icons"; }
+
+    // Window management
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
     Mod+V { toggle-window-floating; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
 
+    // Column sizing
     Mod+R { switch-preset-column-width; }
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
@@ -233,13 +246,18 @@ binds {
     Mod+Tab       { focus-workspace-down; }
     Mod+Shift+Tab { focus-workspace-up; }
 
-    Mod+X allow-when-locked=false { toggle-overview; }
+    Mod+X repeat=false { toggle-overview; }
     Mod+T { toggle-column-tabbed-display; }
 
     // Screenshots
     Print       { screenshot; }
     Mod+Print   { screenshot-screen; }
     Mod+S       { screenshot-window; }
+
+    // Clipboard & utilities
+    Mod+Shift+V { spawn "sh" "-c" "@CLIPHIST_CMD@"; }
+    Mod+Shift+C { spawn "@COLOR_PICKER@"; }
+    Mod+Shift+W { spawn "@WALLPAPER_CYCLE@"; }
 
     // Media keys
     XF86AudioMute         allow-when-locked=true { spawn "pamixer" "-t"; }
