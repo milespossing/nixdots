@@ -23,7 +23,8 @@ final: prev: {
       meta = {
         description = "Zellij plugin: ${name}";
         platforms = prev.lib.platforms.all;
-      } // meta;
+      }
+      // meta;
     };
 
   zellij-forgot = final.mkZellijPlugin {

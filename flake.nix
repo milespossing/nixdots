@@ -61,6 +61,7 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        formatter = pkgs.nixfmt-tree;
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             bashInteractive

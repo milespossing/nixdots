@@ -9,7 +9,7 @@ home-manager, sops-nix secrets, and custom overlays. All code is Nix.
 sudo nixos-rebuild switch --flake .#<hostname>  # Build and activate
 sudo nixos-rebuild test --flake .#<hostname>     # Dry activation (no boot entry)
 sudo nixos-rebuild build --flake .#<hostname>    # Build only, no activation
-nix eval .#nixosConfigurations.<hostname>.config.system.build.toplevel --no-build  # Eval check
+nix eval .#nixosConfigurations.<hostname>.config.system.build.toplevel  # Eval check
 nix flake update              # Update all flake inputs
 nix flake update <input-name> # Update a single input
 nix develop                   # Dev shell (nodejs, sops)
@@ -20,7 +20,12 @@ There is no test suite, linter, or `nix flake check`. The only CI is
 
 ## Formatter
 
-**nixfmt (RFC style)**. Run `nixfmt` on any file you modify before committing.
+**nixfmt (RFC style)**. Format files before committing:
+
+```bash
+nix fmt -- path/to/file.nix   # Format specific file(s)
+nix fmt                        # Format all Nix files in the repo
+```
 
 ## Repository Layout
 

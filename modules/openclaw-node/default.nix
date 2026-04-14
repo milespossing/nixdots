@@ -19,13 +19,24 @@ let
   execApprovalsJson = {
     version = 1;
     defaults = {
-      inherit (cfg.exec) security ask askFallback autoAllowSkills;
+      inherit (cfg.exec)
+        security
+        ask
+        askFallback
+        autoAllowSkills
+        ;
     };
-  } // lib.optionalAttrs (cfg.exec.agents != { }) {
+  }
+  // lib.optionalAttrs (cfg.exec.agents != { }) {
     agents = lib.mapAttrs (
       _name: agentCfg:
       {
-        inherit (agentCfg) security ask askFallback autoAllowSkills;
+        inherit (agentCfg)
+          security
+          ask
+          askFallback
+          autoAllowSkills
+          ;
       }
       // lib.optionalAttrs (agentCfg.allowlist != [ ]) {
         allowlist = map (entry: {
