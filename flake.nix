@@ -181,14 +181,23 @@
           laplace = nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs; };
             modules = [
-              { nixpkgs.overlays = overlays; }
+              {
+                nixpkgs.overlays = overlays ++ [
+                  inputs.niri.overlays.niri
+                  (waybarModule.overlay wlib)
+                  (rofiModule.overlay wlib)
+                  (dunstModule.overlay wlib)
+                  (swaylockModule.overlay wlib)
+                  (swayidleModule.overlay wlib)
+                ];
+              }
               ./modules/core
               ./hosts/laplace
               ./modules/userland
               ./modules/syncthing
               ./modules/nixos-tools
               nixos-hardware.nixosModules.framework-13-7040-amd
-              ./modules/wm/gnome.nix
+              ./modules/wm/all.nix
               inputs.xremap-flake.nixosModules.default
               inputs.home-manager.nixosModules.default
               {
@@ -203,7 +212,15 @@
                       ./modules/home/ai
                       ./modules/home/helix
                       ./modules/home/user-space
+                      ./modules/home/wm-common
+                      ./modules/home/hyprland
+                      ./modules/home/sway
+                      ./modules/home/niri
+                      ./modules/wallpapers
                       ./modules/home/zen-browser
+                      ./hosts/laplace/monitors.nix
+                      ./hosts/laplace/sway-monitors.nix
+                      ./hosts/laplace/niri-monitors.nix
                     ];
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
