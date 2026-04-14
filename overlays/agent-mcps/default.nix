@@ -36,8 +36,12 @@ in
     };
 
     # ICM — Incident management MCP server (Azure HTTP endpoint).
+    # Auth token is fetched at runtime via az cli command substitution.
     icm = aiLib.mkRemoteMcp {
-      url = "https://icm-mcp-prod.azure-api.net/v1/";
+      url = "https://icm-mcp-prod.azure-api.net/mcp";
+      headers = {
+        Authorization = "Bearer $(az account get-access-token --scope api://icmmcpapi-prod/mcp.tools --query accessToken -o tsv)";
+      };
     };
   };
 }
