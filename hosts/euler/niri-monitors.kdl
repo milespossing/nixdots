@@ -1,0 +1,11 @@
+// Euler monitor configuration
+output "DP-2" {
+    mode "2560x1440@59.950"
+    position x=0 y=0
+}
+
+output "DP-1" {
+    mode "2560x1440@143.970"
+    position x=2560 y=-8
+    transform "90"
+}

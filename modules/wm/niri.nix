@@ -5,6 +5,9 @@
     inputs.niri.nixosModules.niri
   ];
 
+  # Use niri-stable for programs.niri — the NixOS module needs cargo
+  # build attrs for portal detection. The wrapped version (niri-configured)
+  # is installed separately and carries the baked-in KDL config via NIRI_CONFIG.
   programs.niri = {
     enable = true;
     package = pkgs.niri-stable;
@@ -14,7 +17,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.niri-configured}/bin/niri-session";
         user = "greeter";
       };
     };
@@ -33,6 +36,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    niri-configured
     libsecret
     seahorse
     polkit_gnome

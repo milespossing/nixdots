@@ -21,6 +21,7 @@
     extraPackages = [ ];
   };
 
+  # Wrapped niri (with KDL config baked in) comes from the overlay
   programs.niri = {
     enable = true;
     package = pkgs.niri-stable;
@@ -50,6 +51,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    niri-configured
     libsecret
     seahorse
     polkit_gnome

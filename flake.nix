@@ -92,6 +92,7 @@
           dunstModule = import ./modules/dunst;
           swaylockModule = import ./modules/swaylock;
           swayidleModule = import ./modules/swayidle;
+          niriModule = import ./modules/niri;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
@@ -123,6 +124,9 @@
                   (dunstModule.overlay wlib)
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
+                  (niriModule.overlay wlib {
+                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
+                  })
                 ];
               }
               ./modules/core
@@ -158,12 +162,10 @@
                       ./modules/home/wm-common
                       ./modules/home/hyprland
                       ./modules/home/sway
-                      ./modules/home/niri
                       ./modules/wallpapers
                       ./modules/home/zen-browser
                       ./hosts/euler/monitors.nix
                       ./hosts/euler/sway-monitors.nix
-                      ./hosts/euler/niri-monitors.nix
                     ];
                     home.stateVersion = "25.11";
                     my.ai.crush.enable = true;
@@ -187,6 +189,9 @@
                   (dunstModule.overlay wlib)
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
+                  (niriModule.overlay wlib {
+                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
+                  })
                 ];
               }
               ./modules/core
@@ -214,12 +219,10 @@
                       ./modules/home/wm-common
                       ./modules/home/hyprland
                       ./modules/home/sway
-                      ./modules/home/niri
                       ./modules/wallpapers
                       ./modules/home/zen-browser
                       ./hosts/laplace/monitors.nix
                       ./hosts/laplace/sway-monitors.nix
-                      ./hosts/laplace/niri-monitors.nix
                     ];
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;

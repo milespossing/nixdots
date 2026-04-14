@@ -1,0 +1,260 @@
+// Niri configuration — Catppuccin Mocha theme
+// See: https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
+//
+// Host-specific output/monitor config is appended by Nix via extraConfig.
+// Spawn-at-startup commands that need Nix store paths are also appended.
+
+prefer-no-csd
+hotkey-overlay {
+    skip-at-startup
+}
+screenshot-path "~/Pictures/Screenshots/Screenshot %Y-%m-%d %H-%M-%S.png"
+
+environment {
+    LIBVA_DRIVER_NAME "nvidia"
+    XDG_SESSION_TYPE "wayland"
+    GBM_BACKEND "nvidia-drm"
+    __GLX_VENDOR_LIBRARY_NAME "nvidia"
+    NIXOS_OZONE_WL "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    DISPLAY ":0"
+}
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+    focus-follows-mouse {
+        enable
+    }
+    warp-mouse-to-focus {
+        enable
+    }
+    workspace-auto-back-and-forth
+}
+
+cursor {
+    size 24
+    hide-when-typing
+    hide-after-inactive-ms 5000
+}
+
+layout {
+    gaps 5
+    struts {
+        left 0
+        right 0
+        top 0
+        bottom 0
+    }
+
+    center-focused-column "on-overflow"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+
+    default-column-width {
+        proportion 0.5
+    }
+
+    focus-ring {
+        off
+    }
+
+    border {
+        width 2
+        active-color "#cba6f7"
+        inactive-color "#585b70"
+        urgent-color "#f38ba8"
+    }
+
+    shadow {
+        on
+        softness 12
+        spread 5
+        offset x=0 y=5
+        draw-behind-window false
+        color "#1a1a2ecc"
+        inactive-color "#1a1a2e66"
+    }
+}
+
+overview {
+    zoom 0.5
+}
+
+animations {
+    slowdown 1.0
+
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-open {
+        easing duration-ms=200 curve="ease-out-expo"
+    }
+
+    window-close {
+        easing duration-ms=150 curve="ease-out-quad"
+    }
+
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-movement {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-resize {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+}
+
+// ── Window rules ──────────────────────────────────────────────────────
+window-rule {
+    geometry-corner-radius 10.0 10.0 10.0 10.0
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id="pavucontrol"
+    open-floating true
+}
+
+window-rule {
+    match app-id="nm-connection-editor"
+    open-floating true
+}
+
+window-rule {
+    match app-id="firefox" title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    match app-id="zen"
+    open-on-workspace "browser"
+}
+
+window-rule {
+    match app-id="firefox"
+    exclude title="^Picture-in-Picture$"
+    open-on-workspace "browser"
+}
+
+window-rule {
+    match app-id="^discord$"
+    open-on-workspace "chat"
+}
+
+window-rule {
+    match app-id="^Spotify$"
+    open-on-workspace "media"
+}
+
+// ── Workspaces ────────────────────────────────────────────────────────
+workspace "main"
+workspace "browser"
+workspace "dev"
+workspace "chat"
+workspace "media"
+
+// ── Keybinds ──────────────────────────────────────────────────────────
+// NOTE: binds that reference Nix store paths (spawn kitty, rofi, etc.)
+// are appended by the Nix wrapper via extraConfig.
+
+binds {
+    Mod+Q { close-window; }
+    Mod+Shift+E { quit; }
+    Mod+V { toggle-window-floating; }
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    // Focus
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up    { focus-window-up; }
+    Mod+Down  { focus-window-down; }
+    Mod+H     { focus-column-left; }
+    Mod+L     { focus-column-right; }
+    Mod+K     { focus-window-up; }
+    Mod+J     { focus-window-down; }
+
+    // Move
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+L     { move-column-right; }
+    Mod+Shift+K    { move-window-up; }
+    Mod+Shift+J    { move-window-down; }
+
+    // Absorb / expel
+    Mod+Comma  { consume-or-expel-window-left; }
+    Mod+Period { consume-or-expel-window-right; }
+
+    // Workspaces
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    Mod+Tab       { focus-workspace-down; }
+    Mod+Shift+Tab { focus-workspace-up; }
+
+    Mod+X allow-when-locked=false { toggle-overview; }
+    Mod+T { toggle-column-tabbed-display; }
+
+    // Screenshots
+    Print       { screenshot; }
+    Mod+Print   { screenshot-screen; }
+    Mod+S       { screenshot-window; }
+
+    // Media keys
+    XF86AudioMute         allow-when-locked=true { spawn "pamixer" "-t"; }
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn "pamixer" "-i" "5"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn "pamixer" "-d" "5"; }
+    XF86AudioPlay         allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext         allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
+
+    // Monitors
+    Mod+Shift+H       { focus-monitor-left; }
+    Mod+Shift+L       { focus-monitor-right; }
+    Mod+Ctrl+Shift+H  { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+L  { move-column-to-monitor-right; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+}
