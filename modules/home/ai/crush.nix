@@ -17,14 +17,8 @@ in
       enable = true;
       settings = {
         options = {
-          disable_provider_auto_update = true;
+          disable_provider_auto_update = false;
           disable_metrics = true;
-        };
-        models = {
-          default = {
-            provider = "copilot";
-            model = "claude-opus-4.6-1m";
-          };
         };
       };
     };

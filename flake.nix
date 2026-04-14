@@ -43,6 +43,9 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-wrapper-modules = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+    };
   };
 
   outputs =
@@ -85,6 +88,12 @@
     // {
       nixosConfigurations =
         let
+          wlib = inputs.nix-wrapper-modules.lib;
+          waybarModule = import ./modules/waybar;
+          rofiModule = import ./modules/rofi;
+          dunstModule = import ./modules/dunst;
+          swaylockModule = import ./modules/swaylock;
+          swayidleModule = import ./modules/swayidle;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
@@ -110,7 +119,16 @@
           euler = nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs; };
             modules = [
-              { nixpkgs.overlays = overlays ++ [ inputs.niri.overlays.niri ]; }
+              {
+                nixpkgs.overlays = overlays ++ [
+                  inputs.niri.overlays.niri
+                  (waybarModule.overlay wlib)
+                  (rofiModule.overlay wlib)
+                  (dunstModule.overlay wlib)
+                  (swaylockModule.overlay wlib)
+                  (swayidleModule.overlay wlib)
+                ];
+              }
               ./modules/core
               ./hosts/euler
               ./modules/secrets
@@ -131,26 +149,31 @@
               {
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.miles = {
-                  imports = [
-                    ./modules/home/base
-                    ./modules/home/navi
-                    ./modules/home/helix
-                    ./modules/home/ai
-                    ./modules/home/user-space
-                    ./modules/home/wm-common
-                    ./modules/home/hyprland
-                    ./modules/home/sway
-                    ./modules/home/niri
-                    ./modules/home/zen-browser
-                    ./hosts/euler/monitors.nix
-                    ./hosts/euler/sway-monitors.nix
-                    ./hosts/euler/niri-monitors.nix
-                  ];
-                  home.stateVersion = "25.11";
-                  my.ai.crush.enable = true;
-                  my.zellij.autoStart = false;
-                };
+                home-manager.users.miles =
+                  { pkgs, ... }:
+                  {
+                    imports = [
+                      ./modules/home/base
+                      ./modules/home/navi
+                      ./modules/home/helix
+                      ./modules/home/ai
+                      ./modules/home/user-space
+                      ./modules/home/wm-common
+                      ./modules/home/hyprland
+                      ./modules/home/sway
+                      ./modules/home/niri
+                      ./modules/wallpapers
+                      ./modules/home/zen-browser
+                      ./hosts/euler/monitors.nix
+                      ./hosts/euler/sway-monitors.nix
+                      ./hosts/euler/niri-monitors.nix
+                    ];
+                    home.stateVersion = "25.11";
+                    my.ai.crush.enable = true;
+                    my.ai.copilot-cli.enable = true;
+                    my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
+                    my.zellij.autoStart = false;
+                  };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
             ];
@@ -191,6 +214,7 @@
                     my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
                     my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
                     my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
+                    my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
                     home.stateVersion = "25.11";
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };

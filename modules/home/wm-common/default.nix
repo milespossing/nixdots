@@ -1,11 +1,11 @@
 { pkgs, ... }:
 {
   imports = [
-    ./waybar.nix
-    ./rofi.nix
     ./dunst.nix
-    ./swayidle.nix
+    ./rofi.nix
     ./swaylock.nix
+    ./swayidle.nix
+    ./waybar.nix
   ];
 
   home.packages = with pkgs; [

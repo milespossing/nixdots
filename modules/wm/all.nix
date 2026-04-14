@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../wayland
@@ -50,5 +54,10 @@
     seahorse
     polkit_gnome
     xwayland-satellite
+    waybar
+    rofi
+    dunst
+    swaylock-effects
+    swayidle
   ];
 }

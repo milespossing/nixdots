@@ -43,5 +43,8 @@ in
 
     # PR Review — interactive Azure DevOps pull request review workflow.
     pr-review = aiLib.mkSkillFromFile ./pr-review/SKILL.md;
+
+    # Desktop Notify — teaches agents to send desktop notifications via notify-send.
+    desktop-notify = aiLib.mkSkillFromFile ./desktop-notify/SKILL.md;
   };
 }

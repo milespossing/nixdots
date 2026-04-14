@@ -267,7 +267,7 @@ in
       };
       "Mod+D" = {
         action.spawn = [
-          "rofi"
+          "${pkgs.rofi}/bin/rofi"
           "-show"
           "drun"
           "-show-icons"
@@ -419,7 +419,7 @@ in
         action.spawn = [
           "sh"
           "-c"
-          "cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+          "cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | cliphist decode | wl-copy"
         ];
         hotkey-overlay.title = "Clipboard History";
       };
