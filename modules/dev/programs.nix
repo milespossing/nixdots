@@ -4,5 +4,6 @@
     cmake
     gcc
     resterm
+    openapi-tui
   ];
 }
