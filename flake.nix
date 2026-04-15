@@ -48,6 +48,10 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dank-material-shell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -105,6 +109,9 @@
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
+            (final: prev: {
+              dms-shell = inputs.dank-material-shell.packages.${final.stdenv.hostPlatform.system}.dms-shell;
+            })
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";

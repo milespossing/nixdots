@@ -1,6 +1,10 @@
-# Niri + Dank Material Shell (no bar)
+# Niri + Dank Material Shell
 { pkgs, wlib }:
 let
   core = import ../core.nix { inherit pkgs wlib; };
 in
-core.wrap { }
+core.wrap {
+  settings.spawn-at-startup = [
+    "${pkgs.dms-shell}/bin/dms"
+  ];
+}
