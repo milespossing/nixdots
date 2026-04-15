@@ -1,7 +1,10 @@
 {
   pkgs,
   wlib,
+  name ? "niri-configured",
+  displayName ? "Niri",
   basePackage ? pkgs.niri,
+  barCommand ? "${pkgs.waybar}/bin/waybar",
   extraConfig ? "",
 }:
 let
@@ -36,7 +39,7 @@ let
       [
         "${pkgs.kitty}/bin/kitty"
         "${pkgs.rofi}/bin/rofi"
-        "${pkgs.waybar}/bin/waybar"
+        barCommand
         "${pkgs.wl-clipboard}/bin/wl-paste"
         "${pkgs.awww}/bin/awww-daemon"
         "${pkgs.awww}/bin/awww"
@@ -47,13 +50,92 @@ let
       (builtins.readFile ./config.kdl)
     + "\n"
     + extraConfig;
+
+  wrapped = wlib.evalPackage [
+    wlib.wrapperModules.niri
+    {
+      inherit pkgs;
+      package = basePackage;
+      v2-settings = true;
+      "config.kdl".content = fullConfig;
+    }
+  ];
+
+  # niri-session delegates to systemd's niri.service, whose ExecStart is
+  # hardcoded to whichever niri wrapper ships its service file.  That wrapper
+  # unconditionally overrides NIRI_CONFIG, so env-var injection doesn't work.
+  #
+  # Instead we replicate the session setup niri-session performs and then exec
+  # the *profile-specific* wrapped niri binary directly.
+  sessionWrapper = pkgs.writeShellScript "${name}-session" ''
+    # Re-exec through the user's login shell (mirrors niri-session behaviour)
+    if [ -n "$SHELL" ] &&
+       grep -q "$SHELL" /etc/shells &&
+       ! (echo "$SHELL" | grep -q "false") &&
+       ! (echo "$SHELL" | grep -q "nologin"); then
+      if [ "$1" != '-l' ]; then
+        exec bash -c "exec -l '$SHELL' -c '$0 -l $*'"
+      else
+        shift
+      fi
+    fi
+
+    if hash systemctl >/dev/null 2>&1; then
+        if systemctl --user -q is-active niri.service; then
+          echo 'A niri session is already running.'
+          exit 1
+        fi
+
+        systemctl --user reset-failed
+        systemctl --user import-environment
+
+        if hash dbus-update-activation-environment 2>/dev/null; then
+            dbus-update-activation-environment --all
+        fi
+
+        # Run the profile-specific wrapped niri directly instead of going
+        # through niri.service (which hardcodes a different wrapper/config).
+        ${wrapped}/bin/niri --session
+
+        systemctl --user start --job-mode=replace-irreversibly niri-shutdown.target
+        systemctl --user unset-environment WAYLAND_DISPLAY DISPLAY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP NIRI_SOCKET
+    else
+        echo "systemd not found, starting niri directly."
+        exec ${wrapped}/bin/niri --session
+    fi
+  '';
+
+  # The base profile reuses "niri.desktop" (overrides niri-stable's via hiPrio).
+  # Additional profiles get their own uniquely-named desktop files.
+  desktopFileName = if name == "niri-configured" then "niri" else name;
+
+  sessionFile = pkgs.writeTextDir "share/wayland-sessions/${desktopFileName}.desktop" ''
+    [Desktop Entry]
+    Name=${displayName}
+    Comment=A scrollable-tiling Wayland compositor
+    Exec=${sessionWrapper}
+    Type=Application
+    DesktopNames=niri
+  '';
 in
-wlib.evalPackage [
-  wlib.wrapperModules.niri
-  {
-    inherit pkgs;
-    package = basePackage;
-    v2-settings = true;
-    "config.kdl".content = fullConfig;
-  }
-]
+# The wlib-wrapped niri inherits upstream's share/wayland-sessions/niri.desktop
+# (bare Exec=niri-session) which conflicts with our profile-specific desktop
+# file and would bypass our config.  Strip it and provide only our own.
+pkgs.runCommand name { } ''
+  mkdir -p $out
+  for d in ${wrapped}/*; do
+    ln -s "$d" "$out/$(basename $d)"
+  done
+  # Replace share to exclude upstream wayland-sessions
+  rm $out/share
+  mkdir -p $out/share
+  for d in ${wrapped}/share/*; do
+    if [ "$(basename $d)" != "wayland-sessions" ]; then
+      ln -s "$d" "$out/share/$(basename $d)"
+    fi
+  done
+  # Install only our profile-specific desktop file
+  mkdir -p $out/share/wayland-sessions
+  cp ${sessionFile}/share/wayland-sessions/${desktopFileName}.desktop \
+    $out/share/wayland-sessions/${desktopFileName}.desktop
+''

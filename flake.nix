@@ -44,6 +44,10 @@
     nix-wrapper-modules = {
       url = "github:BirdeeHub/nix-wrapper-modules";
     };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -93,12 +97,14 @@
           swaylockModule = import ./modules/swaylock;
           swayidleModule = import ./modules/swayidle;
           niriModule = import ./modules/niri;
+          noctaliaModule = import ./modules/noctalia;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
+            inputs.noctalia.overlays.default
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";
@@ -124,7 +130,19 @@
                   (dunstModule.overlay wlib)
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
-                  (niriModule.overlay wlib {
+                  (noctaliaModule.overlay wlib)
+                  (niriModule.mkOverlay wlib {
+                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
+                  })
+                  (niriModule.mkOverlay wlib {
+                    name = "niri-dms";
+                    displayName = "Niri DMS";
+                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
+                  })
+                  (niriModule.mkOverlay wlib {
+                    name = "niri-noct";
+                    displayName = "Niri Noctalia";
+                    barCommand = pkgs: "${pkgs.noctalia-shell}/bin/noctalia-shell";
                     extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
                   })
                 ];
@@ -181,7 +199,19 @@
                   (dunstModule.overlay wlib)
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
-                  (niriModule.overlay wlib {
+                  (noctaliaModule.overlay wlib)
+                  (niriModule.mkOverlay wlib {
+                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
+                  })
+                  (niriModule.mkOverlay wlib {
+                    name = "niri-dms";
+                    displayName = "Niri DMS";
+                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
+                  })
+                  (niriModule.mkOverlay wlib {
+                    name = "niri-noct";
+                    displayName = "Niri Noctalia";
+                    barCommand = pkgs: "${pkgs.noctalia-shell}/bin/noctalia-shell";
                     extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
                   })
                 ];

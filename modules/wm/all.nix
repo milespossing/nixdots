@@ -1,12 +1,11 @@
 {
   pkgs,
-  inputs,
+  lib,
   ...
 }:
 {
   imports = [
     ../wayland
-    inputs.niri.nixosModules.niri
   ];
 
   programs.hyprland = {
@@ -19,12 +18,6 @@
     wrapperFeatures.gtk = true;
     extraOptions = [ "--unsupported-gpu" ];
     extraPackages = [ ];
-  };
-
-  # Wrapped niri (with KDL config baked in) comes from the overlay
-  programs.niri = {
-    enable = true;
-    package = pkgs.niri-stable;
   };
 
   services.greetd = {
@@ -51,7 +44,9 @@
   };
 
   environment.systemPackages = with pkgs; [
-    niri-configured
+    (lib.hiPrio niri-configured)
+    niri-dms
+    niri-noct
     libsecret
     seahorse
     polkit_gnome
