@@ -112,6 +112,7 @@
             inputs.noctalia.overlays.default
             (final: prev: {
               dms-shell = inputs.dank-material-shell.packages.${final.stdenv.hostPlatform.system}.dms-shell;
+              dms-quickshell = inputs.dank-material-shell.packages.${final.stdenv.hostPlatform.system}.quickshell;
             })
             (final: prev: {
               nvim = final.symlinkJoin {

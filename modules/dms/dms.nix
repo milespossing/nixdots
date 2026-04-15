@@ -1,5 +1,5 @@
 # Wrapped DMS (Dank Material Shell) — bakes in the `run` subcommand
-# so spawning the wrapper starts the shell without extra args.
+# and bundles quickshell (qs) in PATH so the Go binary can find it.
 {
   pkgs,
   wlib,
@@ -11,5 +11,6 @@ wlib.evalPackage [
     inherit pkgs;
     package = basePackage;
     addFlag = [ "run" ];
+    extraPackages = [ pkgs.dms-quickshell ];
   }
 ]
