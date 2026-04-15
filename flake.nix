@@ -102,6 +102,7 @@
           swayidleModule = import ./modules/swayidle;
           niriModule = import ./modules/niri;
           noctaliaModule = import ./modules/noctalia;
+          dmsModule = import ./modules/dms;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
@@ -138,6 +139,7 @@
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
+                  (dmsModule.overlay wlib)
                   (niriModule.mkOverlays wlib {
                     deviceModule = import ./hosts/euler/niri-device.nix;
                   })
@@ -196,6 +198,7 @@
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
+                  (dmsModule.overlay wlib)
                   (niriModule.mkOverlays wlib {
                     deviceModule = import ./hosts/laplace/niri-device.nix;
                   })

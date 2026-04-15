@@ -5,6 +5,6 @@ let
 in
 core.wrap {
   settings.spawn-at-startup = [
-    "${pkgs.dms-shell}/bin/dms"
+    "${pkgs.dms}/bin/dms"
   ];
 }

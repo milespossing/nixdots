@@ -55,7 +55,7 @@ core.wrap {
 Three shell variants exist:
 - `shells/waybar.nix` — spawns waybar
 - `shells/noctalia.nix` — spawns noctalia-shell
-- `shells/dms.nix` — spawns nothing (bare, no bar)
+- `shells/dms.nix` — spawns dms-shell (Dank Material Shell)
 
 ### Layer 3: Device config (`hosts/*/niri-device.nix`)
 
