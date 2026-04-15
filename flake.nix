@@ -131,19 +131,8 @@
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
-                  (niriModule.mkOverlay wlib {
-                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
-                  })
-                  (niriModule.mkOverlay wlib {
-                    name = "niri-dms";
-                    displayName = "Niri DMS";
-                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
-                  })
-                  (niriModule.mkOverlay wlib {
-                    name = "niri-noct";
-                    displayName = "Niri Noctalia";
-                    barCommand = pkgs: "${pkgs.noctalia-shell}/bin/noctalia-shell";
-                    extraConfig = builtins.readFile ./hosts/euler/niri-monitors.kdl;
+                  (niriModule.mkOverlays wlib {
+                    deviceModule = import ./hosts/euler/niri-device.nix;
                   })
                 ];
               }
@@ -200,19 +189,8 @@
                   (swaylockModule.overlay wlib)
                   (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
-                  (niriModule.mkOverlay wlib {
-                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
-                  })
-                  (niriModule.mkOverlay wlib {
-                    name = "niri-dms";
-                    displayName = "Niri DMS";
-                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
-                  })
-                  (niriModule.mkOverlay wlib {
-                    name = "niri-noct";
-                    displayName = "Niri Noctalia";
-                    barCommand = pkgs: "${pkgs.noctalia-shell}/bin/noctalia-shell";
-                    extraConfig = builtins.readFile ./hosts/laplace/niri-monitors.kdl;
+                  (niriModule.mkOverlays wlib {
+                    deviceModule = import ./hosts/laplace/niri-device.nix;
                   })
                 ];
               }

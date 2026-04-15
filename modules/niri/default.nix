@@ -1,25 +1,24 @@
 {
-  mkOverlay =
+  # Per-device overlay: builds all three shell variants with device-specific
+  # output config injected via .wrap on the shell wrappers.
+  mkOverlays =
     wlib:
+    { deviceModule }:
+    final: prev:
+    let
+      mkShell =
+        shellFile:
+        let
+          shell = import shellFile {
+            pkgs = final;
+            inherit wlib;
+          };
+        in
+        shell.wrap deviceModule;
+    in
     {
-      name ? "niri-configured",
-      displayName ? "Niri",
-      barCommand ? null,
-      extraConfig ? "",
-    }:
-    final: prev: {
-      ${name} = import ./niri.nix (
-        {
-          pkgs = final;
-          inherit
-            wlib
-            name
-            displayName
-            extraConfig
-            ;
-          basePackage = prev.niri;
-        }
-        // (if barCommand != null then { barCommand = barCommand final; } else { })
-      );
+      niri-configured = mkShell ./shells/waybar.nix;
+      niri-dms = mkShell ./shells/dms.nix;
+      niri-noct = mkShell ./shells/noctalia.nix;
     };
 }
