@@ -8,6 +8,11 @@
     ../wayland
   ];
 
+  # DMS (Dank Material Shell) runtime requirements:
+  # geoclue2 for automatic location, accounts-daemon for user info
+  services.geoclue2.enable = lib.mkDefault true;
+  services.accounts-daemon.enable = lib.mkDefault true;
+
   programs.hyprland = {
     enable = true;
     withUWSM = true;
@@ -47,6 +52,7 @@
     (lib.hiPrio niri-configured)
     niri-dms
     niri-noct
+    dms-shell # DMS QML calls `dms dl` for network ops (location search, etc.)
     libsecret
     seahorse
     polkit_gnome

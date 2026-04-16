@@ -7,6 +7,15 @@
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
 
+    # Bind all named workspaces to the primary monitor
+    workspaces = {
+      "main" = _: { content.open-on-output = "DP-2"; };
+      "browser" = _: { content.open-on-output = "DP-2"; };
+      "dev" = _: { content.open-on-output = "DP-2"; };
+      "chat" = _: { content.open-on-output = "DP-2"; };
+      "media" = _: { content.open-on-output = "DP-2"; };
+    };
+
     outputs = {
       "DP-2" = {
         mode = _: {
