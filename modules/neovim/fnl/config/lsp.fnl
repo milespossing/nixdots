@@ -34,10 +34,11 @@
                                                                     :apply true}))
                                         {:desc "Organize Imports"})))})
 
+(vim.lsp.config :clojure_lsp {})
 (vim.lsp.config :jsonls {})
 (vim.lsp.config :yamlls {})
 
-(vim.lsp.enable [:luals :fennel-ls :nixd :ts_ls :jsonls :yamlls])
+(vim.lsp.enable [:luals :fennel-ls :nixd :ts_ls :clojure_lsp :jsonls :yamlls])
 
 ;; Default inlay hints
 (vim.lsp.inlay_hint.enable true)

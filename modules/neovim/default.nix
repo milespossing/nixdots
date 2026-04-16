@@ -115,6 +115,7 @@ let
     lua-language-server
     fennel-ls-wrapped
     nixd
+    clojure-lsp
     vscode-langservers-extracted
     yaml-language-server
 
