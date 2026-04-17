@@ -14,7 +14,6 @@ with lib;
     nerd-fonts.jetbrains-mono
     nerd-fonts.meslo-lg
 
-    wslu
     wsl-open
     xdg-utils
   ];
