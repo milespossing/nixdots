@@ -25,6 +25,9 @@
     systemd-boot.enable = true;
   };
 
+  # Disable ERTM to fix Xbox controller Bluetooth reconnect loop
+  boot.extraModprobeConfig = "options bluetooth disable_ertm=Y";
+
   # Enable networking
   networking.hostName = "euler"; # Define your hostname.
   services.resolved.enable = true;
