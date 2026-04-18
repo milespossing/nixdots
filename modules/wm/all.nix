@@ -13,6 +13,9 @@
   services.geoclue2.enable = lib.mkDefault true;
   services.accounts-daemon.enable = lib.mkDefault true;
 
+  # dconf is needed by home-manager for GTK/cursor theme settings
+  programs.dconf.enable = true;
+
   services.greetd = {
     enable = true;
     settings = {
