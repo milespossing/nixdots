@@ -11,11 +11,6 @@ let
     notify-send "Color Picker" "$(${pkgs.wl-clipboard}/bin/wl-paste)"
   '';
 
-  wallpaper-cycle = pkgs.writeShellScript "niri-wallpaper-cycle" ''
-    img="$(find ~/Pictures/wallpapers -type f | shuf -n1)"
-    ${pkgs.awww}/bin/awww img "$img" --transition-type grow --transition-pos cursor --transition-duration 2
-  '';
-
   cliphist-cmd = "cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | cliphist decode | wl-copy";
 
   niriBase = (wlib.evalModule wlib.wrapperModules.niri).config;
@@ -160,11 +155,9 @@ niriBase.apply {
         "store"
       ]
       "/run/current-system/sw/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-      "${pkgs.awww}/bin/awww-daemon"
     ];
 
     spawn-sh-at-startup = [
-      "${pkgs.awww}/bin/awww img ~/Pictures/wallpaper.png --transition-type grow --transition-duration 2"
     ];
 
     window-rules = [
@@ -316,7 +309,6 @@ niriBase.apply {
       # Clipboard & utilities
       "Mod+Shift+V".spawn-sh = cliphist-cmd;
       "Mod+Shift+C".spawn = "${color-picker}";
-      "Mod+Shift+W".spawn = "${wallpaper-cycle}";
 
       # Media keys
       "XF86AudioMute" = _: {

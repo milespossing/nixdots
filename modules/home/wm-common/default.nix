@@ -1,12 +1,21 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
-  imports = [
-    ./dunst.nix
-    ./rofi.nix
-    ./swaylock.nix
-    ./swayidle.nix
-    ./waybar.nix
-  ];
+  services.udiskie = {
+    enable = true;
+    tray = "never";
+  };
+
+  # udiskie needs graphical-session.target which not all WM launchers activate;
+  # override to start on default.target so automount works regardless of session type.
+  systemd.user.services.udiskie = {
+    Unit = {
+      After = lib.mkForce [ "default.target" ];
+      PartOf = lib.mkForce [ ];
+    };
+    Install = {
+      WantedBy = lib.mkForce [ "default.target" ];
+    };
+  };
 
   home.packages = with pkgs; [
     brightnessctl
@@ -20,7 +29,6 @@
     slurp
     swappy
     cliphist
-    awww
     jq
   ];
 

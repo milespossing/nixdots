@@ -48,10 +48,6 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dank-material-shell = {
-      url = "github:AvengeMedia/DankMaterialShell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -95,14 +91,9 @@
       nixosConfigurations =
         let
           wlib = inputs.nix-wrapper-modules.lib;
-          waybarModule = import ./modules/waybar;
           rofiModule = import ./modules/rofi;
-          dunstModule = import ./modules/dunst;
-          swaylockModule = import ./modules/swaylock;
-          swayidleModule = import ./modules/swayidle;
-          niriModule = import ./modules/niri;
           noctaliaModule = import ./modules/noctalia;
-          dmsModule = import ./modules/dms;
+          niriModule = import ./modules/niri;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
@@ -110,10 +101,6 @@
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
-            (final: prev: {
-              dms-shell = inputs.dank-material-shell.packages.${final.stdenv.hostPlatform.system}.dms-shell;
-              dms-quickshell = inputs.dank-material-shell.packages.${final.stdenv.hostPlatform.system}.quickshell;
-            })
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";
@@ -134,13 +121,8 @@
               {
                 nixpkgs.overlays = overlays ++ [
                   inputs.niri.overlays.niri
-                  (waybarModule.overlay wlib)
                   (rofiModule.overlay wlib)
-                  (dunstModule.overlay wlib)
-                  (swaylockModule.overlay wlib)
-                  (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
-                  (dmsModule.overlay wlib)
                   (niriModule.mkOverlays wlib {
                     deviceModule = import ./hosts/euler/niri-device.nix;
                   })
@@ -169,12 +151,7 @@
                       ./modules/home/ai
                       ./modules/home/user-space
                       ./modules/home/wm-common
-                      ./modules/home/hyprland
-                      ./modules/home/sway
-                      ./modules/wallpapers
                       ./modules/home/zen-browser
-                      ./hosts/euler/monitors.nix
-                      ./hosts/euler/sway-monitors.nix
                     ];
                     home.stateVersion = "25.11";
                     my.ai.crush.enable = true;
@@ -193,13 +170,8 @@
               {
                 nixpkgs.overlays = overlays ++ [
                   inputs.niri.overlays.niri
-                  (waybarModule.overlay wlib)
                   (rofiModule.overlay wlib)
-                  (dunstModule.overlay wlib)
-                  (swaylockModule.overlay wlib)
-                  (swayidleModule.overlay wlib)
                   (noctaliaModule.overlay wlib)
-                  (dmsModule.overlay wlib)
                   (niriModule.mkOverlays wlib {
                     deviceModule = import ./hosts/laplace/niri-device.nix;
                   })
@@ -228,12 +200,7 @@
                       ./modules/home/helix
                       ./modules/home/user-space
                       ./modules/home/wm-common
-                      ./modules/home/hyprland
-                      ./modules/home/sway
-                      ./modules/wallpapers
                       ./modules/home/zen-browser
-                      ./hosts/laplace/monitors.nix
-                      ./hosts/laplace/sway-monitors.nix
                     ];
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
