@@ -28,7 +28,7 @@ in
       });
 
       templates."ai-env".content = lib.concatStringsSep "\n" (
-        [ "export GITHUB_TOKEN=${config.sops.placeholder.github}" ]
+        [ "export COPILOT_GITHUB_TOKEN=${config.sops.placeholder.github}" ]
         ++ lib.optional (
           cfg.skills ? skillsmp-search
         ) "export SKILLSMP_API_KEY=${config.sops.placeholder.skillsmp}"
