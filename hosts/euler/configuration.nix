@@ -52,6 +52,26 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+
+    # Focusrite Scarlett 2i2 Gen 4: ACP fails to populate EnumProfile
+    # at boot (race with USB audio init), leaving the device stuck on
+    # the "off" profile. Letting ACP auto-select the profile internally
+    # bypasses WirePlumber's EnumProfile iteration that hits the empty list.
+    wireplumber.extraConfig."51-scarlett-auto-profile" = {
+      "monitor.alsa.rules" = [
+        {
+          matches = [
+            {
+              "device.vendor.id" = "0x1235";
+              "device.product.id" = "0x8219";
+            }
+          ];
+          actions.update-props = {
+            "api.acp.auto-profile" = true;
+          };
+        }
+      ];
+    };
   };
 
   # Never sleep

@@ -15,6 +15,6 @@ wlib.evalPackage [
       drun-display-format = "{name}";
       terminal = "kitty";
     };
-    theme = builtins.toString ./rofi-theme.rasi;
+    theme = "${./rofi-theme.rasi}";
   }
 ]

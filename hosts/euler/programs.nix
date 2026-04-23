@@ -9,7 +9,7 @@
     ffmpeg-full
     parallel
     orca-slicer
-    # freecad-wayland
+    freecad-wayland
     bambu-studio
     calibre
     kvirc
@@ -22,14 +22,10 @@
     gamescopeSession.enable = true;
     extraCompatPackages = with pkgs; [ proton-ge-bin ];
     package = pkgs.steam.override {
-      # Steam bundles a broken NAS audio library (libaudio.so) that segfaults on
-      # modern PipeWire systems. Hide it inside the sandbox with an empty file so
-      # Steam's integrity checker can't re-download it after deletion.
-      extraBwrapArgs = [
-        "--ro-bind-try"
-        "/dev/null"
-        "$HOME/.local/share/Steam/ubuntu12_32/libaudio.so"
-      ];
+      # Provide 32-bit PulseAudio client libs so Steam uses the system audio
+      # stack instead of its ancient bundled libpulse + libaudio.so (which
+      # segfaults on modern PipeWire systems).
+      extraLibraries = p: [ p.libpulseaudio ];
     };
   };
   programs.gamescope = {

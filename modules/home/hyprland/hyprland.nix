@@ -149,7 +149,7 @@
         "nm-applet --indicator"
         "wl-paste --type text --watch cliphist store"
         "wl-paste --type image --watch cliphist store"
-        "${builtins.toString ./scripts/polkit.sh}"
+        "${./scripts/polkit.sh}"
         "${pkgs.awww}/bin/awww-daemon"
         "${pkgs.awww}/bin/awww img ~/Pictures/wallpaper.png --transition-type grow --transition-duration 2"
       ];

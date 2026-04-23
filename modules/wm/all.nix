@@ -8,6 +8,10 @@
     ../wayland
   ];
 
+  # Ensure wayland-sessions desktop entries (e.g. niri-configured) are
+  # linked into /run/current-system/sw so tuigreet can discover them.
+  environment.pathsToLink = [ "/share/wayland-sessions" ];
+
   # Noctalia runtime requirements:
   # geoclue2 for automatic location, accounts-daemon for user info
   services.geoclue2.enable = lib.mkDefault true;

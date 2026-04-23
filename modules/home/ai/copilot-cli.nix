@@ -138,20 +138,6 @@ let
         timeoutSec = 5;
       }
     ];
-    postToolUse = [
-      {
-        type = "command";
-        bash = ''
-          INPUT=$(cat)
-          TOOL=$(echo "$INPUT" | ${lib.getExe pkgs.jq} -r '.toolName')
-          if [ "$TOOL" = "ask_user" ]; then
-            ${lib.getExe pkgs.libnotify} --app-name "Copilot" --urgency normal --icon dialog-question \
-              "Input Needed" "Copilot is waiting for your response."
-          fi
-        '';
-        timeoutSec = 5;
-      }
-    ];
   };
 
   # Merge notification hooks with user-defined hooks (user hooks take precedence)
