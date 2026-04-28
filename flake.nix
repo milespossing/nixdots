@@ -136,6 +136,7 @@
               ./modules/office
               ./modules/syncthing
               ./modules/userland
+              ./modules/wine
               ./modules/nixos-tools
               inputs.home-manager.nixosModules.default
               {

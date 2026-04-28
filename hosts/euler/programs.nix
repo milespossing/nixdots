@@ -14,6 +14,7 @@
     calibre
     kvirc
     mangohud
+    steamtinkerlaunch
   ];
   programs.steam = {
     enable = true;
