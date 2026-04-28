@@ -24,3 +24,9 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.laststatus = 3
 vim.opt.splitkeep = "screen"
+
+-- Folding (nvim-ufo)
+vim.opt.foldcolumn = '0'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
