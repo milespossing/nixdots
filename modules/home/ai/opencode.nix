@@ -46,24 +46,6 @@ let
 
   opencodeJson = builtins.toJSON opencodeConfig;
 
-  # Build a SKILL.md with YAML frontmatter from a skill definition
-  mkSkillMd =
-    name: skill:
-    let
-      frontmatter = lib.concatStringsSep "\n" (
-        [ "---" ]
-        ++ [ "name: ${name}" ]
-        ++ [ "description: ${skill.description}" ]
-        ++ lib.optional (skill.license != null) "license: ${skill.license}"
-        ++ lib.optional (skill.compatibility != null) "compatibility: ${skill.compatibility}"
-        ++ lib.optional (skill.metadata != { }) (
-          "metadata:\n" + lib.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "  ${k}: ${v}") skill.metadata)
-        )
-        ++ [ "---" ]
-      );
-    in
-    frontmatter + "\n\n" + skill.content;
-
   # Wrap opencode with LSP servers, extra packages, and MCP server packages on PATH
   mcpPackages = lib.filter (p: p != null) (lib.mapAttrsToList (_: srv: srv.package) cfg.mcp.servers);
 
@@ -82,14 +64,6 @@ let
     '';
   };
 
-  # Combine all xdg.configFile entries into one attrset
-  skillFiles = lib.mapAttrs' (
-    name: skill:
-    lib.nameValuePair "opencode/skills/${name}/SKILL.md" {
-      text = if skill.source != null then builtins.readFile skill.source else mkSkillMd name skill;
-    }
-  ) cfg.skills;
-
   coreFiles = {
     "opencode/opencode.json".text = opencodeJson;
   }
@@ -99,17 +73,10 @@ let
 in
 {
   config = lib.mkIf oc.enable {
-    assertions = lib.mapAttrsToList (name: skill: {
-      assertion =
-        (skill.source != null && skill.description == "" && skill.content == "")
-        || (skill.source == null && skill.description != "" && skill.content != "");
-      message = "my.ai.skills.${name}: set either 'source' (file-based) or both 'description' and 'content' (inline), not a mix.";
-    }) cfg.skills;
-
     home.packages = [
       (if allPathPkgs != [ ] then opencode-wrapped else pkgs.opencode)
     ];
 
-    xdg.configFile = coreFiles // skillFiles;
+    xdg.configFile = coreFiles;
   };
 }

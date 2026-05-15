@@ -44,44 +44,6 @@ let
     };
   };
 
-  skillType = types.submodule {
-    options = {
-      description = mkOption {
-        type = types.str;
-        default = "";
-        description = "Short description (1-1024 chars) for agent discovery. Not required when source is set.";
-      };
-      content = mkOption {
-        type = types.lines;
-        default = "";
-        description = "Markdown body of the SKILL.md (after frontmatter). Not required when source is set.";
-      };
-      source = mkOption {
-        type = types.nullOr (types.either types.path types.str);
-        default = null;
-        description = ''
-          Path to a complete SKILL.md file (frontmatter + body).
-          When set, description/content are ignored and the file is deployed verbatim.
-          Accepts a local path or a string path (e.g. from fetchFromGitHub).
-        '';
-      };
-      license = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "Optional license identifier.";
-      };
-      compatibility = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "Optional compatibility tag (e.g. 'opencode').";
-      };
-      metadata = mkOption {
-        type = types.attrsOf types.str;
-        default = { };
-        description = "Optional string-to-string metadata map.";
-      };
-    };
-  };
 in
 {
   options.my.ai = {
@@ -172,17 +134,6 @@ in
       type = types.attrsOf mcpServerType;
       default = { };
       description = "MCP servers shared across agents. Written to OpenCode's config and Copilot CLI's mcp-config.json.";
-    };
-
-    skills = mkOption {
-      type = types.attrsOf skillType;
-      default = { };
-      description = ''
-        Agent skills deployed as SKILL.md files.
-        Each key becomes a skill directory for all enabled agents:
-        - OpenCode: ~/.config/opencode/skills/<name>/SKILL.md
-        - Copilot CLI: loaded via --plugin-dir as a bundled plugin
-      '';
     };
 
     rules = {

@@ -48,7 +48,7 @@ modules/             # Reusable NixOS and home-manager modules
   secrets/           # sops-nix system secrets
   dev/               # Development compilers/runtimes
   ...                # wsl, work, syncthing, office, network, etc.
-overlays/            # Package overlays (zellij-plugins, azure-cli-fix, agent-skills, agent-mcps)
+overlays/            # Package overlays (zellij-plugins, azure-cli-fix, agent-mcps)
 secrets/             # sops-encrypted YAML secret files
 ```
 
@@ -75,7 +75,7 @@ home-manager user modules inside `home-manager.users.miles.imports`.
 
 Overlays are split into two tiers:
 - **Global overlays** (shared by all hosts): zellij-plugins, azure-cli-fix,
-  agent-skills, agent-mcps, nix-openclaw, noctalia, dms-shell, nvim, NUR
+  agent-mcps, nix-openclaw, noctalia, dms-shell, nvim, NUR
 - **Per-host overlays** (euler + laplace only): niri, waybar, rofi, dunst,
   swaylock, swayidle, noctalia, dms, niri device config
 
@@ -140,7 +140,7 @@ directly.
 | `home/base/`        | Shell config (bash/fish/nushell), git, starship, fzf, zoxide, direnv, atuin   |
 | `home/navi/`        | Navi cheatsheets (local + GitHub community cheats)                            |
 | `home/helix/`       | Helix editor configuration                                                    |
-| `home/ai/`          | AI tooling: copilot-cli, opencode, aider, crush, MCPs, skills, API secrets    |
+| `home/ai/`          | AI tooling: copilot-cli, opencode, aider, crush, MCPs, API secrets            |
 | `home/wm-common/`   | Shared WM user config: dunst, rofi, swaylock, swayidle, waybar, GTK/cursor    |
 | `home/hyprland/`    | Hyprland session config + hypridle/hyprlock                                   |
 | `home/sway/`        | Sway session config                                                           |
@@ -171,7 +171,6 @@ AI options (defined in `modules/home/ai/options.nix`):
 - `my.ai.crush.enable` -- Crush AI tool
 - `my.ai.aider.enable` -- Aider AI coding assistant
 - `my.ai.mcp.servers.*` -- MCP server definitions (command/url/env/headers/package)
-- `my.ai.skills.*` -- Agentic skill definitions (description/content/source/license)
 - `my.ai.rules.global`, `my.ai.rules.instructionFiles` -- AI instruction/rule config
 
 Other options:
@@ -187,7 +186,6 @@ Other options:
 | ------------------------ | ------ | ------------------------------------------------------- |
 | `zellij-plugins.nix`     | Active | mkZellijPlugin builder + zellij-forgot, zellij-autolock |
 | `azure-cli-fix.nix`      | Active | Pins azure-cli from nixpkgs-master (temporary)          |
-| `agent-skills/`          | Active | Agentic skill packages (desktop-notify, pr-review, etc.)|
 | `agent-mcps/`            | Active | Agentic MCP server packages                             |
 | `github-copilot-cli.nix` | Unused | Pins github-copilot-cli npm version                     |
 | `calibre-8-16.nix`       | Unused | Pins Calibre 8.16.2 with tzdata deps                    |
@@ -214,7 +212,7 @@ Overlays use `final: prev:` argument naming.
 - System secrets in `secrets/*.yaml` (general.yaml, wireguard.yaml, openai.yaml)
 - Host-specific secrets use `.enc.yaml` suffix (e.g., `hosts/nixos/gpg-key.enc.yaml`)
 - Module-local encrypted secrets:
-  - `modules/home/ai/api-keys.enc.yaml` -- GitHub + SkillsMP API tokens
+  - `modules/home/ai/api-keys.enc.yaml` -- GitHub API tokens
   - `modules/openclaw-node/gateway.enc.yaml` -- OpenClaw gateway secrets
 - **Never commit unencrypted secret values.** Use `sops secrets/file.yaml` to edit.
 

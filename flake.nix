@@ -97,7 +97,6 @@
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
-            (import ./overlays/agent-skills)
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
@@ -158,7 +157,6 @@
                     my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
-                    my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
                     my.zellij.autoStart = false;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
@@ -208,12 +206,6 @@
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
                     my.ai.crush.enable = true;
-                    my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
-                    my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
-                    my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
-                    my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
-                    my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
-                    my.ai.skills.desktop-notify = pkgs.agenticSkills.desktop-notify;
                     home.stateVersion = "25.11";
                     my.zellij.autoStart = false;
                   };
@@ -257,11 +249,6 @@
                     my.ai.crush.enable = true;
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
-                    my.ai.skills.discover-plugins = pkgs.agenticSkills.discover-plugins;
-                    my.ai.skills.skillsmp-search = pkgs.agenticSkills.skillsmp-search;
-                    my.ai.skills.install-skill = pkgs.agenticSkills.install-skill;
-                    my.ai.skills.az-cli = pkgs.agenticSkills.az-cli;
-                    my.ai.skills.pr-review = pkgs.agenticSkills.pr-review;
                     home.stateVersion = "25.11";
                   };
               }

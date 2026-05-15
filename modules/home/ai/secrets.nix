@@ -11,7 +11,6 @@ let
   # Keep in sync with api-keys.enc.yaml
   keys = [
     "github"
-    "skillsmp"
   ];
 in
 {
@@ -27,12 +26,7 @@ in
         inherit sopsFile;
       });
 
-      templates."ai-env".content = lib.concatStringsSep "\n" (
-        [ "export COPILOT_GITHUB_TOKEN=${config.sops.placeholder.github}" ]
-        ++ lib.optional (
-          cfg.skills ? skillsmp-search
-        ) "export SKILLSMP_API_KEY=${config.sops.placeholder.skillsmp}"
-      );
+      templates."ai-env".content = "export COPILOT_GITHUB_TOKEN=${config.sops.placeholder.github}";
     };
   };
 }

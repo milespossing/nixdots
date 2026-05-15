@@ -8,36 +8,6 @@
 let
   cfg = config.my.ai;
 
-  mkSkillMd =
-    name: skill:
-    let
-      frontmatter = lib.concatStringsSep "\n" (
-        [ "---" ]
-        ++ [ "name: ${name}" ]
-        ++ [ "description: ${skill.description}" ]
-        ++ lib.optional (skill.license != null) "license: ${skill.license}"
-        ++ lib.optional (skill.compatibility != null) "compatibility: ${skill.compatibility}"
-        ++ lib.optional (skill.metadata != { }) (
-          "metadata:\n" + lib.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "  ${k}: ${v}") skill.metadata)
-        )
-        ++ [ "---" ]
-      );
-    in
-    frontmatter + "\n\n" + skill.content;
-
-  skillFiles = lib.mapAttrs' (
-    name: skill:
-    lib.nameValuePair "crush/skills/${name}/SKILL.md" {
-      text = if skill.source != null then builtins.readFile skill.source else mkSkillMd name skill;
-    }
-  ) cfg.skills;
-
-  skillsDirs =
-    let
-      baseDir = "${config.xdg.configHome}/crush/skills";
-    in
-    lib.optional (cfg.skills != { }) baseDir;
-
   serializeCrushMcp =
     _: srv:
     let
@@ -114,11 +84,8 @@ in
           disable_provider_auto_update = false;
           disable_metrics = true;
           tui.compact_mode = true;
-          skills_paths = skillsDirs;
         };
       };
     };
-
-    xdg.configFile = skillFiles;
   };
 }

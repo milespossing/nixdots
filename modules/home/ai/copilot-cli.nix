@@ -37,64 +37,6 @@ let
   mcpJson = lib.mapAttrs serializeMcp enabledMcpServers;
   mcpConfigJson = builtins.toJSON { mcpServers = mcpJson; };
 
-  # Build a Copilot CLI plugin derivation from shared skills.
-  # --plugin-dir looks for plugin.json (not marketplace.json) at:
-  #   plugin.json | .github/plugin/plugin.json | .claude-plugin/plugin.json
-  mkSkillMd =
-    name: skill:
-    let
-      frontmatter = lib.concatStringsSep "\n" (
-        [ "---" ]
-        ++ [ "name: ${name}" ]
-        ++ [ "description: ${skill.description}" ]
-        ++ lib.optional (skill.license != null) "license: ${skill.license}"
-        ++ lib.optional (skill.compatibility != null) "compatibility: ${skill.compatibility}"
-        ++ lib.optional (skill.metadata != { }) (
-          "metadata:\n" + lib.concatStringsSep "\n" (lib.mapAttrsToList (k: v: "  ${k}: ${v}") skill.metadata)
-        )
-        ++ [ "---" ]
-      );
-    in
-    frontmatter + "\n\n" + skill.content;
-
-  skillNames = builtins.attrNames cfg.skills;
-
-  pluginJson = builtins.toJSON {
-    name = "nix-managed-skills";
-    description = "Agent skills managed declaratively via NixOS/home-manager";
-    version = "1.0.0";
-    skills = map (n: "./skills/${n}") skillNames;
-  };
-
-  skillsPlugin = pkgs.runCommand "copilot-skills-plugin" { } (
-    ''
-      mkdir -p $out/.claude-plugin
-      cat > $out/.claude-plugin/plugin.json <<'MANIFEST'
-      ${pluginJson}
-      MANIFEST
-    ''
-    + lib.concatStringsSep "\n" (
-      lib.mapAttrsToList (
-        name: skill:
-        let
-          content =
-            if skill.source != null then
-              "cp ${skill.source} $out/skills/${name}/SKILL.md"
-            else
-              ''
-                cat > $out/skills/${name}/SKILL.md <<'SKILLEOF'
-                ${mkSkillMd name skill}
-                SKILLEOF
-              '';
-        in
-        ''
-          mkdir -p $out/skills/${name}
-          ${content}
-        ''
-      ) cfg.skills
-    )
-  );
-
   # Collect MCP server packages for PATH injection
   mcpPackages = lib.filter (p: p != null) (
     lib.mapAttrsToList (_: srv: srv.package) enabledMcpServers
@@ -166,7 +108,6 @@ let
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild =
       let
-        pluginArgs = lib.optionalString (cfg.skills != { }) "--add-flags '--plugin-dir ${skillsPlugin}'";
         secretsRun = ''
           --run '[ -f "${config.sops.templates."ai-env".path}" ] && . "${
             config.sops.templates."ai-env".path
@@ -178,7 +119,6 @@ let
       in
       ''
         wrapProgram $out/bin/copilot \
-          ${pluginArgs} \
           ${pathPrefix} \
           ${hooksRun} \
           ${secretsRun}
