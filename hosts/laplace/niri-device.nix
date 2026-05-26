@@ -1,4 +1,9 @@
 # Laplace device layer — no nvidia, laptop (internal display only)
 {
-  # No extra outputs or environment needed; core defaults suffice.
+  settings.input.touchpad = {
+    tap = _: { };
+    natural-scroll = _: { };
+    click-method = "clickfinger";
+    dwt = _: { };
+  };
 }

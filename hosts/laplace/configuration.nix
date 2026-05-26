@@ -8,6 +8,10 @@
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
+  # Laptop power management — UPower drives noctalia's Battery widget.
+  services.upower.enable = true;
+  services.power-profiles-daemon.enable = true;
+
   # misc.
   services.xserver = {
     xkb.layout = "us";
