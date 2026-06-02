@@ -1,11 +1,6 @@
 {
   programs.starship.enable = true;
   programs.starship.settings = {
-    custom.pomo = {
-      when = "test -n \"$(pomodoro status)\"";
-      symbol = "🍅";
-      command = "pomodoro status -f '%!r'";
-    };
     aws.disabled = true;
     c.symbol = " ";
     directory.read_only = " 󰌾";
