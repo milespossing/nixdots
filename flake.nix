@@ -149,11 +149,13 @@
                       ./modules/home/navi
                       ./modules/home/helix
                       ./modules/home/ai
+                      ./modules/home/skills
                       ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
                     ];
                     home.stateVersion = "25.11";
+                    my.skills.enable = true;
                     my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
@@ -196,11 +198,13 @@
                       ./modules/home/base
                       ./modules/home/navi
                       ./modules/home/ai
+                      ./modules/home/skills
                       ./modules/home/helix
                       ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
                     ];
+                    my.skills.enable = true;
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
@@ -240,8 +244,15 @@
                       ./modules/home/wsl
                       ./modules/home/navi
                       ./modules/home/ai
+                      ./modules/home/skills
                       ./modules/home/helix
                       ./modules/home/work
+                    ];
+                    my.skills.enable = true;
+                    my.skills.extraSkills = [
+                      "wsl-browser-control"
+                      "figma-to-spec"
+                      "fluent-ui-v9"
                     ];
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
@@ -249,6 +260,8 @@
                     my.ai.crush.enable = true;
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
+                    my.ai.mcp.servers.azure-devops = pkgs.agenticMcps.azureDevops;
+                    my.ai.mcp.servers.fluent-agent = pkgs.agenticMcps.fluentAgent;
                     home.stateVersion = "25.11";
                   };
               }

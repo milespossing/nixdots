@@ -41,6 +41,21 @@ let
 
   crushMcp = lib.mapAttrs serializeCrushMcp cfg.mcp.servers;
 
+  # Declarative crush "global config" written to a /nix/store dir and
+  # exposed to crush via $CRUSH_GLOBAL_CONFIG (see config block below).
+  crushDeclarativeSettings = {
+    options = {
+      disable_provider_auto_update = false;
+      disable_metrics = true;
+      tui.compact_mode = true;
+    };
+    mcp = crushMcp;
+  };
+  crushDeclarativeConfig = pkgs.runCommand "crush-global-config" { } ''
+    mkdir -p $out
+    cp ${(pkgs.formats.json { }).generate "crush.json" crushDeclarativeSettings} $out/crush.json
+  '';
+
   ask = pkgs.writeShellScriptBin "ask" ''
     prompt="$*"
     if [ -z "$prompt" ]; then
@@ -77,15 +92,33 @@ in
       crush-files
     ];
 
+    # Redirect crush's "global config" away from ~/.config/crush so
+    # home-manager never clobbers a file the user wants to hand-edit,
+    # and crush never tries to rewrite a /nix/store symlink.
+    #
+    # Crush layers configs (internal/config/load.go), lowest -> highest:
+    #   1. $CRUSH_GLOBAL_CONFIG/crush.json    (user "global config"; crush never writes here)
+    #   2. ~/.local/share/crush/crush.json    (data; crush writes API keys, model state, ui toggles)
+    #   3. <cwd>/.crush/crush.json            (workspace; crush also writes here)
+    # All are deep-merged per key, later wins. We point (1) at a
+    # /nix/store path so our declarative settings act as a read-only
+    # baseline. ~/.config/crush/crush.json is no longer consulted,
+    # and ~/.local/share/crush/crush.json remains a real file that
+    # crush owns and can rewrite freely.
+    home.sessionVariables.CRUSH_GLOBAL_CONFIG = "${crushDeclarativeConfig}";
+
     programs.crush = {
       enable = true;
-      settings = {
-        options = {
-          disable_provider_auto_update = false;
-          disable_metrics = true;
-          tui.compact_mode = true;
-        };
-      };
+      # Upstream's `settings` only writes to ~/.config/crush/crush.json,
+      # which we're no longer using. Leave it empty.
+      settings = { };
     };
+
+    # Upstream's `mkIf (cfg.settings != {})` is dead — `settings` is a
+    # submodule whose nested options carry defaults, so it never
+    # reduces to `{}`. Force the home.file entry off so home-manager
+    # stops shipping ~/.config/crush/crush.json entirely; CRUSH_GLOBAL_CONFIG
+    # already points crush at our /nix/store baseline.
+    home.file.".config/crush/crush.json" = lib.mkForce { enable = false; };
   };
 }
