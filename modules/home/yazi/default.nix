@@ -79,11 +79,13 @@ in
           id = "git";
           url = "*";
           run = "git";
+          group = 0;
         }
         {
           id = "git";
           url = "*/";
           run = "git";
+          group = 0;
         }
       ];
     };
