@@ -48,6 +48,10 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    worktrunk-flake = {
+      url = "github:max-sixty/worktrunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -247,6 +251,8 @@
                       ./modules/home/skills
                       ./modules/home/helix
                       ./modules/home/work
+                      inputs.worktrunk-flake.homeModules.default
+                      ./modules/home/worktrunk
                     ];
                     my.skills.enable = true;
                     my.skills.extraSkills = [
