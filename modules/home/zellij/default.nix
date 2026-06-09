@@ -9,7 +9,7 @@
 
   options.my.zellij.autoStart = lib.mkOption {
     type = lib.types.bool;
-    default = true;
+    default = false;
     description = "Whether to auto-start zellij in new shell sessions.";
   };
 

@@ -105,6 +105,7 @@ in
     FixCursorHold-nvim
     todo-comments-nvim
     trouble-nvim
+    smart-splits-nvim
     zellij-nav-nvim
   ];
 }

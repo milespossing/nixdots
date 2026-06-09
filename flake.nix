@@ -98,12 +98,16 @@
           rofiModule = import ./modules/rofi;
           noctaliaModule = import ./modules/noctalia;
           niriModule = import ./modules/niri;
+          yaziModule = import ./modules/yazi;
+          tmuxModule = import ./modules/tmux;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
+            (yaziModule.overlay wlib)
+            (tmuxModule.overlay wlib)
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";
@@ -154,6 +158,7 @@
                       ./modules/home/helix
                       ./modules/home/ai
                       ./modules/home/skills
+                      ./modules/home/tmux
                       ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
@@ -163,7 +168,6 @@
                     my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
-                    my.zellij.autoStart = false;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
@@ -204,6 +208,7 @@
                       ./modules/home/ai
                       ./modules/home/skills
                       ./modules/home/helix
+                      ./modules/home/tmux
                       ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
@@ -215,7 +220,6 @@
                     my.ai.copilot-cli.notifications.enable = true;
                     my.ai.crush.enable = true;
                     home.stateVersion = "25.11";
-                    my.zellij.autoStart = false;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
@@ -250,6 +254,7 @@
                       ./modules/home/ai
                       ./modules/home/skills
                       ./modules/home/helix
+                      ./modules/home/tmux
                       ./modules/home/work
                       inputs.worktrunk-flake.homeModules.default
                       ./modules/home/worktrunk

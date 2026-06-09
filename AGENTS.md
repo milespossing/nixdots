@@ -44,6 +44,7 @@ modules/             # Reusable NixOS and home-manager modules
   swayidle/          # Swayidle overlay with DPMS/lock logic
   noctalia/          # Noctalia shell overlay
   dms/               # DMS (Dank Material Shell) overlay
+  yazi/              # Yazi wrapper overlay (nix-wrapper-modules-based)
   neovim/            # Custom wrapped Neovim package builder
   secrets/           # sops-nix system secrets
   dev/               # Development compilers/runtimes
@@ -111,6 +112,7 @@ directly.
 | `niri/`            | Niri wrapper overlay: `niri-configured`, `niri-dms`, `niri-noct` sessions    |
 | `noctalia/`        | Noctalia shell overlay                                                       |
 | `dms/`             | DMS (Dank Material Shell) overlay                                            |
+| `yazi/`            | Yazi wrapper overlay (plugins, flavors, keymap, init.lua via nix-wrapper-modules) |
 | `waybar/`          | Waybar overlay + config wrapper                                              |
 | `rofi/`            | Rofi overlay + config wrapper                                                |
 | `dunst/`           | Dunst overlay + notification config wrapper                                  |
@@ -144,7 +146,7 @@ directly.
 | `home/wm-common/`   | Shared WM user config: dunst, rofi, swaylock, swayidle, waybar, GTK/cursor    |
 | `home/hyprland/`    | Hyprland session config + hypridle/hyprlock                                   |
 | `home/sway/`        | Sway session config                                                           |
-| `home/yazi/`        | Yazi file manager with Catppuccin theme and zellij integration (via home/base)|
+| `home/yazi/`        | Yazi shell integration (`y` wrapper); package + config provided by `modules/yazi` overlay |
 | `home/zellij/`      | Zellij multiplexer: layouts, keybinds, autolock plugin (via home/base)        |
 | `home/work/`        | Overrides `my.alias.email` to corporate address + work PATH dirs              |
 | `home/wsl/`         | Nerd Fonts, GPG + pass, git-credential-manager, WSL utilities                 |
