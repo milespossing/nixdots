@@ -103,6 +103,7 @@
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
+            (import ./overlays/kulala-nvim.nix)
             (import ./overlays/agent-mcps)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default

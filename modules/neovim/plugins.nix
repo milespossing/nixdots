@@ -3,12 +3,12 @@ with pkgs.vimPlugins;
 let
   treesitter-kulala-http-grammar = pkgs.tree-sitter.buildGrammar {
     language = "kulala_http";
-    version = "5.3.1";
+    version = "6.9.2";
     src = pkgs.fetchFromGitHub {
       owner = "mistweaverco";
       repo = "kulala.nvim";
-      rev = "902fc21e8a3fee7ccace37784879327baa6d1ece";
-      hash = "sha256-whQpwZMEvD62lgCrnNryrEvfSwLJJ+IqVCywTq78Vf8=";
+      rev = "69250f64e60f75c010feac413576acbd9ffa4ec8";
+      hash = "sha256-9w/WvEHodFDqP6S+6YZxunYZu40lI/xvWngo7sGeBUI=";
     };
     location = "lua/tree-sitter";
   };
