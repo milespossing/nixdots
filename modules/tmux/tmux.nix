@@ -3,6 +3,11 @@
   wlib,
   basePackage ? pkgs.tmux,
 }:
+let
+  sesh = "${pkgs.sesh}/bin/sesh";
+  gum = "${pkgs.gum}/bin/gum";
+  wt = "${pkgs.worktrunk}/bin/wt";
+in
 wlib.evalPackage [
   wlib.wrapperModules.tmux
   (
@@ -34,6 +39,19 @@ wlib.evalPackage [
           configBefore = ''
             set -g @catppuccin_flavour 'mocha'
             set -g @catppuccin_window_status_style 'rounded'
+
+            # Truncate long session names with an ellipsis so they don't
+            # eat the centered window list. `=/N/...` keeps the first N
+            # characters and appends "…" when the name is longer.
+            set -g @catppuccin_session_text '#{=/20/…:session_name}'
+
+            # Catppuccin's default window tabs show `#T` (pane_title),
+            # which apps like copilot-cli set to whatever they please via
+            # OSC escapes (e.g. the user's first chat message). Use `#W`
+            # (window_name) instead -- that's driven by
+            # `automatic-rename-format` below and stays short.
+            set -g @catppuccin_window_text ' #W'
+            set -g @catppuccin_window_current_text ' #W'
           '';
         }
       ];
@@ -58,17 +76,21 @@ wlib.evalPackage [
         bind -T copy-mode-vi 'C-v' send -X rectangle-toggle
         bind -T copy-mode-vi 'Escape' send -X cancel
 
-        # fzf-driven action menu (overrides the default next-layout binding).
-        # Entries are declared in nix via `my.tmux.menu.entries` (see
-        # modules/home/tmux). The `tmux-menu` binary is installed by the
-        # home-manager module into the user's PATH.
-        bind Space display-popup -E -w 60% -h 50% tmux-menu
-
         # Yazi file manager in a floating popup (mirrors zellij's Alt-g/Alt-c pattern)
         bind y display-popup -E -d "#{pane_current_path}" -w 90% -h 90% ${pkgs.yazi}/bin/yazi
 
         # Lazygit in a floating popup, opened in the focused pane's CWD
         bind g display-popup -E -d "#{pane_current_path}" -w 90% -h 90% ${pkgs.lazygit}/bin/lazygit
+
+        # sesh for tmux sessions
+        bind b display-popup -E -w 40% "${sesh} connect \"$(
+          ${sesh} list -i | ${gum} filter --no-strip-ansi --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡'
+        )\""
+
+        is_git="git rev-parse --is-inside-work-tree"
+        bind C-w if-shell "$is_git" display-popup -E -w 40% "${wt} switch --no-cd -x \'sesh connect {{ worktree_path }}\' \"$(
+          ${wt} list --format json | jq \'map(.branch).[]\' -r | ${gum} filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a branch' --height 50
+        )\""
 
         # smart-splits.nvim integration: seamless nav + resize between
         # tmux panes and nvim splits. Forwards C-hjkl / M-hjkl to nvim
@@ -94,6 +116,23 @@ wlib.evalPackage [
       configAfter = ''
         # Status bar position
         set -g status-position top
+
+        # Give the status-left/right segments enough room to render the
+        # session name, prefix indicator, etc. without truncation. The
+        # tmux defaults (10 / 40) chop long session names and squeeze
+        # the centered window list off the bar.
+        set -g status-left-length 80
+        set -g status-right-length 120
+
+        # Don't let apps (copilot-cli, ssh, etc.) rename windows via OSC
+        # title escapes -- they tend to dump multi-line prompts in there
+        # and blow up the status bar.
+        set -g allow-rename off
+        set -g automatic-rename on
+        set -g automatic-rename-format '#{b:pane_current_command}'
+
+        # Keep pane border titles short for the same reason.
+        set -g pane-border-format '#{pane_index} #{b:pane_current_command}'
       '';
     }
   )
