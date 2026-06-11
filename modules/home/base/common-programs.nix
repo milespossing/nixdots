@@ -1,3 +1,4 @@
+{ pkgs, ... }:
 {
   imports = [
     ../zellij
@@ -46,4 +47,8 @@
       filter_mode_shell_up_arrow = "session";
     };
   };
+
+  home.packages = with pkgs; [
+    gum
+  ];
 }
