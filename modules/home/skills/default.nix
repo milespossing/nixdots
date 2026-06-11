@@ -15,9 +15,9 @@ let
   };
 
   # Optional skills shipped with this module that hosts can opt into,
-  # e.g. `my.skills.extraSkills = [ "wsl-browser-control" ];`.
+  # e.g. `my.skills.extraSkills = [ "browser-control" ];`.
   availableSkills = {
-    wsl-browser-control = ./skills/wsl-browser-control;
+    browser-control = ./skills/browser-control;
     figma-to-spec = ./skills/figma-to-spec;
     fluent-ui-v9 = ./skills/fluent-ui-v9;
   };
@@ -42,7 +42,7 @@ in
     extraSkills = lib.mkOption {
       type = lib.types.listOf (lib.types.enum (lib.attrNames availableSkills));
       default = [ ];
-      example = [ "wsl-browser-control" ];
+      example = [ "browser-control" ];
       description = ''
         Names of optional built-in skills to enable on this host, in
         addition to the always-on built-ins. Available: ${lib.concatStringsSep ", " (lib.attrNames availableSkills)}.

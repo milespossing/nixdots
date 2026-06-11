@@ -1,16 +1,16 @@
 ---
 name: figma-to-spec
-description: Use when the user provides a Figma link (file, frame, or prototype) and wants a technical component spec. Drives Microsoft Edge via the wsl-browser-control skill to view the design, identifies visual components, and emits a multi-file spec emphasizing clean interfaces, composable controls, mock DOM snippets, and per-component markdown pages with mermaid nesting + data-contract diagrams. Triggers on "spec this figma", "review this figma design", "extract components from <figma url>", "build a component spec from figma".
+description: Use when the user provides a Figma link (file, frame, or prototype) and wants a technical component spec. Drives Microsoft Edge via the browser-control skill to view the design, identifies visual components, and emits a multi-file spec emphasizing clean interfaces, composable controls, mock DOM snippets, and per-component markdown pages with mermaid nesting + data-contract diagrams. Triggers on "spec this figma", "review this figma design", "extract components from <figma url>", "build a component spec from figma".
 metadata:
   author: miles
   version: "0.1"
-compatibility: WSL2 host with the `wsl-browser-control` skill installed (provides bootstrap + Playwright bridge to the user's signed-in Microsoft Edge). The user must already have access to the target Figma file in that browser session.
+compatibility: WSL2 host with the `browser-control` skill installed (provides bootstrap + Playwright bridge to the user's signed-in Microsoft Edge). The user must already have access to the target Figma file in that browser session.
 ---
 
 # Figma → Technical Component Spec
 
 Turn a Figma URL into a structured, opinionated component spec built on
-top of the [`wsl-browser-control`](../wsl-browser-control/SKILL.md)
+top of the [`browser-control`](../browser-control/SKILL.md)
 skill. The output is a directory of markdown + mermaid files that an
 engineer (or another agent) can implement against.
 
@@ -59,16 +59,16 @@ you start writing — it expands on each rule.
 
 ### 1. Load and bootstrap the browser bridge
 
-Load the `wsl-browser-control` skill, then:
+Load the `browser-control` skill, then:
 
 ```bash
-CDP_URL=$(bash "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/bootstrap.sh" | tail -n1)
+CDP_URL=$(bash "$AGENTS_SKILLS_DIR/browser-control/scripts/bootstrap.sh" | tail -n1)
 ```
 
 ### 2. Open the Figma URL
 
 ```bash
-python3 "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/open_url.py" \
+python3 "$AGENTS_SKILLS_DIR/browser-control/scripts/open_url.py" \
   "<figma-url>" --cdp-url "$CDP_URL"
 ```
 
@@ -90,7 +90,7 @@ Figma's canvas is mostly `<canvas>`, so plain HTML scraping is useless.
 You need screenshots. Capture each frame of interest:
 
 ```bash
-python3 "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/capture_page.py" \
+python3 "$AGENTS_SKILLS_DIR/browser-control/scripts/capture_page.py" \
   --match "figma.com" \
   --out-dir ./spec/captures \
   --name <frame-slug> \
@@ -198,7 +198,7 @@ Then *stop and ask* whether to (a) extract something you drew inline,
 user: spec https://www.figma.com/file/abc123/?node-id=42-17
 ```
 
-1. Load `wsl-browser-control`, run bootstrap → `CDP_URL`.
+1. Load `browser-control`, run bootstrap → `CDP_URL`.
 2. `open_url.py "<figma-url>" --cdp-url "$CDP_URL"`.
 3. Title says "Figma" and the canvas is visible → user is signed in.
 4. `capture_page.py --name frame-42-17 --out-dir ./spec/captures …`.

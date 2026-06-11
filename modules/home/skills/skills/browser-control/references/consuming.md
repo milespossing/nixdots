@@ -1,4 +1,4 @@
-# Consuming wsl-browser-control from other skills and agents
+# Consuming browser-control from other skills and agents
 
 This skill is intentionally narrow: bridge Edge, expose tab and capture
 helpers, get out of the way. Higher-level skills layer their own
@@ -7,17 +7,17 @@ on top.
 
 ## The cross-skill contract
 
-Every consuming skill should reach `wsl-browser-control` via
+Every consuming skill should reach `browser-control` via
 `$AGENTS_SKILLS_DIR` (set by the `home/skills` module to
 `~/.agents/skills`). That env var is the public API — never hardcode
-`~/.agents/skills/wsl-browser-control`; another agent runner may
+`~/.agents/skills/browser-control`; another agent runner may
 relocate the dir.
 
 The minimum any consumer must do:
 
 ```bash
 # 1. Bootstrap once per task. Idempotent and cheap (<1s) on warm runs.
-CDP_URL=$(bash "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/bootstrap.sh" | tail -n1)
+CDP_URL=$(bash "$AGENTS_SKILLS_DIR/browser-control/scripts/bootstrap.sh" | tail -n1)
 
 # 2. From here, run any helper with --cdp-url "$CDP_URL".
 ```
@@ -30,18 +30,18 @@ be running yet, so the connection will fail. Always bootstrap first.
 
 Your skill's SKILL.md instructs the agent like:
 
-> Before any browser action, ensure `wsl-browser-control` is loaded and
+> Before any browser action, ensure `browser-control` is loaded and
 > run `bootstrap.sh` to get a `CDP_URL`. Then call:
 >
 >   ```
->   $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/open_url.py
->   $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/capture_page.py
->   $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/list_tabs.py
+>   $AGENTS_SKILLS_DIR/browser-control/scripts/open_url.py
+>   $AGENTS_SKILLS_DIR/browser-control/scripts/capture_page.py
+>   $AGENTS_SKILLS_DIR/browser-control/scripts/list_tabs.py
 >   ```
 >
 > Parse output as `key=value` lines.
 
-The agent loads `wsl-browser-control` on first reference and the rest
+The agent loads `browser-control` on first reference and the rest
 flows naturally. **Skills stay loosely coupled** and your skill needs
 no Python environment of its own.
 
@@ -56,7 +56,7 @@ in *your* skill's `scripts/`:
 # my-skill/scripts/do_thing.py
 import sys, os
 sys.path.insert(0, os.path.join(
-    os.environ['AGENTS_SKILLS_DIR'], 'wsl-browser-control', 'scripts'
+    os.environ['AGENTS_SKILLS_DIR'], 'browser-control', 'scripts'
 ))
 from _wbc import connect, open_or_focus, find_page
 
@@ -68,7 +68,7 @@ with connect() as (browser, ctx):
 ```
 
 Run it inside an environment that has Playwright installed (same nix
-shell or virtualenv that `wsl-browser-control`'s helpers run under).
+shell or virtualenv that `browser-control`'s helpers run under).
 
 Caveats:
 
@@ -89,13 +89,13 @@ name: corp-browser-agent
 description: Browses the user's signed-in corp services.
 tools: [bash, view, ask_user]
 skills:
-  - wsl-browser-control
+  - browser-control
 ---
 ```
 
 (Exact frontmatter shape depends on your runner; the example matches
 Copilot CLI's `.agent.md` convention.) The agent will load
-`wsl-browser-control`'s SKILL.md as part of its context on every
+`browser-control`'s SKILL.md as part of its context on every
 invocation.
 
 ## Anti-patterns
@@ -114,6 +114,6 @@ invocation.
 
 If you previously bundled your own bootstrap (e.g., the original
 `icm-edge-capture` skill's `launch_edge.sh`), replace it with a call to
-`wsl-browser-control/scripts/bootstrap.sh` and remove the duplicated
+`browser-control/scripts/bootstrap.sh` and remove the duplicated
 forwarder. The CDP URL contract is identical: the last line of stdout
 is `http://<host>:<port>`.

@@ -1,4 +1,4 @@
-"""Shared utilities for wsl-browser-control Python helpers.
+"""Shared utilities for browser-control Python helpers.
 
 All helpers connect to the bridged Edge over CDP via Playwright.
 

@@ -107,7 +107,7 @@ the pattern `components-<pkg-suffix>-<name>--<variant>`, e.g.
 `components-button-button--default`. The full index is at
 `https://react.fluentui.dev/index.json`.
 
-To screenshot a story, use the [`wsl-browser-control`](../wsl-browser-control/SKILL.md)
+To screenshot a story, use the [`browser-control`](../browser-control/SKILL.md)
 skill and open
 `https://react.fluentui.dev/iframe.html?id=<story-id>&viewMode=story`.
 

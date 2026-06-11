@@ -1,6 +1,6 @@
 # Figma navigation tips
 
-Notes on driving Figma through `wsl-browser-control`. Figma is a heavy,
+Notes on driving Figma through `browser-control`. Figma is a heavy,
 canvas-based app, so most "scrape the DOM" instincts are wrong here.
 
 ## URL shapes

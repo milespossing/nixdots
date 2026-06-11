@@ -262,7 +262,7 @@
                     ];
                     my.skills.enable = true;
                     my.skills.extraSkills = [
-                      "wsl-browser-control"
+                      "browser-control"
                       "figma-to-spec"
                       "fluent-ui-v9"
                     ];

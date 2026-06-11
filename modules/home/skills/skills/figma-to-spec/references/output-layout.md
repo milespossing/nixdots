@@ -56,7 +56,7 @@ without opening every component page.
 
 ### `captures/`
 
-Raw output of `wsl-browser-control/scripts/capture_page.py`. Do not
+Raw output of `browser-control/scripts/capture_page.py`. Do not
 edit. Filename slugs should match the `data-frame` attribute used in
 `mock-dom.html` for cross-reference.
 

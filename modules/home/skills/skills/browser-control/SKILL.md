@@ -1,5 +1,5 @@
 ---
-name: wsl-browser-control
+name: browser-control
 description: Use to drive the user's signed-in Microsoft Edge (running on the Windows host) from inside WSL via Chrome DevTools Protocol. Bootstraps Edge + a TCP forwarder so Playwright in WSL can connect to the Windows browser, then exposes thin helpers to open URLs, list tabs, and capture pages (HTML / text / screenshot) without re-authenticating against AAD/MFA-protected sites. Trigger when the user wants to "browse from WSL", scrape a corp-internal site, screenshot a page that requires their existing browser session, or whenever another skill needs an authenticated headed browser on this WSL host. Other skills/agents can build on this one — see references/consuming.md.
 metadata:
   author: miles
@@ -40,7 +40,7 @@ self-contained.
 ### 1. Bootstrap (always do this first; idempotent)
 
 ```bash
-CDP_URL=$(bash "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/bootstrap.sh" | tail -n1)
+CDP_URL=$(bash "$AGENTS_SKILLS_DIR/browser-control/scripts/bootstrap.sh" | tail -n1)
 ```
 
 `bootstrap.sh` will:
@@ -60,7 +60,7 @@ ask them to sign in, then proceed.
 ### 2. Open or focus a tab
 
 ```bash
-python3 "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/open_url.py" \
+python3 "$AGENTS_SKILLS_DIR/browser-control/scripts/open_url.py" \
   "https://example.com/path" --cdp-url "$CDP_URL"
 ```
 
@@ -71,7 +71,7 @@ URL you'd open differs from how you'd find an already-open tab.
 ### 3. Capture a page
 
 ```bash
-python3 "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/capture_page.py" \
+python3 "$AGENTS_SKILLS_DIR/browser-control/scripts/capture_page.py" \
   --match "example.com/path" \
   --out-dir ./captures \
   --name example_capture \
@@ -86,7 +86,7 @@ snapshotting; pass `--no-scroll` / `--no-expand` to skip those, or
 ### 4. List tabs (introspection / debugging)
 
 ```bash
-python3 "$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/list_tabs.py" \
+python3 "$AGENTS_SKILLS_DIR/browser-control/scripts/list_tabs.py" \
   --cdp-url "$CDP_URL" [--filter SUBSTR]
 ```
 
@@ -100,9 +100,9 @@ There are two clean patterns; pick whichever fits your skill:
 
 The consuming skill's SKILL.md tells the agent:
 
-> Before using a browser, load the `wsl-browser-control` skill and run
+> Before using a browser, load the `browser-control` skill and run
 > `bootstrap.sh` to get a `CDP_URL`. Then call the helper scripts in
-> `$AGENTS_SKILLS_DIR/wsl-browser-control/scripts/` with that URL.
+> `$AGENTS_SKILLS_DIR/browser-control/scripts/` with that URL.
 
 The agent loads both skills, runs bootstrap, then drives the helpers.
 Skills stay loosely coupled — no Python imports across skills.
@@ -114,7 +114,7 @@ If your skill ships its own Python that already has playwright:
 ```python
 import sys, os
 sys.path.insert(0, os.path.join(
-    os.environ['AGENTS_SKILLS_DIR'], 'wsl-browser-control', 'scripts'
+    os.environ['AGENTS_SKILLS_DIR'], 'browser-control', 'scripts'
 ))
 from _wbc import connect, open_or_focus, find_page
 
@@ -134,12 +134,12 @@ convention.
 ## Example: "screenshot the docs page for foo-service"
 
 ```
-1. bash: CDP_URL=$(bash $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/bootstrap.sh | tail -n1)
-2. bash: python3 $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/open_url.py \
+1. bash: CDP_URL=$(bash $AGENTS_SKILLS_DIR/browser-control/scripts/bootstrap.sh | tail -n1)
+2. bash: python3 $AGENTS_SKILLS_DIR/browser-control/scripts/open_url.py \
             "https://eng.example.com/docs/foo-service" --cdp-url "$CDP_URL"
    -> title="Sign in to eng.example.com"   # not signed in yet
 3. ask_user: "Please sign in to Edge, then say done."
-4. bash: python3 $AGENTS_SKILLS_DIR/wsl-browser-control/scripts/capture_page.py \
+4. bash: python3 $AGENTS_SKILLS_DIR/browser-control/scripts/capture_page.py \
             --match "/docs/foo-service" --out-dir ./out --name foo --cdp-url "$CDP_URL"
 5. view ./out/foo.png
 6. Summarize.
