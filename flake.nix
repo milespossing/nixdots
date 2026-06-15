@@ -171,6 +171,7 @@
                     my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
+                    my.ai.pi.enable = true;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
@@ -221,6 +222,7 @@
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
                     my.ai.crush.enable = true;
+                    my.ai.pi.enable = true;
                     home.stateVersion = "25.11";
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
@@ -271,6 +273,7 @@
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.crush.enable = true;
+                    my.ai.pi.enable = true;
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
                     my.ai.mcp.servers.azure-devops = pkgs.agenticMcps.azureDevops;

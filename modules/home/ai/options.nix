@@ -118,6 +118,10 @@ in
       enable = mkEnableOption "Charmbracelet Crush AI agent";
     };
 
+    pi = {
+      enable = mkEnableOption "Pi coding agent (earendil-works/pi)";
+    };
+
     aider = {
       enable = mkEnableOption "Aider AI pair programming";
       extraConfig = mkOption {
