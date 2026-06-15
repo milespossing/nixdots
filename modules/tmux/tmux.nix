@@ -87,8 +87,7 @@ wlib.evalPackage [
           ${sesh} list -i | ${gum} filter --no-strip-ansi --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡'
         )\""
 
-        is_git="git rev-parse --is-inside-work-tree"
-        bind C-w if-shell "$is_git" display-popup -E -w 40% "${wt} switch --no-cd -x \'sesh connect {{ worktree_path }}\' \"$(
+        bind C-w display-popup -E -w 40% "${wt} switch --no-cd -x \'sesh connect {{ worktree_path }}\' \"$(
           ${wt} list --format json | jq \'map(.branch).[]\' -r | ${gum} filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a branch' --height 50
         )\""
 

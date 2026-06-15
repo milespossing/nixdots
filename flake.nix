@@ -100,6 +100,7 @@
           niriModule = import ./modules/niri;
           yaziModule = import ./modules/yazi;
           tmuxModule = import ./modules/tmux;
+          kittyModule = import ./modules/kitty;
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
@@ -109,6 +110,7 @@
             inputs.noctalia.overlays.default
             (yaziModule.overlay wlib)
             (tmuxModule.overlay wlib)
+            (kittyModule.overlay wlib)
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";
@@ -146,6 +148,7 @@
               ./modules/userland
               ./modules/wine
               ./modules/nixos-tools
+              ./modules/virtualization
               inputs.home-manager.nixosModules.default
               {
                 home-manager.useGlobalPkgs = true;
@@ -160,7 +163,6 @@
                       ./modules/home/ai
                       ./modules/home/skills
                       ./modules/home/tmux
-                      ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
                     ];
@@ -210,7 +212,6 @@
                       ./modules/home/skills
                       ./modules/home/helix
                       ./modules/home/tmux
-                      ./modules/home/user-space
                       ./modules/home/wm-common
                       ./modules/home/zen-browser
                     ];

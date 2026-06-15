@@ -12,22 +12,10 @@ with lib;
   ];
 
   virtualisation = {
-    docker.enable = true;
     libvirtd = {
       enable = true;
       qemu = {
-        package = pkgs.qemu_full;
-        runAsRoot = true;
         swtpm.enable = true;
-        ovmf = {
-          enable = true;
-          packages = [
-            (pkgs.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-          ];
-        };
       };
     };
     spiceUSBRedirection.enable = true;
@@ -39,7 +27,6 @@ with lib;
 
   # TODO: Going to want to make this respond to the default user name
   users.users.miles.extraGroups = [
-    "docker"
     "libvirtd"
   ];
 }

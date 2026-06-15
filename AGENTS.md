@@ -55,12 +55,12 @@ secrets/             # sops-encrypted YAML secret files
 
 ## Hosts
 
-| Host       | Type    | DE/WM                  | Key Modules                                             |
-| ---------- | ------- | ---------------------- | ------------------------------------------------------- |
-| `euler`    | Desktop | Hyprland / Sway / Niri | core, secrets, wm, office, syncthing, userland          |
-| `laplace`  | Laptop  | Hyprland / Sway / Niri | core, wm, userland, syncthing, xremap, nixos-hardware   |
-| `nixos`    | WSL     | --                     | core, wsl, work, dev, syncthing                         |
-| `wsl-work` | WSL     | --                     | (exists on disk but not wired in flake.nix)             |
+| Host       | Type    | DE/WM                  | Key Modules                                           |
+| ---------- | ------- | ---------------------- | ----------------------------------------------------- |
+| `euler`    | Desktop | Hyprland / Sway / Niri | core, secrets, wm, office, syncthing, userland        |
+| `laplace`  | Laptop  | Hyprland / Sway / Niri | core, wm, userland, syncthing, xremap, nixos-hardware |
+| `nixos`    | WSL     | --                     | core, wsl, work, dev, syncthing                       |
+| `wsl-work` | WSL     | --                     | (exists on disk but not wired in flake.nix)           |
 
 Host names follow a mathematicians convention (euler, laplace).
 
@@ -75,6 +75,7 @@ noctalia, and DMS wrappers.
 home-manager user modules inside `home-manager.users.miles.imports`.
 
 Overlays are split into two tiers:
+
 - **Global overlays** (shared by all hosts): zellij-plugins, azure-cli-fix,
   agent-mcps, nix-openclaw, noctalia, dms-shell, nvim, NUR
 - **Per-host overlays** (euler + laplace only): niri, waybar, rofi, dunst,
@@ -88,7 +89,6 @@ Overlays are split into two tiers:
 | home/navi        |   x   |    x    |   x   |
 | home/helix       |   x   |    x    |   x   |
 | home/ai          |   x   |    x    |   x   |
-| home/user-space  |   x   |    x    |       |
 | home/wm-common   |   x   |    x    |       |
 | home/hyprland    |   x   |    x    |       |
 | home/sway        |   x   |    x    |       |
@@ -103,55 +103,54 @@ directly.
 
 ## System Modules Reference
 
-| Module             | Purpose                                                                      |
-| ------------------ | ---------------------------------------------------------------------------- |
-| `core/`            | Flakes, fonts, GPG, locale, SSH, user, neovim, base CLI tools                |
-| `core/options.nix` | Defines `my.username` and `my.flakePath` options                             |
-| `wm/all.nix`       | Shared WM stack: Hyprland, Sway, greetd/tuigreet, portals, udisks2, udiskie |
-| `wm/gnome.nix`     | GDM + GNOME desktop (unused by active hosts)                                 |
-| `niri/`            | Niri wrapper overlay: `niri-configured`, `niri-dms`, `niri-noct` sessions    |
-| `noctalia/`        | Noctalia shell overlay                                                       |
-| `dms/`             | DMS (Dank Material Shell) overlay                                            |
+| Module             | Purpose                                                                           |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `core/`            | Flakes, fonts, GPG, locale, SSH, user, neovim, base CLI tools                     |
+| `core/options.nix` | Defines `my.username` and `my.flakePath` options                                  |
+| `wm/all.nix`       | Shared WM stack: Hyprland, Sway, greetd/tuigreet, portals, udisks2, udiskie       |
+| `wm/gnome.nix`     | GDM + GNOME desktop (unused by active hosts)                                      |
+| `niri/`            | Niri wrapper overlay: `niri-configured`, `niri-dms`, `niri-noct` sessions         |
+| `noctalia/`        | Noctalia shell overlay                                                            |
+| `dms/`             | DMS (Dank Material Shell) overlay                                                 |
 | `yazi/`            | Yazi wrapper overlay (plugins, flavors, keymap, init.lua via nix-wrapper-modules) |
-| `waybar/`          | Waybar overlay + config wrapper                                              |
-| `rofi/`            | Rofi overlay + config wrapper                                                |
-| `dunst/`           | Dunst overlay + notification config wrapper                                  |
-| `swaylock/`        | Swaylock overlay + lock screen config wrapper                                |
-| `swayidle/`        | Swayidle overlay + DPMS/lock idle logic                                      |
-| `neovim/`          | Custom wrapped Neovim package (also exposed as `packages.nvim` / `apps.nvim`)|
-| `wallpapers/`      | Copies wallpaper images into `~/Pictures/wallpapers`                         |
-| `network/`         | Enables NetworkManager                                                       |
-| `dev/`             | cmake, gcc, nodejs, JDK (zulu), clojure, babashka                            |
-| `secrets/`         | sops-nix: TrueNAS SMB + WireGuard VPN secrets (euler only)                   |
-| `wayland/`         | Shared Wayland utilities: wl-clipboard, grim, slurp (imported by wm/)        |
-| `wsl/`             | NixOS-WSL integration, nix-ld, pass-secret-service, SOPS                     |
-| `work/`            | Azure CLI with azure-devops + kusto extensions                               |
-| `syncthing/`       | Syncthing file sync for user miles                                           |
-| `office/`          | LibreOffice + Hunspell                                                       |
-| `userland/`        | Logseq, Discord, Spotify                                                     |
-| `nixos-tools/`     | nix-index-database + nh (rebuild helper with auto-GC)                        |
-| `openclaw-node/`   | OpenClaw node host service with SOPS secrets (not wired to active hosts)     |
-| `kde/`             | KDE Plasma 6, SDDM, KDE Connect (unused by active hosts)                    |
-| `virtualization/`  | Docker, QEMU/KVM, virt-manager (unused by active hosts)                      |
-| `wine/`            | Wine Staging + Winetricks (unused by active hosts)                           |
+| `waybar/`          | Waybar overlay + config wrapper                                                   |
+| `rofi/`            | Rofi overlay + config wrapper                                                     |
+| `dunst/`           | Dunst overlay + notification config wrapper                                       |
+| `swaylock/`        | Swaylock overlay + lock screen config wrapper                                     |
+| `swayidle/`        | Swayidle overlay + DPMS/lock idle logic                                           |
+| `neovim/`          | Custom wrapped Neovim package (also exposed as `packages.nvim` / `apps.nvim`)     |
+| `wallpapers/`      | Copies wallpaper images into `~/Pictures/wallpapers`                              |
+| `network/`         | Enables NetworkManager                                                            |
+| `dev/`             | cmake, gcc, nodejs, JDK (zulu), clojure, babashka                                 |
+| `secrets/`         | sops-nix: TrueNAS SMB + WireGuard VPN secrets (euler only)                        |
+| `wayland/`         | Shared Wayland utilities: wl-clipboard, grim, slurp (imported by wm/)             |
+| `wsl/`             | NixOS-WSL integration, nix-ld, pass-secret-service, SOPS                          |
+| `work/`            | Azure CLI with azure-devops + kusto extensions                                    |
+| `syncthing/`       | Syncthing file sync for user miles                                                |
+| `office/`          | LibreOffice + Hunspell                                                            |
+| `userland/`        | Logseq, Discord, Spotify                                                          |
+| `nixos-tools/`     | nix-index-database + nh (rebuild helper with auto-GC)                             |
+| `openclaw-node/`   | OpenClaw node host service with SOPS secrets (not wired to active hosts)          |
+| `kde/`             | KDE Plasma 6, SDDM, KDE Connect (unused by active hosts)                          |
+| `virtualization/`  | Docker, QEMU/KVM, virt-manager (unused by active hosts)                           |
+| `wine/`            | Wine Staging + Winetricks (unused by active hosts)                                |
 
 ## Home-Manager Modules Reference
 
-| Module              | Purpose                                                                       |
-| ------------------- | ----------------------------------------------------------------------------- |
-| `home/base/`        | Shell config (bash/fish/nushell), git, starship, fzf, zoxide, direnv, atuin   |
-| `home/navi/`        | Navi cheatsheets (local + GitHub community cheats)                            |
-| `home/helix/`       | Helix editor configuration                                                    |
-| `home/ai/`          | AI tooling: copilot-cli, opencode, aider, crush, MCPs, API secrets            |
-| `home/wm-common/`   | Shared WM user config: dunst, rofi, swaylock, swayidle, waybar, GTK/cursor    |
-| `home/hyprland/`    | Hyprland session config + hypridle/hyprlock                                   |
-| `home/sway/`        | Sway session config                                                           |
+| Module              | Purpose                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `home/base/`        | Shell config (bash/fish/nushell), git, starship, fzf, zoxide, direnv, atuin               |
+| `home/navi/`        | Navi cheatsheets (local + GitHub community cheats)                                        |
+| `home/helix/`       | Helix editor configuration                                                                |
+| `home/ai/`          | AI tooling: copilot-cli, opencode, aider, crush, MCPs, API secrets                        |
+| `home/wm-common/`   | Shared WM user config: dunst, rofi, swaylock, swayidle, waybar, GTK/cursor                |
+| `home/hyprland/`    | Hyprland session config + hypridle/hyprlock                                               |
+| `home/sway/`        | Sway session config                                                                       |
 | `home/yazi/`        | Yazi shell integration (`y` wrapper); package + config provided by `modules/yazi` overlay |
-| `home/zellij/`      | Zellij multiplexer: layouts, keybinds, autolock plugin (via home/base)        |
-| `home/work/`        | Overrides `my.alias.email` to corporate address + work PATH dirs              |
-| `home/wsl/`         | Nerd Fonts, GPG + pass, git-credential-manager, WSL utilities                 |
-| `home/user-space/`  | Kitty terminal (DepartureMono + Catppuccin Mocha)                             |
-| `home/zen-browser/` | Zen Browser (Firefox-based, from flake input)                                 |
+| `home/zellij/`      | Zellij multiplexer: layouts, keybinds, autolock plugin (via home/base)                    |
+| `home/work/`        | Overrides `my.alias.email` to corporate address + work PATH dirs                          |
+| `home/wsl/`         | Nerd Fonts, GPG + pass, git-credential-manager, WSL utilities                             |
+| `home/zen-browser/` | Zen Browser (Firefox-based, from flake input)                                             |
 
 ## Custom Options
 
@@ -194,15 +193,15 @@ Other options:
 
 ### Input and inline overlays (wired in `flake.nix`)
 
-| Source                        | Purpose                                                   |
-| ----------------------------- | --------------------------------------------------------- |
-| `nix-openclaw.overlays`       | OpenClaw packages                                         |
-| `noctalia.overlays`           | Noctalia shell packages                                   |
-| `niri.overlays.niri`          | Niri compositor (euler + laplace only)                    |
-| `nur.overlays`                | Nix User Repository                                       |
-| Inline `dms-shell`            | DMS + quickshell from dank-material-shell input            |
-| Inline `nvim`                 | Wrapped Neovim from `modules/neovim`                       |
-| Module overlays (per-host)    | waybar, rofi, dunst, swaylock, swayidle, noctalia, dms, niri device |
+| Source                     | Purpose                                                             |
+| -------------------------- | ------------------------------------------------------------------- |
+| `nix-openclaw.overlays`    | OpenClaw packages                                                   |
+| `noctalia.overlays`        | Noctalia shell packages                                             |
+| `niri.overlays.niri`       | Niri compositor (euler + laplace only)                              |
+| `nur.overlays`             | Nix User Repository                                                 |
+| Inline `dms-shell`         | DMS + quickshell from dank-material-shell input                     |
+| Inline `nvim`              | Wrapped Neovim from `modules/neovim`                                |
+| Module overlays (per-host) | waybar, rofi, dunst, swaylock, swayidle, noctalia, dms, niri device |
 
 Overlays use `final: prev:` argument naming.
 

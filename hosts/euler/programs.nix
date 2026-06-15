@@ -10,7 +10,7 @@
     parallel
     orca-slicer
     freecad-wayland
-    bambu-studio
+    # bambu-studio
     calibre
     kvirc
     mangohud
