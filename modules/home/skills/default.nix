@@ -13,6 +13,7 @@ let
     writing-skills = ./skills/writing-skills;
     warehouse-ux-pr-review = ./skills/warehouse-ux-pr-review;
     html-report = ./skills/html-report;
+    ado-pr-markdown = ./skills/ado-pr-markdown;
   };
 
   # Optional skills shipped with this module that hosts can opt into,
