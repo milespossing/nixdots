@@ -113,6 +113,14 @@ wlib.evalPackage [
       '';
 
       configAfter = ''
+        # Enable CSI u / extended key reporting so modifiers like
+        # Ctrl/Shift/Alt on otherwise-ambiguous keys (e.g. C-Enter,
+        # S-Enter, C-/) reach the inner application. `always` makes tmux
+        # emit extended sequences unconditionally; pair it with
+        # advertising the `extkeys` terminal feature to the outer term.
+        set -s extended-keys always
+        set -as terminal-features 'xterm*:extkeys'
+
         # Status bar position
         set -g status-position top
 

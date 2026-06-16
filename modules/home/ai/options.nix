@@ -120,6 +120,37 @@ in
 
     pi = {
       enable = mkEnableOption "Pi coding agent (earendil-works/pi)";
+
+      extraPackages = mkOption {
+        type = types.listOf types.package;
+        default = [ ];
+        description = ''
+          Additional packages added to pi's wrapper runtime PATH so
+          the built-in `bash` tool and extensions can call them
+          without touching the user's global PATH.
+
+          Layered on top of the baseline set from `modules/pi/pi.nix`
+          (jq, gh, lazygit, bat, tree, delta) and on top of the
+          ripgrep/fd that nixpkgs already wraps in.
+        '';
+        example = lib.literalExpression "with pkgs; [ kubectl awscli2 ]";
+      };
+
+      extensions = mkOption {
+        type = types.listOf types.package;
+        default = [ ];
+        description = ''
+          Pi extensions / pi-packages loaded on every invocation.
+
+          Each entry is a derivation whose output directory matches
+          the pi-package layout (typically built via
+          `pkgs.piExtensions.mkPiExtensionFromNpm`). The pi wrapper
+          passes them as `--extension <store-path>` flags, and pi
+          loads their full manifest (extensions, skills, prompts,
+          themes) from `package.json`.
+        '';
+        example = lib.literalExpression "[ pkgs.piExtensions.pi-wsl-images ]";
+      };
     };
 
     aider = {

@@ -17,9 +17,16 @@ let
   };
 
   # Optional skills shipped with this module that hosts can opt into,
-  # e.g. `my.skills.extraSkills = [ "browser-control" ];`.
+  # e.g. `my.skills.extraSkills = [ "figma-to-spec" ];`.
+  #
+  # Note: `browser-control` is currently not exposed here. On the WSL
+  # host the `agent-browser-edge-bridge` pi extension transparently
+  # bridges `agent_browser` to Windows Edge over CDP, which makes the
+  # skill's bootstrap step redundant for any pi-driven workflow. The
+  # skill directory is kept in-tree under `./skills/browser-control`
+  # if we ever need to expose it again (e.g. for direct Playwright use
+  # outside pi).
   availableSkills = {
-    browser-control = ./skills/browser-control;
     figma-to-spec = ./skills/figma-to-spec;
     fluent-ui-v9 = ./skills/fluent-ui-v9;
   };
@@ -44,7 +51,7 @@ in
     extraSkills = lib.mkOption {
       type = lib.types.listOf (lib.types.enum (lib.attrNames availableSkills));
       default = [ ];
-      example = [ "browser-control" ];
+      example = [ "figma-to-spec" ];
       description = ''
         Names of optional built-in skills to enable on this host, in
         addition to the always-on built-ins. Available: ${lib.concatStringsSep ", " (lib.attrNames availableSkills)}.

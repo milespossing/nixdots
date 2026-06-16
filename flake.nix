@@ -66,7 +66,19 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        wlib = inputs.nix-wrapper-modules.lib;
+        wrappers = import ./wrappers { inherit (nixpkgs) lib; };
+        pkgs = import nixpkgs {
+          inherit system;
+          # Just the overlays the per-system outputs need. The richer
+          # set used by `nixosConfigurations` lives in its own `let`
+          # binding below and pulls in WM/host-specific stuff that
+          # `nix build .#<pkg>` consumers don't care about.
+          overlays = [
+            (import ./overlays/pi-extensions)
+            (wrappers.overlay wlib)
+          ];
+        };
       in
       {
         formatter = pkgs.nixfmt-tree;
@@ -85,9 +97,27 @@
             {
               fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
             };
+        # Baseline-wrapped pi (jq, gh, lazygit, bat, tree, delta,
+        # agent-browser on PATH). Add extensions on the fly with
+        # `pkgs.pi-coding-agent.wrap { extensions = [...]; }` from
+        # any downstream nix expression.
+        packages.pi = pkgs.pi-coding-agent;
+        # Same baseline + every extension we package in
+        # `overlays/pi-extensions` (pi-wsl-images, rpiv-btw,
+        # pi-agent-browser-native). Intended for WSL hosts that
+        # want pi ready-to-go without the home-manager glue.
+        packages.pi-wsl = pkgs.pi-coding-agent-wsl;
         apps.nvim = {
           type = "app";
           program = "${self.packages.${system}.nvim}/bin/nvim";
+        };
+        apps.pi = {
+          type = "app";
+          program = "${self.packages.${system}.pi}/bin/pi";
+        };
+        apps.pi-wsl = {
+          type = "app";
+          program = "${self.packages.${system}.pi-wsl}/bin/pi";
         };
       }
     )
@@ -98,19 +128,16 @@
           rofiModule = import ./modules/rofi;
           noctaliaModule = import ./modules/noctalia;
           niriModule = import ./modules/niri;
-          yaziModule = import ./modules/yazi;
-          tmuxModule = import ./modules/tmux;
-          kittyModule = import ./modules/kitty;
+          wrappers = import ./wrappers { inherit (nixpkgs) lib; };
           overlays = [
             (import ./overlays/zellij-plugins.nix)
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/kulala-nvim.nix)
             (import ./overlays/agent-mcps)
+            (import ./overlays/pi-extensions)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
-            (yaziModule.overlay wlib)
-            (tmuxModule.overlay wlib)
-            (kittyModule.overlay wlib)
+            (wrappers.overlay wlib)
             (final: prev: {
               nvim = final.symlinkJoin {
                 name = "nvim";
@@ -265,7 +292,6 @@
                     ];
                     my.skills.enable = true;
                     my.skills.extraSkills = [
-                      "browser-control"
                       "figma-to-spec"
                       "fluent-ui-v9"
                     ];
@@ -274,6 +300,12 @@
                     my.ai.copilot-cli.enable = true;
                     my.ai.crush.enable = true;
                     my.ai.pi.enable = true;
+                    my.ai.pi.extensions = with pkgs.piExtensions; [
+                      pi-wsl-images
+                      rpiv-btw
+                      pi-agent-browser-native
+                      agent-browser-edge-bridge
+                    ];
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
                     my.ai.mcp.servers.azure-devops = pkgs.agenticMcps.azureDevops;
