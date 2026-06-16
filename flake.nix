@@ -75,6 +75,7 @@
           # binding below and pulls in WM/host-specific stuff that
           # `nix build .#<pkg>` consumers don't care about.
           overlays = [
+            (import ./overlays/pi-coding-agent.nix)
             (import ./overlays/pi-extensions)
             (wrappers.overlay wlib)
           ];
@@ -134,6 +135,7 @@
             (import ./overlays/azure-cli-fix.nix { nixpkgs-master = inputs.nixpkgs-master; })
             (import ./overlays/kulala-nvim.nix)
             (import ./overlays/agent-mcps)
+            (import ./overlays/pi-coding-agent.nix)
             (import ./overlays/pi-extensions)
             inputs.nix-openclaw.overlays.default
             inputs.noctalia.overlays.default
@@ -303,6 +305,7 @@
                     my.ai.pi.extensions = with pkgs.piExtensions; [
                       pi-wsl-images
                       rpiv-btw
+                      pi-copilot-discovery # live Copilot model discovery (replaces static catalog)
                       pi-agent-browser-native
                       agent-browser-edge-bridge
                     ];

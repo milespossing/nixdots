@@ -121,6 +121,11 @@ wlib.evalPackage [
         set -s extended-keys always
         set -as terminal-features 'xterm*:extkeys'
 
+        # Emit CSI u (fixterms / kitty-style) sequences rather than the
+        # legacy xterm modifyOtherKeys format. Tools like pi parse the
+        # csi-u form to disambiguate modified keys reliably.
+        set -g extended-keys-format csi-u
+
         # Status bar position
         set -g status-position top
 

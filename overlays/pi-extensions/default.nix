@@ -135,8 +135,8 @@ in
     # https://github.com/milespossing/pi-copilot-discovery
     pi-copilot-discovery = mkPiExtensionFromNpm {
       pname = "@milespossing/pi-copilot-discovery";
-      version = "0.1.0";
-      hash = "sha512-O4U4Io6Uf5o/NWF4zyYcRAsmYf/ILgasWxVUOB2hBaiElmdqkjlxYboz3Ihv//9nopIfRfHV5gdcfaqg9FzFUA==";
+      version = "0.2.0";
+      hash = "sha256-SK19DeILXDBJbl9feSxGW58Kce89DRq4UmbQNFroe3s=";
     };
 
     # pi-agent-browser-native — exposes the `agent-browser` CLI to pi
