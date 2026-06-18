@@ -4,18 +4,31 @@
   # then add their own extensions / runtimePkgs on top.
   package = import ./pi.nix;
 
-  # The overlay defines two attributes:
+  # The overlay defines these pi package variants:
   #   - pi-coding-agent     -- baseline wrap (replaces upstream)
+  #   - pi-coding-agent-psi -- baseline + Copilot discovery, command: psi
+  #   - pi-coding-agent-phi -- psi + todo, command: phi
   #   - pi-coding-agent-wsl -- baseline + every packaged extension
   #
-  # The WSL variant is built from the baseline-wrapped `final.pi-coding-agent`
-  # (not `prev.pi-coding-agent`) so it picks up the runtimePkgs from
-  # this same overlay rather than re-wrapping the raw nixpkgs version.
+  # The named variants are built from already-wrapped `final.*` packages
+  # (not raw `prev.pi-coding-agent`) so each .wrap extends the existing
+  # nix-wrapper-modules configuration instead of losing baseline PATH
+  # tools or earlier extensions.
   overlay = wlib: final: prev: {
     pi-coding-agent = import ./pi.nix {
       pkgs = final;
       inherit wlib;
       basePackage = prev.pi-coding-agent;
+    };
+    pi-coding-agent-psi = import ./psi.nix {
+      pkgs = final;
+      inherit wlib;
+      basePackage = final.pi-coding-agent;
+    };
+    pi-coding-agent-phi = import ./phi.nix {
+      pkgs = final;
+      inherit wlib;
+      basePackage = final.pi-coding-agent-psi;
     };
     pi-coding-agent-wsl = import ./pi-wsl.nix {
       pkgs = final;

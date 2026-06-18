@@ -4,7 +4,7 @@ description: Use when the user wants to add, package, update, or remove a pi-cod
 metadata:
   author: miles
   repo: ~/.config/nixos
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Packaging pi extensions in the nixos flake
@@ -52,7 +52,36 @@ Note:
   (`extensions`/`skills`/`prompts`/`themes`). If it's missing, the package
   isn't a pi extension and pi won't load anything from it.
 
-### 2. Register it in the overlay
+### 2. Perform a brief security audit (mandatory)
+
+Before editing Nix, do a quick supply-chain review of the requested
+extension:
+
+1. Open the package's GitHub repository from the npm `repository` /
+   `homepage` fields. If npm has no source link, treat that as a red
+   flag and ask before proceeding.
+2. Check reputation and maintenance signals: public repo, license,
+   recent commits/releases, CI, issue state, stars/forks/downloads, and
+   whether the package appears to be an original project or a fork.
+3. Inspect the code/tarball for risky behavior:
+   - lifecycle scripts (`preinstall`, `install`, `postinstall`) or shell
+     execution;
+   - network calls outside the extension's stated purpose;
+   - filesystem writes, secret handling, token logging, or credential
+     storage;
+   - mutation tools and whether they have confirmation/readonly gates;
+   - undeclared runtime dependencies or an unusually large dependency
+     tree.
+4. Run a quick static scan (`rg` for `child_process`, `exec`, `spawn`,
+   `eval`, `Function`, `fetch`, `http`, `writeFile`, `process.env`,
+   `token`, `secret`, lifecycle script names) and, when a lockfile is
+   available, `npm audit --omit=dev` or equivalent.
+5. Summarize the audit in the final response. If you find material risk
+   (obfuscated code, unexplained network/exec, credential exfiltration,
+   abandoned/vulnerable package, no visible source, etc.), **stop and ask
+   the user before packaging it**.
+
+### 3. Register it in the overlay
 
 Add an entry to the `piExtensions` attrset in
 `overlays/pi-extensions/default.nix`, alphabetically near its peers, with
@@ -74,7 +103,7 @@ The attribute name is the unscoped, registry-friendly short name (drop the
 `@scope/`). Add `meta.platforms = lib.platforms.linux;` only for
 WSL/Linux-specific extensions.
 
-### 3. Wire it where it should load
+### 4. Wire it where it should load
 
 - To ship it in the WSL bundle (`nix run .#pi-wsl`), add the attr name to
   the `extensions` list in `wrappers/pi/pi-wsl.nix` with a trailing
@@ -84,7 +113,7 @@ WSL/Linux-specific extensions.
   `flake.nix`. These two lists are independent — set both if the user
   wants it everywhere.
 
-### 4. Format and verify
+### 5. Format and verify
 
 ```bash
 nix fmt -- overlays/pi-extensions/default.nix wrappers/pi/pi-wsl.nix
@@ -105,9 +134,10 @@ jq '{name, version, pi}' "$ext/package.json"
 
 ## Extensions with npm deps
 
-If step 1 showed runtime `dependencies`, the simple `runCommand` unpack
-won't include `node_modules`. Pass `npmDepsHash` so `buildNpmPackage`
-installs them. Get the hash by building once with a fake hash and copying
+If the metadata step showed runtime `dependencies`, the simple
+`runCommand` unpack won't include `node_modules`. Pass `npmDepsHash` so
+`buildNpmPackage` installs them. Get the hash by building once with a
+fake hash and copying
 the "got:" value from the error (`lib.fakeHash`), then rebuild:
 
 ```nix

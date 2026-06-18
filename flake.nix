@@ -103,6 +103,10 @@
         # `pkgs.pi-coding-agent.wrap { extensions = [...]; }` from
         # any downstream nix expression.
         packages.pi = pkgs.pi-coding-agent;
+        # Named pi variants. `psi` extends base pi with Copilot
+        # discovery only; `phi` extends psi with the todo extension.
+        packages.psi = pkgs.pi-coding-agent-psi;
+        packages.phi = pkgs.pi-coding-agent-phi;
         # Same baseline + every extension we package in
         # `overlays/pi-extensions` (pi-wsl-images, rpiv-btw,
         # pi-agent-browser-native). Intended for WSL hosts that
@@ -115,6 +119,14 @@
         apps.pi = {
           type = "app";
           program = "${self.packages.${system}.pi}/bin/pi";
+        };
+        apps.psi = {
+          type = "app";
+          program = "${self.packages.${system}.psi}/bin/psi";
+        };
+        apps.phi = {
+          type = "app";
+          program = "${self.packages.${system}.phi}/bin/phi";
         };
         apps.pi-wsl = {
           type = "app";
@@ -304,9 +316,15 @@
                     my.ai.pi.enable = true;
                     my.ai.pi.extensions = with pkgs.piExtensions; [
                       pi-wsl-images
+                      notify # native/Gotify/Telegram/ntfy notifications
                       rpiv-btw
+                      rpiv-ask-user-question
+                      rpiv-todo
+                      edb-agent-steer
                       pi-copilot-discovery # live Copilot model discovery (replaces static catalog)
                       pi-agent-browser-native
+                      pi-web-access
+                      pi-interview
                       agent-browser-edge-bridge
                     ];
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;

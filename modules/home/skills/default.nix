@@ -14,6 +14,7 @@ let
     warehouse-ux-pr-review = ./skills/warehouse-ux-pr-review;
     html-report = ./skills/html-report;
     ado-pr-markdown = ./skills/ado-pr-markdown;
+    context-reflect = ./skills/context-reflect;
   };
 
   # Optional skills shipped with this module that hosts can opt into,
