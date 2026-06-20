@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    pi-coding-agent-desktop # desktop pi (common base wrapper)
     thunderbird
     vlc
     gimp

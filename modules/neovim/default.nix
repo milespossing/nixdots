@@ -118,6 +118,8 @@ let
     clojure-lsp
     vscode-langservers-extracted
     yaml-language-server
+    basedpyright
+    ruff
 
     # Formatters
     fnlfmt

@@ -5,35 +5,42 @@
   package = import ./pi.nix;
 
   # The overlay defines these pi package variants:
-  #   - pi-coding-agent     -- baseline wrap (replaces upstream)
-  #   - pi-coding-agent-psi -- baseline + Copilot discovery, command: psi
-  #   - pi-coding-agent-phi -- psi + todo, command: phi
-  #   - pi-coding-agent-wsl -- baseline + every packaged extension
+  #   - pi-coding-agent-upstream -- version-pinned upstream, no wrapping
+  #   - pi-coding-agent          -- baseline wrap (runtimePkgs on PATH)
+  #   - pi-coding-agent-base     -- common wrapper: baseline + shared extensions
+  #   - pi-coding-agent-desktop  -- base, for graphical hosts (euler, laplace)
+  #   - pi-coding-agent-wsl      -- base + WSL/work-specific extensions
   #
-  # The named variants are built from already-wrapped `final.*` packages
-  # (not raw `prev.pi-coding-agent`) so each .wrap extends the existing
-  # nix-wrapper-modules configuration instead of losing baseline PATH
-  # tools or earlier extensions.
+  # The wrapped variants are built from already-wrapped `final.*`
+  # packages (not raw `prev.pi-coding-agent`) so each .wrap extends the
+  # existing nix-wrapper-modules configuration instead of losing
+  # baseline PATH tools or earlier extensions. pi-desktop and pi-wsl
+  # are the two flavours we actually install on hosts; both layer on
+  # the common pi-coding-agent-base.
   overlay = wlib: final: prev: {
+    # Raw upstream pi (version-pinned by overlays/pi-coding-agent.nix),
+    # before any of our wrapping. Exposed for `nix run .#pi-upstream`.
+    pi-coding-agent-upstream = prev.pi-coding-agent;
+
     pi-coding-agent = import ./pi.nix {
       pkgs = final;
       inherit wlib;
       basePackage = prev.pi-coding-agent;
     };
-    pi-coding-agent-psi = import ./psi.nix {
+    pi-coding-agent-base = import ./pi-base.nix {
       pkgs = final;
       inherit wlib;
       basePackage = final.pi-coding-agent;
     };
-    pi-coding-agent-phi = import ./phi.nix {
+    pi-coding-agent-desktop = import ./pi-desktop.nix {
       pkgs = final;
       inherit wlib;
-      basePackage = final.pi-coding-agent-psi;
+      basePackage = final.pi-coding-agent-base;
     };
     pi-coding-agent-wsl = import ./pi-wsl.nix {
       pkgs = final;
       inherit wlib;
-      basePackage = final.pi-coding-agent;
+      basePackage = final.pi-coding-agent-base;
     };
 
     # Layer locally-built pi extensions onto the upstream

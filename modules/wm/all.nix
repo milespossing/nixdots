@@ -51,7 +51,7 @@
     libsecret
     seahorse
     polkit_gnome
-    xwayland-satellite
+    xwayland-satellite-unstable
     rofi
   ];
 }

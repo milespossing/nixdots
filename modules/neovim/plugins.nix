@@ -29,6 +29,7 @@ let
       bash
       json
       yaml
+      python
     ]
     ++ [
       treesitter-kulala-http-grammar

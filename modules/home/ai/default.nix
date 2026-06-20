@@ -10,8 +10,6 @@
     ./opencode.nix
     ./aider.nix
     ./copilot-cli.nix
-    ./crush.nix
-    ./pi.nix
   ];
 
   _module.args.aiLib = import ./lib.nix { inherit lib pkgs; };

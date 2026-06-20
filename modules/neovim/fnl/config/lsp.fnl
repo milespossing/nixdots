@@ -37,8 +37,11 @@
 (vim.lsp.config :clojure_lsp {})
 (vim.lsp.config :jsonls {})
 (vim.lsp.config :yamlls {})
+(vim.lsp.config :basedpyright {})
+(vim.lsp.config :ruff {})
 
-(vim.lsp.enable [:luals :fennel-ls :nixd :ts_ls :clojure_lsp :jsonls :yamlls])
+(vim.lsp.enable [:luals :fennel-ls :nixd :ts_ls :clojure_lsp :jsonls :yamlls
+                 :basedpyright :ruff])
 
 ;; Default inlay hints
 (vim.lsp.inlay_hint.enable true)

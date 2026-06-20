@@ -21,10 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     xremap-flake.url = "github:xremap/nix-flake";
-    charmbracelet-nur = {
-      url = "github:charmbracelet/nur";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     sops-nix.url = "github:Mic92/sops-nix";
     nix-openclaw.url = "github:openclaw/nix-openclaw";
     nix-openclaw.inputs.nixpkgs.follows = "nixpkgs";
@@ -98,35 +94,25 @@
             {
               fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
             };
-        # Baseline-wrapped pi (jq, gh, lazygit, bat, tree, delta,
-        # agent-browser on PATH). Add extensions on the fly with
-        # `pkgs.pi-coding-agent.wrap { extensions = [...]; }` from
+        # Pi coding agent, exposed in four flavours:
+        #   - pi-upstream : version-pinned upstream, no wrapping
+        #   - pi-base     : common wrapper (baseline PATH + shared extensions)
+        #   - pi-desktop  : desktop variant installed on euler/laplace
+        #   - pi-wsl      : WSL/work variant (base + WSL-specific extensions)
+        # Add extensions on the fly with
+        # `pkgs.pi-coding-agent-base.wrap { extensions = [...]; }` from
         # any downstream nix expression.
-        packages.pi = pkgs.pi-coding-agent;
-        # Named pi variants. `psi` extends base pi with Copilot
-        # discovery only; `phi` extends psi with the todo extension.
-        packages.psi = pkgs.pi-coding-agent-psi;
-        packages.phi = pkgs.pi-coding-agent-phi;
-        # Same baseline + every extension we package in
-        # `overlays/pi-extensions` (pi-wsl-images, rpiv-btw,
-        # pi-agent-browser-native). Intended for WSL hosts that
-        # want pi ready-to-go without the home-manager glue.
+        packages.pi-upstream = pkgs.pi-coding-agent-upstream;
+        packages.pi-base = pkgs.pi-coding-agent-base;
+        packages.pi-desktop = pkgs.pi-coding-agent-desktop;
         packages.pi-wsl = pkgs.pi-coding-agent-wsl;
         apps.nvim = {
           type = "app";
           program = "${self.packages.${system}.nvim}/bin/nvim";
         };
-        apps.pi = {
+        apps.pi-desktop = {
           type = "app";
-          program = "${self.packages.${system}.pi}/bin/pi";
-        };
-        apps.psi = {
-          type = "app";
-          program = "${self.packages.${system}.psi}/bin/psi";
-        };
-        apps.phi = {
-          type = "app";
-          program = "${self.packages.${system}.phi}/bin/phi";
+          program = "${self.packages.${system}.pi-desktop}/bin/pi";
         };
         apps.pi-wsl = {
           type = "app";
@@ -209,10 +195,8 @@
                     ];
                     home.stateVersion = "25.11";
                     my.skills.enable = true;
-                    my.ai.crush.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
-                    my.ai.pi.enable = true;
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
               }
@@ -262,8 +246,6 @@
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
                     my.ai.copilot-cli.notifications.enable = true;
-                    my.ai.crush.enable = true;
-                    my.ai.pi.enable = true;
                     home.stateVersion = "25.11";
                   };
                 home-manager.extraSpecialArgs = { inherit inputs; };
@@ -312,21 +294,6 @@
                     my.ai.aider.enable = true;
                     my.ai.opencode.enable = true;
                     my.ai.copilot-cli.enable = true;
-                    my.ai.crush.enable = true;
-                    my.ai.pi.enable = true;
-                    my.ai.pi.extensions = with pkgs.piExtensions; [
-                      pi-wsl-images
-                      notify # native/Gotify/Telegram/ntfy notifications
-                      rpiv-btw
-                      rpiv-ask-user-question
-                      rpiv-todo
-                      edb-agent-steer
-                      pi-copilot-discovery # live Copilot model discovery (replaces static catalog)
-                      pi-agent-browser-native
-                      pi-web-access
-                      pi-interview
-                      agent-browser-edge-bridge
-                    ];
                     my.ai.mcp.servers.workiq = pkgs.agenticMcps.workiq;
                     my.ai.mcp.servers.icm = pkgs.agenticMcps.icm;
                     my.ai.mcp.servers.azure-devops = pkgs.agenticMcps.azureDevops;

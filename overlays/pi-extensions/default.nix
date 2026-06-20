@@ -376,8 +376,8 @@ in
     # https://github.com/milespossing/pi-copilot-discovery
     pi-copilot-discovery = mkPiExtensionFromNpm {
       pname = "@milespossing/pi-copilot-discovery";
-      version = "0.2.1";
-      hash = "sha256-V1/uAWhNE6G35VZ3qZy5120VJFDBRRXMMSQTF2FUcCY=";
+      version = "0.3.0";
+      hash = "sha256-M2gH4kffX+juLvILbcaqFF+shus1rWpSeh37cxz1VDk=";
     };
 
     # pi-interview — interview-mode extension for pi. Ships no
