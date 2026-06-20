@@ -94,6 +94,7 @@
             {
               fennel-ls-nvim-docs = inputs.fennel-ls-nvim-docs;
             };
+        packages.kitty = pkgs.kitty;
         # Pi coding agent, exposed in four flavours:
         #   - pi-upstream : version-pinned upstream, no wrapping
         #   - pi-base     : common wrapper (baseline PATH + shared extensions)
@@ -117,6 +118,10 @@
         apps.pi-wsl = {
           type = "app";
           program = "${self.packages.${system}.pi-wsl}/bin/pi";
+        };
+        apps.kitty = {
+          type = "app";
+          program = "${self.packages.${system}.kitty}/bin/kitty";
         };
       }
     )
