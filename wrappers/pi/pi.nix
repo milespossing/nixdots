@@ -23,5 +23,10 @@ wlib.evalPackage [
       delta # diff viewer (pi already does its own diffs but useful in bash)
       agent-browser # headless browser automation CLI for agents
     ];
+
+    # Baseline resources loaded for every wrapped pi invocation.
+    extensions = with pkgs.piExtensions; [
+      pi-catppuccin # Catppuccin theme pack for pi TUI
+    ];
   }
 ]
