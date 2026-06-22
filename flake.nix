@@ -181,6 +181,7 @@
               ./modules/wine
               ./modules/nixos-tools
               ./modules/virtualization
+              ./modules/dev
               inputs.home-manager.nixosModules.default
               {
                 home-manager.useGlobalPkgs = true;
@@ -226,6 +227,7 @@
               ./modules/userland
               ./modules/syncthing
               ./modules/nixos-tools
+              ./modules/dev
               nixos-hardware.nixosModules.framework-13-7040-amd
               ./modules/wm/all.nix
               inputs.xremap-flake.nixosModules.default
