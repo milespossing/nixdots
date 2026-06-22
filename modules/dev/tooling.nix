@@ -4,6 +4,7 @@
     nodejs
     zulu
     clojure
+    neil
     babashka
   ];
 }
