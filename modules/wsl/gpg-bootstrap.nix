@@ -1,0 +1,41 @@
+{ inputs, ... }:
+{
+  # WSL GPG key + password-store bootstrap. The signing key is delivered via
+  # sops and imported on activation; pass is initialised against it.
+  flake.modules.homeManager.wsl =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      imports = [ inputs.sops-nix.homeManagerModules.sops ];
+
+      sops = {
+        age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+        defaultSymlinkPath = "/run/user/1000/secrets";
+        defaultSecretsMountPoint = "/run/user/1000/secrets.d";
+        secrets.gpg_key.sopsFile = ./gpg-key.enc.yaml;
+      };
+
+      home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sops-nix" ] ''
+        if [ -f "${config.sops.secrets.gpg_key.path}" ]; then
+          ${pkgs.gnupg}/bin/gpg --batch --import ${config.sops.secrets.gpg_key.path} 2>/dev/null || true
+          KEY_FPR=$(${pkgs.gnupg}/bin/gpg --list-keys --with-colons 2>/dev/null | grep '^fpr' | head -1 | cut -d: -f10)
+          if [ -n "$KEY_FPR" ]; then
+            echo "$KEY_FPR:6:" | ${pkgs.gnupg}/bin/gpg --batch --import-ownertrust 2>/dev/null || true
+          fi
+        fi
+      '';
+
+      home.activation.initPasswordStore = lib.hm.dag.entryAfter [ "importGpgKey" ] ''
+        if [ ! -f "$HOME/.password-store/.gpg-id" ]; then
+          KEY_ID=$(${pkgs.gnupg}/bin/gpg --list-secret-keys --with-colons 2>/dev/null | grep '^sec' | head -1 | cut -d: -f5)
+          if [ -n "$KEY_ID" ]; then
+            ${pkgs.pass}/bin/pass init "$KEY_ID"
+          fi
+        fi
+      '';
+    };
+}
