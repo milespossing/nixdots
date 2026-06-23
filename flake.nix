@@ -173,6 +173,7 @@
               ./modules/core
               ./modules/network
               ./hosts/euler
+              ./modules/desktop
               ./modules/secrets
               ./modules/wm/all.nix
               ./modules/office
