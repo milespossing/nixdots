@@ -37,6 +37,7 @@
         playerctl
         networkmanagerapplet
         pavucontrol
+        blueman # bluetooth GUI; waybar's bluetooth widget opens blueman-manager
         libnotify
         xclip
         flameshot

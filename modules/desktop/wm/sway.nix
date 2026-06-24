@@ -24,10 +24,10 @@
     {
       imports = [ config.flake.modules.homeManager.desktop-wayland ];
 
-      home.packages = with pkgs; [
-        rofi
-        waybar
-        swaylock-effects
+      home.packages = [
+        (config.flake.wrappers.rofi.wrap { inherit pkgs; })
+        (config.flake.wrappers.waybar.wrap { inherit pkgs; })
+        (config.flake.wrappers.swaylock-effects.wrap { inherit pkgs; })
       ];
 
       wayland.windowManager.sway = {

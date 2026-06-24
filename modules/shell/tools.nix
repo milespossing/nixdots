@@ -37,6 +37,13 @@
           filter_mode_shell_up_arrow = "session";
         };
       };
-      home.packages = [ pkgs.gum ];
+      home.packages = with pkgs; [
+        gum
+        ripgrep
+        fd
+        bat
+        jq # used bare in the tmux worktrunk popup + general CLI JSON
+        sd # used by the normalize-json navi cheat
+      ];
     };
 }

@@ -27,10 +27,10 @@
     {
       imports = [ config.flake.modules.homeManager.desktop-core ];
 
-      home.packages = with pkgs; [
-        rofi
-        dunst
-        i3lock
+      home.packages = [
+        (config.flake.wrappers.rofi.wrap { inherit pkgs; })
+        (config.flake.wrappers.dunst.wrap { inherit pkgs; })
+        pkgs.i3lock
       ];
 
       xsession.windowManager.i3 = {

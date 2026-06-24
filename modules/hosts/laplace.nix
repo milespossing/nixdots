@@ -4,6 +4,7 @@
     buckets = [
       "base"
       "hardware"
+      "networkmanager"
       "sway"
       "dev"
       "ai"

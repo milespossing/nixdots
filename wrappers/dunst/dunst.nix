@@ -1,7 +1,8 @@
 {
   pkgs,
   wlib,
-  basePackage ? pkgs.dunst,
+  config,
+  ...
 }:
 let
   mkIniSection =
@@ -85,20 +86,14 @@ let
     })
   ];
 in
-wlib.evalPackage [
-  wlib.modules.default
-  (
-    { config, ... }:
-    {
-      inherit pkgs;
-      package = basePackage;
+{
+  imports = [ wlib.modules.default ];
+  package = pkgs.dunst;
 
-      constructFiles.generatedConfig = {
-        relPath = "dunstrc";
-        content = dunstrc;
-      };
+  constructFiles.generatedConfig = {
+    relPath = "dunstrc";
+    content = dunstrc;
+  };
 
-      flags."--config" = config.constructFiles.generatedConfig.path;
-    }
-  )
-]
+  flags."--config" = config.constructFiles.generatedConfig.path;
+}

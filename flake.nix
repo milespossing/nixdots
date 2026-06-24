@@ -19,9 +19,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix.url = "github:Mic92/sops-nix";
-    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
+    nix-wrapper-modules = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     worktrunk-flake = {
       url = "github:max-sixty/worktrunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hunk = {
+      url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {

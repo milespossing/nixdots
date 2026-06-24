@@ -1,9 +1,10 @@
+{ config, ... }:
 {
-  # kitty is configured by its nix-wrapper-modules overlay (wrappers/kitty),
-  # the single source of truth for its config (decision #2). Just install it.
+  # kitty is wrapped by its nix-wrapper-module (wrappers/kitty); install the
+  # wrapped package from the flake.wrappers registry.
   flake.modules.homeManager.base =
     { pkgs, ... }:
     {
-      home.packages = [ pkgs.kitty ];
+      home.packages = [ (config.flake.wrappers.kitty.wrap { inherit pkgs; }) ];
     };
 }

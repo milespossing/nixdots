@@ -30,10 +30,10 @@
           BusName = "org.freedesktop.secrets";
         };
       };
-      environment.systemPackages = with pkgs; [
-        libsecret
-        zathura
-        pi-coding-agent-wsl # WSL/work pi (base + WSL-specific extensions)
+      environment.systemPackages = [
+        pkgs.libsecret
+        pkgs.zathura
+        (config.flake.wrappers.pi-coding-agent-wsl.wrap { inherit pkgs; }) # WSL/work pi (base + WSL-specific extensions)
       ];
     };
 
