@@ -1,6 +1,6 @@
 { config, mkHost, ... }:
 {
-  flake.nixosConfigurations.hilbert = mkHost {
+  flake.nixosConfigurations.general2 = mkHost {
     buckets = [
       "base"
       "dev"
@@ -12,7 +12,7 @@
     ];
     modules = [
       {
-        networking.hostName = "hilbert";
+        networking.hostName = "general2";
         programs.nh.flake = "/home/${config.username}/.config/nixdots";
         system.stateVersion = "26.05";
       }
