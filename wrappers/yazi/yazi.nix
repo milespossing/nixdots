@@ -1,7 +1,8 @@
 {
   pkgs,
   wlib,
-  basePackage ? pkgs.yazi,
+  config,
+  ...
 }:
 let
   yazi-flavors = pkgs.fetchFromGitHub {
@@ -17,84 +18,84 @@ let
     hash = "sha256-2jW+NoEd5ZrcoPnS7Pv7xfWH/lypUJdjF7z3CYZM7Lg=";
   };
 in
-wlib.evalPackage [
-  wlib.wrapperModules.yazi
-  (
-    { config, ... }:
-    {
-      inherit pkgs;
-      package = basePackage;
+{
+  imports = [ wlib.wrapperModules.yazi ];
+  package = pkgs.yazi;
+  # Self-contained: keymaps shell out to `zellij`, and the git plugin/fetcher
+  # invokes `git`.
+  runtimePkgs = with pkgs; [
+    zellij
+    git
+  ];
 
-      plugins = with pkgs.yaziPlugins; {
-        inherit
-          smart-enter
-          full-border
-          git
-          chmod
-          smart-filter
-          jump-to-char
-          ;
-        path-from-root = "${path-from-root}";
-      };
+  plugins = with pkgs.yaziPlugins; {
+    inherit
+      smart-enter
+      full-border
+      git
+      chmod
+      smart-filter
+      jump-to-char
+      ;
+    path-from-root = "${path-from-root}";
+  };
 
-      flavors = {
-        macchiato = "${yazi-flavors}/catppuccin-macchiato.yazi";
-      };
+  flavors = {
+    macchiato = "${yazi-flavors}/catppuccin-macchiato.yazi";
+  };
 
-      settings = {
-        yazi.plugin.prepend_fetchers = [
-          {
-            url = "*";
-            run = "git";
-            group = "git";
-          }
-          {
-            url = "*/";
-            run = "git";
-            group = "git";
-          }
+  settings = {
+    yazi.plugin.prepend_fetchers = [
+      {
+        url = "*";
+        run = "git";
+        group = "git";
+      }
+      {
+        url = "*/";
+        run = "git";
+        group = "git";
+      }
+    ];
+
+    keymap.mgr.prepend_keymap = [
+      {
+        on = "<C-h>";
+        run = "shell 'zellij action move-focus-or-tab left' --confirm";
+        desc = "Move zellij focus left";
+      }
+      {
+        on = "<C-j>";
+        run = "shell 'zellij action move-focus down' --confirm";
+        desc = "Move zellij focus down";
+      }
+      {
+        on = "<C-k>";
+        run = "shell 'zellij action move-focus up' --confirm";
+        desc = "Move zellij focus up";
+      }
+      {
+        on = "<C-l>";
+        run = "shell 'zellij action move-focus-or-tab right' --confirm";
+        desc = "Move zellij focus right";
+      }
+      {
+        on = [
+          "c"
+          "r"
         ];
+        run = "plugin path-from-root";
+        desc = "Copy path relative to git root";
+      }
+    ];
+  };
 
-        keymap.mgr.prepend_keymap = [
-          {
-            on = "<C-h>";
-            run = "shell 'zellij action move-focus-or-tab left' --confirm";
-            desc = "Move zellij focus left";
-          }
-          {
-            on = "<C-j>";
-            run = "shell 'zellij action move-focus down' --confirm";
-            desc = "Move zellij focus down";
-          }
-          {
-            on = "<C-k>";
-            run = "shell 'zellij action move-focus up' --confirm";
-            desc = "Move zellij focus up";
-          }
-          {
-            on = "<C-l>";
-            run = "shell 'zellij action move-focus-or-tab right' --confirm";
-            desc = "Move zellij focus right";
-          }
-          {
-            on = [
-              "c"
-              "r"
-            ];
-            run = "plugin path-from-root";
-            desc = "Copy path relative to git root";
-          }
-        ];
-      };
-
-      constructFiles.luaInit = {
-        content = # lua
-          ''
-            require("full-border"):setup()
-            require("git"):setup()
-          '';
-        relPath = "${config.binName}-config/init.lua";
-      };
-    }
-  )
-]
+  constructFiles.luaInit = {
+    content = # lua
+      ''
+        require("full-border"):setup()
+        require("git"):setup()
+      '';
+    relPath = "${config.binName}-config/init.lua";
+  };
+}

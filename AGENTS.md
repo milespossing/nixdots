@@ -1,224 +1,117 @@
-# AGENTS.md — NixOS Configuration Flake
+# AGENTS.md
 
-NixOS system configuration flake managing multiple hosts with
-home-manager, sops-nix secrets, and custom overlays. All code is Nix.
+miles's NixOS + home-manager configuration. Read this first when working in
+this repo.
 
-## Build Commands
+## What this is
 
-```bash
-sudo nixos-rebuild switch --flake .#<hostname>  # Build and activate
-sudo nixos-rebuild test --flake .#<hostname>     # Dry activation (no boot entry)
-sudo nixos-rebuild build --flake .#<hostname>    # Build only, no activation
-nix eval .#nixosConfigurations.<hostname>.config.system.build.toplevel  # Eval check
-nix flake update              # Update all flake inputs
-nix flake update <input-name> # Update a single input
-nix develop                   # Dev shell (nodejs, sops)
-```
+A **dendritic** Nix flake: [flake-parts](https://flake.parts) +
+[import-tree](https://github.com/denful/import-tree), where **every `.nix` file
+under `modules/` is a flake-parts module** that contributes one feature across
+nixos / home-manager. `flake.nix` is tiny and just does
+`mkFlake (import-tree ./modules)` — there is **no central list of imports**;
+dropping a file under `modules/` enables it.
 
-There is no test suite, linter, or `nix flake check`. The only CI is
-`.github/workflows/flake-update.yml` (weekly `flake.lock` update PR).
+Mental model: **file = feature**, not file = host or file = layer. A file's
+directory is for humans; it does not change behavior.
 
-## Formatter
-
-**nixfmt (RFC style)**. Format files before committing:
-
-```bash
-nix fmt -- path/to/file.nix   # Format specific file(s)
-nix fmt                        # Format all Nix files in the repo
-```
-
-## Repository Layout
+## Layout
 
 ```
-flake.nix            # Root flake: inputs, nixosConfigurations, overlays, devShell, nvim package
-hosts/<host>/        # Per-host: default.nix -> configuration.nix + hardware-configuration.nix
-modules/             # Reusable NixOS and home-manager modules
-  core/              # System foundation (flakes, fonts, gpg, locale, ssh, user, options)
-  home/              # Home-manager modules (base, navi, yazi, zellij, ai, helix, etc.)
-  wm/                # Window manager system modules (hyprland, sway, niri, greetd)
-  niri/              # Niri compositor wrapper overlay (niri-configured, niri-dms, niri-noct)
-  waybar/            # Waybar overlay with config wrapper
-  rofi/              # Rofi overlay with config wrapper
-  dunst/             # Dunst overlay with config wrapper
-  swaylock/          # Swaylock overlay with config wrapper
-  swayidle/          # Swayidle overlay with DPMS/lock logic
-  noctalia/          # Noctalia shell overlay
-  dms/               # DMS (Dank Material Shell) overlay
-  yazi/              # Yazi wrapper overlay (nix-wrapper-modules-based)
-  neovim/            # Custom wrapped Neovim package builder
-  secrets/           # sops-nix system secrets
-  dev/               # Development compilers/runtimes
-  ...                # wsl, work, syncthing, office, network, etc.
-overlays/            # Package overlays (zellij-plugins, azure-cli-fix, agent-mcps)
-secrets/             # sops-encrypted YAML secret files
+flake.nix                  # mkFlake (import-tree ./modules) — entry point
+modules/                   # every file is a flake-parts module (auto-imported)
+  flake/                   # top-level wiring: parts, home-manager glue, wrappers,
+                           #   packages, checks, secrets, overlays, devshell
+  hosts/                   # flake.nixosConfigurations.<host> via mkHost
+  system/ hardware/ network/ shell/ desktop/ development/ ai/ agents/
+  work/ wsl/ gaming/ virtualization/ browsers/ packages/
+wrappers/                  # nix-wrapper-modules wrapper bodies (NOT auto-imported;
+                           #   referenced explicitly from modules/flake/wrappers.nix)
+pkgs/neovim/               # the neovim config package (callPackage source)
+overlays/                  # non-wrapper overlays (pi-coding-agent, pi-extensions, …)
+secrets/  .sops.yaml       # sops-nix encrypted secrets
+docs/                      # architecture notes + roadmap (see docs/wrappers.md)
 ```
+
+Files/dirs containing `/_` (e.g. `_hardware.nix`, `_impl/`, `_skills/`) and
+anything outside `modules/` are **not** auto-imported.
+
+## The dendritic pattern (rules)
+
+1. **Never** add an `imports = [ ./a.nix ./b.nix ]` list of feature files.
+   Adding a file is the only step to enable it.
+2. Each file is `{ config, lib, inputs, self, ... }: { … }` — these are
+   **flake-parts** args. `pkgs` here is the flake's nixpkgs, not a host's.
+3. Lower-level config goes under **`flake.modules.<class>.<bucket>`**
+   (classes: `nixos`, `homeManager`). Many files merge into the same bucket
+   (e.g. lots of files set `flake.modules.nixos.base`). Prefer shared buckets
+   (`base`, `desktop-core`, `dev`) over one-bucket-per-file; reserve distinct
+   names for host opt-ins (`i3`, `sway`, `nvidia`, `wsl`, `networkmanager`).
+4. A bucket value is a **deferredModule**. To get real NixOS/HM args, make it a
+   function: `flake.modules.nixos.base = { pkgs, ... }: { … };`.
+5. **Share values via the top-level `config`**, not specialArgs. Declare options
+   in **bare per-domain namespaces** (`git.userEmail`, `shell.aliases`,
+   `skills.extra`) and read them anywhere. One cross-cutting `username`
+   (`system/users.nix`) and `flakePath` are the exceptions.
+6. **Import = enable.** A host opts into a feature by listing its bucket in
+   `mkHost`. Do **not** add `*.enable` flags that merely gate a module a host
+   already imported. Keep options only where they carry real values.
 
 ## Hosts
 
-| Host       | Type    | DE/WM                  | Key Modules                                           |
-| ---------- | ------- | ---------------------- | ----------------------------------------------------- |
-| `euler`    | Desktop | Hyprland / Sway / Niri | core, secrets, wm, office, syncthing, userland        |
-| `laplace`  | Laptop  | Hyprland / Sway / Niri | core, wm, userland, syncthing, xremap, nixos-hardware |
-| `nixos`    | WSL     | --                     | core, wsl, work, dev, syncthing                       |
-| `wsl-work` | WSL     | --                     | (exists on disk but not wired in flake.nix)           |
+Assembled in `modules/hosts/<host>.nix` via the `mkHost` helper
+(`modules/flake/home-manager.nix`), which pulls in both `nixos.<bucket>` and
+`homeManager.<bucket>` for each bucket in the host's list.
 
-Host names follow a mathematicians convention (euler, laplace).
+- **euler** — i3/X11 workstation (nvidia). buckets: base hardware nvidia i3 dev
+  ai skills syncthing virt wine mounts wireguard samba. Wired (`useDHCP`), no
+  NetworkManager.
+- **laplace** — sway/Wayland Framework laptop. buckets: base hardware
+  networkmanager sway dev ai skills syncthing. The only host with wifi /
+  NetworkManager.
+- **nixos** — WSL work host. buckets: base dev ai skills syncthing work wsl.
+  Networking handled by WSL.
 
-Both desktop hosts use `modules/wm/all.nix` for the shared WM stack: Hyprland,
-Sway, and Niri sessions with greetd/tuigreet as the display manager. Per-host
-overlays add Niri device configuration, waybar, rofi, dunst, swaylock, swayidle,
-noctalia, and DMS wrappers.
+## Wrappers (nix-wrapper-modules)
 
-## Module Composition
+Config-bearing CLI/GUI tools (kitty, tmux, yazi, rofi, dunst, waybar,
+swaylock-effects, hunk, worktrunk, pi-coding-agent-*) are **wrapped** and
+delivered through the flake-parts `flake.wrappers` registry — **no overlay**,
+consumed explicitly as `config.flake.wrappers.<n>.wrap { inherit pkgs; }`.
 
-`flake.nix` composes each host by listing system modules and nesting
-home-manager user modules inside `home-manager.users.miles.imports`.
+Full architecture, recipes, patterns (runtimePkgs, cross-refs, pi composition),
+and roadmap: **see `docs/wrappers.md`**. Read it before touching anything under
+`wrappers/` or `modules/flake/wrappers.nix`.
 
-Overlays are split into two tiers:
+Quick rule: if a wrapper shells out to a bare command, add it to the wrapper's
+`runtimePkgs` rather than relying on a global install.
 
-- **Global overlays** (shared by all hosts): zellij-plugins, azure-cli-fix,
-  agent-mcps, nix-openclaw, noctalia, dms-shell, nvim, NUR
-- **Per-host overlays** (euler + laplace only): niri, waybar, rofi, dunst,
-  swaylock, swayidle, noctalia, dms, niri device config
+## Conventions
 
-### Home-Manager Modules per Host
+- GUI / user apps → home-manager (`desktop-core` etc.); daemons / services /
+  hardware → nixos.
+- `callPackage` sources live in `pkgs/` or a `/_` path (outside the import
+  tree); wire them via an overlay in a `modules/.../*.nix` file.
+- Secrets: sops-nix. Never print, commit, or write decrypted secret values.
+  Encrypted files are `*.enc.yaml` under the owning feature or `secrets/`.
+- Format with `nix fmt` (nixfmt-tree).
 
-| Module           | euler | laplace | nixos |
-| ---------------- | :---: | :-----: | :---: |
-| home/base        |   x   |    x    |   x   |
-| home/navi        |   x   |    x    |   x   |
-| home/helix       |   x   |    x    |   x   |
-| home/ai          |   x   |    x    |   x   |
-| home/wm-common   |   x   |    x    |       |
-| home/hyprland    |   x   |    x    |       |
-| home/sway        |   x   |    x    |       |
-| wallpapers       |   x   |    x    |       |
-| home/zen-browser |   x   |    x    |       |
-| home/wsl         |       |         |   x   |
-| home/work        |       |         |   x   |
+## Validating changes
 
-**Transitive imports:** `home/base` imports `home/yazi` and `home/zellij` via
-`common-programs.nix`, so all hosts get yazi and zellij without listing them
-directly.
+```sh
+nix flake check                                   # builds every host toplevel (+ wrappers)
+nix eval --raw .#nixosConfigurations.<host>.config.system.build.toplevel.drvPath   # fast eval-only
+nix build .#<wrapper>                             # build one wrapper (e.g. .#kitty, .#pi-coding-agent-wsl)
+nh os switch                                      # apply (programs.nh)
+```
 
-## System Modules Reference
+The flake is git-based: `nix` only sees **git-tracked** files. After creating a
+new file, `git add` it (or `git add -N`) before evaluating, or it's invisible.
 
-| Module             | Purpose                                                                           |
-| ------------------ | --------------------------------------------------------------------------------- |
-| `core/`            | Flakes, fonts, GPG, locale, SSH, user, neovim, base CLI tools                     |
-| `core/options.nix` | Defines `my.username` and `my.flakePath` options                                  |
-| `wm/all.nix`       | Shared WM stack: Hyprland, Sway, greetd/tuigreet, portals, udisks2, udiskie       |
-| `wm/gnome.nix`     | GDM + GNOME desktop (unused by active hosts)                                      |
-| `niri/`            | Niri wrapper overlay: `niri-configured`, `niri-dms`, `niri-noct` sessions         |
-| `noctalia/`        | Noctalia shell overlay                                                            |
-| `dms/`             | DMS (Dank Material Shell) overlay                                                 |
-| `yazi/`            | Yazi wrapper overlay (plugins, flavors, keymap, init.lua via nix-wrapper-modules) |
-| `waybar/`          | Waybar overlay + config wrapper                                                   |
-| `rofi/`            | Rofi overlay + config wrapper                                                     |
-| `dunst/`           | Dunst overlay + notification config wrapper                                       |
-| `swaylock/`        | Swaylock overlay + lock screen config wrapper                                     |
-| `swayidle/`        | Swayidle overlay + DPMS/lock idle logic                                           |
-| `neovim/`          | Custom wrapped Neovim package (also exposed as `packages.nvim` / `apps.nvim`)     |
-| `wallpapers/`      | Copies wallpaper images into `~/Pictures/wallpapers`                              |
-| `network/`         | Enables NetworkManager                                                            |
-| `dev/`             | cmake, gcc, nodejs, JDK (zulu), clojure, babashka                                 |
-| `secrets/`         | sops-nix: TrueNAS SMB + WireGuard VPN secrets (euler only)                        |
-| `wayland/`         | Shared Wayland utilities: wl-clipboard, grim, slurp (imported by wm/)             |
-| `wsl/`             | NixOS-WSL integration, nix-ld, pass-secret-service, SOPS                          |
-| `work/`            | Azure CLI with azure-devops + kusto extensions                                    |
-| `syncthing/`       | Syncthing file sync for user miles                                                |
-| `office/`          | LibreOffice + Hunspell                                                            |
-| `userland/`        | Logseq, Discord, Spotify                                                          |
-| `nixos-tools/`     | nix-index-database + nh (rebuild helper with auto-GC)                             |
-| `openclaw-node/`   | OpenClaw node host service with SOPS secrets (not wired to active hosts)          |
-| `kde/`             | KDE Plasma 6, SDDM, KDE Connect (unused by active hosts)                          |
-| `virtualization/`  | Docker, QEMU/KVM, virt-manager (unused by active hosts)                           |
-| `wine/`            | Wine Staging + Winetricks (unused by active hosts)                                |
+## Skills
 
-## Home-Manager Modules Reference
+Task-specific guidance lives in `.agents/skills/` — load the relevant `SKILL.md`:
 
-| Module              | Purpose                                                                                   |
-| ------------------- | ----------------------------------------------------------------------------------------- |
-| `home/base/`        | Shell config (bash/fish/nushell), git, starship, fzf, zoxide, direnv, atuin               |
-| `home/navi/`        | Navi cheatsheets (local + GitHub community cheats)                                        |
-| `home/helix/`       | Helix editor configuration                                                                |
-| `home/ai/`          | AI tooling: copilot-cli, opencode, aider, crush, MCPs, API secrets                        |
-| `home/wm-common/`   | Shared WM user config: dunst, rofi, swaylock, swayidle, waybar, GTK/cursor                |
-| `home/hyprland/`    | Hyprland session config + hypridle/hyprlock                                               |
-| `home/sway/`        | Sway session config                                                                       |
-| `home/yazi/`        | Yazi shell integration (`y` wrapper); package + config provided by `modules/yazi` overlay |
-| `home/zellij/`      | Zellij multiplexer: layouts, keybinds, autolock plugin (via home/base)                    |
-| `home/work/`        | Overrides `my.alias.email` to corporate address + work PATH dirs                          |
-| `home/wsl/`         | Nerd Fonts, GPG + pass, git-credential-manager, WSL utilities                             |
-| `home/zen-browser/` | Zen Browser (Firefox-based, from flake input)                                             |
-
-## Custom Options
-
-System-level options are namespaced under `my.` (defined in `modules/core/options.nix`):
-
-- `my.username` -- primary user (default: `"miles"`)
-- `my.flakePath` -- path to this flake on disk
-
-Home-manager options (defined in `modules/home/base/options.nix` and `shells.nix`):
-
-- `my.alias.name`, `my.alias.email` -- git identity
-- `shell.aliases`, `shell.initExtra`, `shell.pathDirs`, `shell.envExtra` -- shared shell config
-
-AI options (defined in `modules/home/ai/options.nix`):
-
-- `my.ai.opencode.enable` -- OpenCode AI assistant
-- `my.ai.copilot-cli.enable` -- GitHub Copilot CLI
-- `my.ai.copilot-cli.notifications.enable` -- desktop notifications for copilot-cli
-- `my.ai.crush.enable` -- Crush AI tool
-- `my.ai.aider.enable` -- Aider AI coding assistant
-- `my.ai.mcp.servers.*` -- MCP server definitions (command/url/env/headers/package)
-- `my.ai.rules.global`, `my.ai.rules.instructionFiles` -- AI instruction/rule config
-
-Other options:
-
-- `my.zellij.autoStart` -- auto-start zellij on shell init (defined in `modules/home/zellij/`)
-- `my.openclaw-node.*` -- OpenClaw node host config including exec approval policy (defined in `modules/openclaw-node/`)
-
-## Overlays
-
-### File overlays (`overlays/`)
-
-| File                     | Status | Purpose                                                 |
-| ------------------------ | ------ | ------------------------------------------------------- |
-| `zellij-plugins.nix`     | Active | mkZellijPlugin builder + zellij-forgot, zellij-autolock |
-| `azure-cli-fix.nix`      | Active | Pins azure-cli from nixpkgs-master (temporary)          |
-| `agent-mcps/`            | Active | Agentic MCP server packages                             |
-| `github-copilot-cli.nix` | Unused | Pins github-copilot-cli npm version                     |
-| `calibre-8-16.nix`       | Unused | Pins Calibre 8.16.2 with tzdata deps                    |
-
-### Input and inline overlays (wired in `flake.nix`)
-
-| Source                     | Purpose                                                             |
-| -------------------------- | ------------------------------------------------------------------- |
-| `nix-openclaw.overlays`    | OpenClaw packages                                                   |
-| `noctalia.overlays`        | Noctalia shell packages                                             |
-| `niri.overlays.niri`       | Niri compositor (euler + laplace only)                              |
-| `nur.overlays`             | Nix User Repository                                                 |
-| Inline `dms-shell`         | DMS + quickshell from dank-material-shell input                     |
-| Inline `nvim`              | Wrapped Neovim from `modules/neovim`                                |
-| Module overlays (per-host) | waybar, rofi, dunst, swaylock, swayidle, noctalia, dms, niri device |
-
-Overlays use `final: prev:` argument naming.
-
-## Secrets (sops-nix)
-
-- **Age keys only** (no PGP). Config in `.sops.yaml` at repo root.
-- System age key: `/etc/nixos/keys.txt`
-- Home-manager age key: `~/.config/sops/age/keys.txt`
-- System secrets in `secrets/*.yaml` (general.yaml, wireguard.yaml, openai.yaml)
-- Host-specific secrets use `.enc.yaml` suffix (e.g., `hosts/nixos/gpg-key.enc.yaml`)
-- Module-local encrypted secrets:
-  - `modules/home/ai/api-keys.enc.yaml` -- GitHub API tokens
-  - `modules/openclaw-node/gateway.enc.yaml` -- OpenClaw gateway secrets
-- **Never commit unencrypted secret values.** Use `sops secrets/file.yaml` to edit.
-
-## Key Conventions
-
-- Every module dir has `default.nix` as entry point; composite ones are pure import aggregators
-- `hardware-configuration.nix` is auto-generated -- avoid manual edits
-- `system.stateVersion` / `home.stateVersion` must never change on existing hosts
+- **dendritic-nix** — writing/refactoring modules in this pattern (read for any
+  structural change).
+- **kitty-config**, **pi-extensions**, **pi-startup-profiling**, **upgrade-pi**.

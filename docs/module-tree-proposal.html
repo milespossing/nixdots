@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dendritic module tree — proposal</title>
+<style>
+  :root {
+    --base:#1e1e2e; --mantle:#181825; --crust:#11111b;
+    --surface0:#313244; --surface1:#45475a; --surface2:#585b70;
+    --overlay0:#6c7086; --overlay1:#7f849c;
+    --text:#cdd6f4; --subtext:#a6adc8;
+    --mauve:#cba6f7; --blue:#89b4fa; --green:#a6e3a1; --peach:#fab387;
+    --red:#f38ba8; --yellow:#f9e2af; --teal:#94e2d5; --pink:#f5c2e7; --sky:#89dceb;
+    --lavender:#b4befe; --maroon:#eba0ac; --flamingo:#f2cdcd;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--base); color:var(--text);
+    font:14px/1.55 "DepartureMono Nerd Font","JetBrains Mono",ui-monospace,monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+  a { color:var(--blue); }
+  header { padding:28px 32px 18px; border-bottom:1px solid var(--surface0); background:linear-gradient(180deg,var(--mantle),var(--base)); }
+  header h1 { margin:0 0 6px; font-size:22px; color:var(--mauve); letter-spacing:.3px; }
+  header p { margin:4px 0; color:var(--subtext); max-width:92ch; }
+  .wrap { padding:24px 32px 80px; max-width:1180px; }
+  h2 { color:var(--peach); border-bottom:1px solid var(--surface0); padding-bottom:6px; margin-top:42px; font-size:17px; }
+  h3 { color:var(--teal); font-size:14px; margin:22px 0 8px; }
+  code { background:var(--crust); padding:1px 5px; border-radius:4px; color:var(--green); font-size:.92em; }
+  .muted { color:var(--overlay1); }
+
+  .legend { display:flex; flex-wrap:wrap; gap:8px 14px; margin:12px 0; }
+  .tag { display:inline-flex; align-items:center; gap:6px; padding:2px 9px; border-radius:999px; font-size:12px; border:1px solid var(--surface1); background:var(--mantle); white-space:nowrap; }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .k-flake{color:var(--yellow)} .b-flake{background:var(--yellow)}
+  .k-nixos{color:var(--blue)}   .b-nixos{background:var(--blue)}
+  .k-home{color:var(--green)}   .b-home{background:var(--green)}
+  .k-both{color:var(--mauve)}   .b-both{background:var(--mauve)}
+  .k-pkg{color:var(--peach)}    .b-pkg{background:var(--peach)}
+  .k-wrap{color:var(--pink)}    .b-wrap{background:var(--pink)}
+  .k-host{color:var(--red)}     .b-host{background:var(--red)}
+  .k-opt{color:var(--sky)}      .b-opt{background:var(--sky)}
+  .k-dir{color:var(--overlay1)} .b-dir{background:var(--overlay1)}
+
+  .toolbar { display:flex; gap:10px; align-items:center; margin:10px 0 6px; flex-wrap:wrap; }
+  .toolbar button { background:var(--surface0); color:var(--text); border:1px solid var(--surface1); border-radius:6px; padding:5px 12px; cursor:pointer; font:inherit; font-size:12px; }
+  .toolbar button:hover { background:var(--surface1); }
+  .toolbar label { font-size:12px; color:var(--subtext); display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
+
+  ul.tree { list-style:none; margin:0; padding-left:0; }
+  ul.tree ul { list-style:none; margin:0; padding-left:22px; border-left:1px dashed var(--surface1); }
+  .node { padding:2px 0; }
+  .row { display:flex; align-items:baseline; gap:8px; padding:2px 6px; border-radius:6px; }
+  .row:hover { background:var(--mantle); }
+  .tw { cursor:pointer; }
+  .caret { width:12px; display:inline-block; color:var(--overlay1); user-select:none; }
+  .name { color:var(--text); }
+  .name.dir { color:var(--mauve); font-weight:bold; }
+  .bucket { font-size:11px; color:var(--crust); background:var(--surface2); padding:0 6px; border-radius:999px; }
+  .note { color:var(--subtext); font-size:12.5px; }
+  .from { color:var(--overlay0); font-size:11.5px; }
+  .from::before { content:"← "; color:var(--surface2); }
+  .hidden { display:none; }
+
+  table { border-collapse:collapse; width:100%; margin:12px 0; font-size:12.5px; }
+  th,td { border:1px solid var(--surface0); padding:5px 9px; text-align:left; vertical-align:top; }
+  th { background:var(--mantle); color:var(--subtext); }
+  td.y { color:var(--green); text-align:center; font-weight:bold; }
+  td.n { color:var(--surface2); text-align:center; }
+  tbody tr:hover { background:var(--mantle); }
+  .bk { color:var(--blue); }
+
+  details { background:var(--mantle); border:1px solid var(--surface0); border-radius:8px; padding:6px 14px; margin:10px 0; }
+  summary { cursor:pointer; color:var(--peach); }
+  .q { border-left:3px solid var(--yellow); padding:4px 0 4px 12px; margin:10px 0; }
+  .q b { color:var(--yellow); }
+  footer { color:var(--overlay0); font-size:12px; padding:24px 32px; border-top:1px solid var(--surface0); }
+
+  /* radial graph */
+  .graph-wrap { overflow:auto; border:1px solid var(--surface0); border-radius:10px; background:radial-gradient(circle at 50% 50%, #1b1b2a, var(--mantle)); margin:12px 0; max-height:86vh; text-align:center; }
+  svg.graph { display:inline-block; }
+  .redge { fill:none; stroke-width:1.3; opacity:.30; transition:opacity .12s,stroke-width .12s; }
+  .redge.trunk { stroke:var(--surface2); opacity:.28; }
+  .redge.dim { opacity:.04; }
+  .redge.hot { opacity:.95; stroke-width:2.2; }
+  .rnode { cursor:pointer; transition:opacity .12s; }
+  .rnode.dim { opacity:.11; }
+  .leaf-label { font-size:10.5px; fill:var(--subtext); dominant-baseline:middle; }
+  .rnode.hot .leaf-label { fill:var(--text); font-weight:bold; }
+  .rhub rect { rx:7; }
+  .rhub text { font-size:11px; font-weight:bold; fill:var(--crust); dominant-baseline:middle; text-anchor:middle; }
+  .rhost rect { fill:var(--crust); stroke-width:2; rx:6; }
+  .rhost text { font-size:11.5px; fill:var(--text); dominant-baseline:middle; text-anchor:middle; font-weight:bold; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Dendritic module tree — proposal</h1>
+  <p>The old <code>flake.old.nix</code> + <code>modules.old.d/</code> (98 nix files, 3 hosts) restructured into the dendritic pattern, organized into <b>branches/groups</b> — <code>terminals</code>, <code>shell</code>, <code>dev</code>, <code>wm</code>, <code>desktop</code>, <code>hardware</code>, <code>network</code>, <code>system</code>, <code>ai</code>, … — each a set of single-purpose modules (<code>git</code>, <code>clojure</code>, <code>input/xkb</code>, …) that merge into <code>flake.modules.&lt;class&gt;.&lt;bucket&gt;</code> and are auto-loaded by <code>import-tree</code>.</p>
+  <p class="muted">All six <a href="#decisions">decisions</a> resolved. Data-driven — edit the <code>RADIAL</code> / <code>TREE</code> objects to iterate.</p>
+</header>
+
+<div class="wrap">
+
+  <h2 id="graph">Radial dependency map</h2>
+  <p class="muted">Hosts sit at the <b>center</b>; branches radiate to feature <b>groups</b> (hubs), each ending in its leaf <b>modules</b>. <b>Hover a host</b> to light up everything it uses; <b>hover a group</b> to see its modules and which hosts pull it; <b>hover a module</b> for its group + hosts. Greyed <code>niri</code> = deferred.</p>
+  <div class="toolbar">
+    <label><input type="checkbox" id="showmods" checked /> show leaf modules</label>
+    <span class="muted">— uncheck for a clean branch overview</span>
+  </div>
+  <div class="legend" id="group-legend"></div>
+  <div class="graph-wrap" id="graph-wrap"></div>
+
+  <h2 id="examples">Dendritic configs in the wild</h2>
+  <p class="muted">Real repos using this pattern, surveyed on GitHub — useful references for structure and idioms.</p>
+  <div id="examples"></div>
+
+  <h2 id="legend">Tree legend</h2>
+  <div class="legend">
+    <span class="tag"><span class="dot b-dir"></span><span class="k-dir">directory / area</span></span>
+    <span class="tag"><span class="dot b-flake"></span><span class="k-flake">flake / wiring</span></span>
+    <span class="tag"><span class="dot b-nixos"></span><span class="k-nixos">nixos module</span></span>
+    <span class="tag"><span class="dot b-home"></span><span class="k-home">home-manager module</span></span>
+    <span class="tag"><span class="dot b-both"></span><span class="k-both">cross-cutting (nixos + home)</span></span>
+    <span class="tag"><span class="dot b-pkg"></span><span class="k-pkg">package</span></span>
+    <span class="tag"><span class="dot b-wrap"></span><span class="k-wrap">wrapper</span></span>
+    <span class="tag"><span class="dot b-opt"></span><span class="k-opt">options-only</span></span>
+    <span class="tag"><span class="dot b-host"></span><span class="k-host">host</span></span>
+  </div>
+
+  <h2 id="tree">Proposed <code>modules/</code> tree</h2>
+  <div class="toolbar">
+    <button onclick="setAll(true)">Expand all</button>
+    <button onclick="setAll(false)">Collapse all</button>
+  </div>
+  <ul class="tree" id="tree"></ul>
+
+  <h2 id="matrix">Host × bucket matrix</h2>
+  <p class="muted"><span class="bk">base</span> pulls in <code>system</code> + <code>shell</code> + <code>network-core</code>; WMs pull the desktop layers. Areas are directories; buckets are import units.</p>
+  <div id="matrix"></div>
+
+  <h2 id="mapping">Old → new mapping (complete)</h2>
+  <div id="mapping"></div>
+
+  <h2 id="decisions">Decisions <span style="color:var(--green);font-size:13px">(all resolved)</span></h2>
+  <div class="q"><b>1. GUI apps → home-manager. <span style="color:var(--green)">[RESOLVED]</span></b> media (discord/spotify), office, zathura, browsers are home-manager modules in the desktop branch; daemons/services/hardware stay nixos.</div>
+  <div class="q"><b>2. WM helper config → wrappers only. <span style="color:var(--green)">[RESOLVED]</span></b> rofi/waybar/dunst/swaylock/swayidle configured once in <code>wrappers/*</code>; HM <code>programs.*</code> copies dropped.</div>
+  <div class="q"><b>3. Niri → deferred. <span style="color:var(--green)">[RESOLVED]</span></b> Ported later under <code>pkgs/niri/</code>. For now euler = i3, laplace = sway.</div>
+  <div class="q"><b>4. Desktop → layered core/wayland/x11. <span style="color:var(--green)">[RESOLVED]</span></b> <code>core ← {wayland|x11} ← WM ← host</code> via bucket-to-bucket imports.</div>
+  <div class="q"><b>5. Secrets → central wiring + per-feature decls. <span style="color:var(--green)">[RESOLVED]</span></b> <code>flake/secrets.nix</code> wires sops-nix; each feature declares its own secret.</div>
+  <div class="q"><b>6. Options → bare per-domain, import = enable. <span style="color:var(--green)">[RESOLVED]</span></b> No <code>me.*</code>/<code>my.*</code>; <code>git.userEmail</code>, one <code>username</code>, <code>flakePath</code>. Importing a module enables it.</div>
+
+</div>
+
+<footer>Draft proposal · <code>~/src/nixdots</code> · radial + tree are data-driven for cheap iteration.</footer>
+
+<script>
+// =============================================================================
+//  RADIAL graph model — hosts at center, groups as branches, modules as leaves
+// =============================================================================
+const RADIAL = (function(){
+  const GROUPS = [
+    { id:"terminals", color:"#fab387", mods:["kitty","tmux","sesh","yazi","zellij"] },
+    { id:"shell",     color:"#f9e2af", mods:["bash","fish","nushell","starship","cli-tools","navi"] },
+    { id:"dev",       color:"#a6e3a1", mods:["git","clojure","javascript","cpp","nix-lang","worktrunk","neovim","helix"] },
+    { id:"wm",        color:"#cba6f7", mods:["i3","sway","hyprland","niri"] },
+    { id:"desktop",   color:"#94e2d5", mods:["core","x11","wayland","rofi","waybar","dunst","lock","wallpapers"] },
+    { id:"apps",      color:"#89dceb", mods:["firefox","zen","media","office","zathura"] },
+    { id:"hardware",  color:"#f38ba8", mods:["boot","cpu","nvidia","audio","bluetooth","input-xkb","firmware"] },
+    { id:"network",   color:"#89b4fa", mods:["networkmanager","resolved","firewall","wireguard","mounts","samba","syncthing"] },
+    { id:"system",    color:"#b4befe", mods:["nix","locale","users","security","fonts","gpg","ssh","nix-tools"] },
+    { id:"ai",        color:"#f5c2e7", mods:["opencode","copilot","aider","mcp","skills"] },
+    { id:"services",  color:"#eba0ac", mods:["virt","openclaw"] },
+    { id:"work·wsl",  color:"#f2cdcd", mods:["azure","gcm","paths","nixos-wsl","nix-ld","secret-svc"] },
+  ];
+  const HOSTS = ["euler","laplace","nixos·wsl"];
+  const HCOLOR = { "euler":"#f38ba8", "laplace":"#a6e3a1", "nixos·wsl":"#89b4fa" };
+  const m = id => GROUPS.find(g=>g.id===id).mods;
+  const base = [...m("terminals"),...m("shell"),...m("dev"),...m("system"),...m("ai")];
+  const gfx  = [...m("desktop"),...m("apps")];
+  const USES = {
+    "euler":     [...base, ...gfx, "i3", ...m("hardware"), ...m("network"), "virt"],
+    "laplace":   [...base, ...gfx, "sway","niri", ...m("hardware").filter(x=>x!=="nvidia"), "networkmanager","resolved","firewall","syncthing"],
+    "nixos·wsl": [...base, "syncthing", "azure","gcm","paths","nixos-wsl","nix-ld","secret-svc"],
+  };
+  const MOD2GROUP={}, MOD2HOSTS={}, GROUP2HOSTS={};
+  GROUPS.forEach(g=>{ GROUP2HOSTS[g.id]=new Set(); g.mods.forEach(x=>MOD2GROUP[x]=g.id); });
+  HOSTS.forEach(h=> USES[h].forEach(x=>{ (MOD2HOSTS[x]=MOD2HOSTS[x]||new Set()).add(h); const g=MOD2GROUP[x]; if(g) GROUP2HOSTS[g].add(h); }));
+  return { GROUPS, HOSTS, HCOLOR, USES, MOD2GROUP, MOD2HOSTS, GROUP2HOSTS };
+})();
+
+(function(){
+  const { GROUPS, HOSTS, HCOLOR, USES, MOD2GROUP, MOD2HOSTS, GROUP2HOSTS } = RADIAL;
+  const CX=500, CY=520, R_HUB=176, R_LEAF=330, W=1000, H=1060, D2R=Math.PI/180;
+  const L = GROUPS.reduce((s,g)=>s+g.mods.length,0);
+  const gap=4, usable=360-gap*GROUPS.length;
+  const leafAng={};
+  let ang=-90;
+  GROUPS.forEach(g=>{ const span=usable*(g.mods.length/L); g._amid=ang+span/2; g.mods.forEach((mm,i)=>leafAng[mm]=ang+((i+0.5)/g.mods.length)*span); ang+=span+gap; });
+  const P=(r,deg)=>[CX+r*Math.cos(deg*D2R), CY+r*Math.sin(deg*D2R)];
+
+  // group legend
+  document.getElementById("group-legend").innerHTML =
+    `<span class="tag"><span class="dot b-host"></span><span class="k-host">host (center)</span></span>` +
+    GROUPS.map(g=>`<span class="tag"><span class="dot" style="background:${g.color}"></span><span style="color:${g.color}">${g.id}</span></span>`).join("");
+
+  function render(showMods){
+    let s=`<svg class="graph" id="radial-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+    GROUPS.forEach(g=>{ const [hx,hy]=P(R_HUB,g._amid); s+=`<path class="redge trunk" data-grp="${g.id}" d="M${CX},${CY} L${hx.toFixed(1)},${hy.toFixed(1)}"></path>`; });
+    if(showMods) GROUPS.forEach(g=>{ const [hx,hy]=P(R_HUB,g._amid); g.mods.forEach(mm=>{ const [lx,ly]=P(R_LEAF,leafAng[mm]); s+=`<path class="redge" data-grp="${g.id}" data-mod="${mm}" style="stroke:${g.color}" d="M${hx.toFixed(1)},${hy.toFixed(1)} Q${((hx+lx)/2).toFixed(1)},${((hy+ly)/2).toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)}"></path>`; }); });
+    if(showMods) GROUPS.forEach(g=>{ g.mods.forEach(mm=>{ const a=leafAng[mm], [lx,ly]=P(R_LEAF,a), [tx,ty]=P(R_LEAF+8,a); const nd=((a%360)+360)%360, isLeft=nd>90&&nd<270; const rot=isLeft?a+180:a, anc=isLeft?"end":"start", def=mm==="niri"; s+=`<g class="rnode rleaf" data-type="mod" data-id="${mm}"><circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="3.4" fill="${def?'#585b70':g.color}"></circle><text class="leaf-label" transform="translate(${tx.toFixed(1)},${ty.toFixed(1)}) rotate(${rot.toFixed(1)})" text-anchor="${anc}" ${def?'style="fill:#585b70"':''}>${mm}</text></g>`; }); });
+    GROUPS.forEach(g=>{ const [hx,hy]=P(R_HUB,g._amid), w=g.id.length*7+16; s+=`<g class="rnode rhub" data-type="grp" data-id="${g.id}"><rect x="${(hx-w/2).toFixed(1)}" y="${(hy-11).toFixed(1)}" width="${w}" height="22" fill="${g.color}"></rect><text x="${hx.toFixed(1)}" y="${hy.toFixed(1)}">${g.id}</text></g>`; });
+    HOSTS.forEach((h,i)=>{ const a=-90+i*(360/HOSTS.length), [hx,hy]=P(46,a), w=h.length*7+16; s+=`<g class="rnode rhost" data-type="host" data-id="${h}"><rect x="${(hx-w/2).toFixed(1)}" y="${(hy-11).toFixed(1)}" width="${w}" height="22" style="stroke:${HCOLOR[h]}"></rect><text x="${hx.toFixed(1)}" y="${hy.toFixed(1)}">${h}</text></g>`; });
+    s+=`</svg>`;
+    document.getElementById("graph-wrap").innerHTML=s;
+    wire();
+  }
+
+  function wire(){
+    const root=document.getElementById("radial-svg");
+    const nodes=[...root.querySelectorAll(".rnode")], edges=[...root.querySelectorAll(".redge")];
+    const clear=()=>{ nodes.forEach(n=>n.classList.remove("dim","hot")); edges.forEach(e=>e.classList.remove("dim","hot")); };
+    const apply=(keepNode,keepEdge,hotEdge)=>{ nodes.forEach(n=>{ const k=keepNode(n.dataset.type,n.dataset.id); n.classList.toggle("dim",!k); n.classList.toggle("hot",k); }); edges.forEach(e=>{ const k=keepEdge(e); e.classList.toggle("dim",!k); e.classList.toggle("hot",k&&hotEdge(e)); }); };
+    nodes.forEach(n=>{
+      n.addEventListener("mouseenter",()=>{
+        const t=n.dataset.type, id=n.dataset.id;
+        if(t==="host"){ const mods=new Set(USES[id]);
+          apply((tt,ii)=> tt==="host"?ii===id : tt==="mod"?mods.has(ii) : GROUP2HOSTS[ii].has(id),
+                e=> e.dataset.mod ? mods.has(e.dataset.mod) : GROUP2HOSTS[e.dataset.grp].has(id),
+                e=> !!e.dataset.mod);
+        } else if(t==="grp"){ const hosts=GROUP2HOSTS[id];
+          apply((tt,ii)=> tt==="grp"?ii===id : tt==="mod"?MOD2GROUP[ii]===id : hosts.has(ii),
+                e=> e.dataset.grp===id, e=> !e.classList.contains("trunk"));
+        } else { const g=MOD2GROUP[id], hosts=MOD2HOSTS[id]||new Set();
+          apply((tt,ii)=> tt==="mod"?ii===id : tt==="grp"?ii===g : hosts.has(ii),
+                e=> e.dataset.mod===id || (e.classList.contains("trunk")&&e.dataset.grp===g),
+                e=> e.dataset.mod===id);
+        }
+      });
+      n.addEventListener("mouseleave",clear);
+    });
+  }
+  render(true);
+  const cb=document.getElementById("showmods");
+  cb.addEventListener("change",()=>render(cb.checked));
+})();
+
+// =============================================================================
+//  Examples in the wild
+// =============================================================================
+const EXAMPLES = [
+  ["mightyiam/infra","★1k","github.com/mightyiam/infra","Origin of the pattern. Feature-per-file; custom evalModules option, flake-file inputs. Advanced reference."],
+  ["Doc-Steve/dendritic-design-with-flake-parts","★384","github.com/Doc-Steve/dendritic-design-with-flake-parts","The design guide / wiki — \"Dendritic Aspects\". Read this for module-design philosophy."],
+  ["denful/dendrix","★125","github.com/denful/dendrix","Community distribution of dendritic trees (NUR-like). Shows aspect import-trees + layers."],
+  ["vic/vix","★83","github.com/vic/vix","Aspect-oriented (den lib), multi-OS (nixos/darwin/home). modules/{hosts,community,flake}."],
+  ["MrSom3body/dotfiles","★90","github.com/MrSom3body/dotfiles","Large real-world config (~300 files). Mostly flat modules/ with strict feature-per-file + base/."],
+  ["Adega318/nixos-dendritic","★33","github.com/Adega318/nixos-dendritic","Clean modules/{flake,home,nixos} split with a deep nixvim/ subtree — close to this proposal."],
+  ["eduardofuncao/nali","★30","github.com/eduardofuncao/nali","Barebones starter: modules/{base,hosts,packages,services}. Good minimal grouping example."],
+  ["Psoewish/nixos-config","★1","github.com/Psoewish/nixos-config","Desktop + homelab via modules/{desktop,homelab}; flake-parts + import-tree; uses /_ ignores."],
+  ["drupol/infra","—","github.com/drupol/infra","Aspect-oriented (den), KDE desktop, per-feature secrets — informed decisions #1/#5 here."],
+  ["GaetanLepage/nix-config","—","github.com/GaetanLepage/nix-config","flake.modules + a host submodule-options pattern (nixosHosts). Good host-wiring idea."],
+  ["libs","—","github.com/denful/import-tree","Core libs: denful/import-tree, denful/flake-file, denful/den (aspects), denful/flake-aspects."],
+];
+(function(){
+  let h=`<table><thead><tr><th>repo</th><th>stars</th><th>what to crib</th></tr></thead><tbody>`;
+  EXAMPLES.forEach(([n,st,url,note])=>{ h+=`<tr><td><a href="https://${url}" target="_blank">${n}</a></td><td class="muted">${st}</td><td>${note}</td></tr>`; });
+  document.getElementById("examples").innerHTML=h+"</tbody></table>";
+})();
+
+// =============================================================================
+//  TREE — file hierarchy
+// =============================================================================
+const TREE = [
+  { n:"flake.nix", kind:"flake", note:"entry — mkFlake (import-tree ./modules)", from:["flake.old.nix"] },
+  { n:"modules/", kind:"dir", open:true, children:[
+    { n:"flake/", kind:"dir", note:"top-level wiring", children:[
+      { n:"parts.nix", kind:"flake", note:"flakeModules.modules, systems, formatter" },
+      { n:"home-manager.nix", kind:"flake", note:"HM→NixOS glue" },
+      { n:"overlays.nix", kind:"flake", note:"third-party + local overlays" },
+      { n:"wrappers.nix", kind:"flake", note:"nix-wrapper-modules overlay aggregate" },
+      { n:"secrets.nix", kind:"flake", note:"sops-nix wiring", from:["secrets/default.nix"] },
+      { n:"devshell.nix", kind:"flake" },
+      { n:"packages.nix", kind:"flake", note:"flake.packages: nvim/kitty/pi" },
+    ]},
+    { n:"system/", kind:"dir", open:true, note:"→ base", children:[
+      { n:"nix.nix", kind:"nixos", bucket:"base", from:["core/{default,flakes}.nix"] },
+      { n:"locale.nix", kind:"nixos", bucket:"base", from:["core/locale.nix"] },
+      { n:"console.nix", kind:"nixos", bucket:"base", note:"tty keymap (shares xkb)", from:["(new)"] },
+      { n:"users.nix", kind:"nixos", bucket:"base", note:"declares `username`", from:["core/{user,options}.nix"] },
+      { n:"security.nix", kind:"nixos", bucket:"base", note:"sudo, rtkit, polkit base" },
+      { n:"fonts.nix", kind:"nixos", bucket:"base", from:["core/fonts.nix"] },
+      { n:"gpg.nix", kind:"nixos", bucket:"base", from:["core/gpg.nix"] },
+      { n:"ssh.nix", kind:"nixos", bucket:"base", from:["core/ssh.nix"] },
+      { n:"nix-tools.nix", kind:"nixos", bucket:"base", note:"nh, comma; `flakePath`", from:["nixos-tools/*","nix-index-database/*"] },
+    ]},
+    { n:"shell/", kind:"dir", open:true, note:"→ base", children:[
+      { n:"bash.nix", kind:"home", bucket:"base", note:"+ `shell.aliases` option", from:["home/base/shells.nix"] },
+      { n:"fish.nix", kind:"home", bucket:"base" },
+      { n:"nushell.nix", kind:"home", bucket:"base" },
+      { n:"prompt.nix", kind:"home", bucket:"base", note:"starship", from:["home/base/starship.nix"] },
+      { n:"tools.nix", kind:"home", bucket:"base", note:"fzf/zoxide/eza/direnv/atuin/gum", from:["home/base/common-programs.nix"] },
+      { n:"zellij.nix", kind:"home", bucket:"base", note:"`zellij.autoStart`", from:["home/zellij/*"] },
+      { n:"tmux.nix", kind:"home", bucket:"base", note:"tmux + sesh", from:["home/tmux/*"] },
+      { n:"yazi.nix", kind:"home", bucket:"base", from:["home/yazi/*"] },
+      { n:"navi.nix", kind:"home", bucket:"base", from:["home/navi/*"] },
+    ]},
+    { n:"network/", kind:"dir", open:true, children:[
+      { n:"manager.nix", kind:"nixos", bucket:"base", note:"NetworkManager + resolved", from:["network/default.nix"] },
+      { n:"firewall.nix", kind:"nixos", bucket:"base" },
+      { n:"wireguard.nix", kind:"nixos", bucket:"wireguard", note:"+ own sops.secrets.wireguard-il", from:["core/wireguard.nix","secrets/*"] },
+      { n:"mounts.nix", kind:"nixos", bucket:"mounts", note:"CIFS + own sops.secrets.truenas", from:["hosts/euler","secrets/*"] },
+      { n:"samba.nix", kind:"nixos", bucket:"samba", from:["hosts/euler"] },
+      { n:"syncthing.nix", kind:"nixos", bucket:"syncthing", from:["syncthing/*"] },
+    ]},
+    { n:"hardware/", kind:"dir", open:true, children:[
+      { n:"boot.nix", kind:"nixos", bucket:"hardware", from:["hosts/* bootloader"] },
+      { n:"cpu.nix", kind:"nixos", bucket:"hardware", note:"amd microcode" },
+      { n:"firmware.nix", kind:"nixos", bucket:"hardware" },
+      { n:"audio.nix", kind:"nixos", bucket:"desktop-core", note:"pipewire", from:["hosts/euler"] },
+      { n:"bluetooth.nix", kind:"nixos", bucket:"desktop-core", from:["hosts/euler"] },
+      { n:"input.nix", kind:"nixos", bucket:"desktop-core", note:"xkb (X11 + wayland + tty)", from:["wm/* xkb"] },
+      { n:"gpu/nvidia.nix", kind:"nixos", bucket:"nvidia", from:["hosts/euler nvidia-gpu.nix"] },
+    ]},
+    { n:"desktop/", kind:"dir", open:true, note:"layered: core ← {wayland|x11} ← WM", children:[
+      { n:"core.nix", kind:"both", bucket:"desktop-core", note:"portals/polkit/keyring/dconf + gtk theme", from:["wm/all.nix","home/wm-common/default.nix"] },
+      { n:"x11.nix", kind:"nixos", bucket:"desktop-x11", note:"imports core; xserver + lightdm" },
+      { n:"wayland.nix", kind:"both", bucket:"desktop-wayland", note:"imports core; wl tools, greetd", from:["wayland/*","wm/all.nix"] },
+      { n:"wm/", kind:"dir", open:true, children:[
+        { n:"i3.nix", kind:"both", bucket:"i3", note:"imports desktop-x11 (euler)", from:["(new)"] },
+        { n:"sway.nix", kind:"both", bucket:"sway", note:"imports desktop-wayland", from:["wm/sway.nix","home/sway/*"] },
+        { n:"hyprland.nix", kind:"both", bucket:"hyprland", from:["wm/hyprland.nix","home/hyprland/*"] },
+        { n:"niri.nix", kind:"both", bucket:"niri", note:"DEFERRED (#3)", from:["wm/niri.nix","niri/*"] },
+        { n:"gnome.nix", kind:"nixos", bucket:"gnome", from:["wm/gnome.nix"] },
+        { n:"kde.nix", kind:"nixos", bucket:"kde", from:["kde/*"] },
+      ]},
+      { n:"apps/", kind:"dir", open:true, note:"home GUI apps → desktop-core", children:[
+        { n:"media.nix", kind:"home", bucket:"desktop-core", note:"discord, spotify", from:["userland/*"] },
+        { n:"office.nix", kind:"home", bucket:"desktop-core", from:["office/*"] },
+        { n:"zathura.nix", kind:"home", bucket:"desktop-core", from:["desktop/*"] },
+        { n:"wallpapers.nix", kind:"home", bucket:"desktop-core", from:["wallpapers/*"] },
+      ]},
+    ]},
+    { n:"browsers/", kind:"dir", note:"→ desktop-core", children:[
+      { n:"firefox.nix", kind:"both", bucket:"desktop-core", from:["core/default.nix"] },
+      { n:"zen.nix", kind:"home", bucket:"desktop-core", from:["home/zen-browser/*"] },
+    ]},
+    { n:"development/", kind:"dir", open:true, note:"→ dev", children:[
+      { n:"git.nix", kind:"home", bucket:"dev", note:"`git.userName`/`git.userEmail`", from:["home/base/git.nix"] },
+      { n:"nix.nix", kind:"both", bucket:"dev", note:"nixd, nixfmt, statix" },
+      { n:"clojure.nix", kind:"nixos", bucket:"dev", note:"clojure, neil, babashka, clojure-lsp", from:["dev/tooling.nix"] },
+      { n:"javascript.nix", kind:"nixos", bucket:"dev", note:"nodejs, ts-ls", from:["dev/tooling.nix"] },
+      { n:"cpp.nix", kind:"nixos", bucket:"dev", note:"gcc, cmake", from:["dev/programs.nix"] },
+      { n:"worktrunk.nix", kind:"home", bucket:"dev", from:["home/worktrunk/*"] },
+      { n:"editors/neovim.nix", kind:"pkg", bucket:"dev", note:"installs pkgs.nvim", from:["core/neovim.nix"] },
+      { n:"editors/helix.nix", kind:"home", bucket:"dev", from:["home/helix/*"] },
+    ]},
+    { n:"ai/", kind:"dir", open:true, note:"→ ai", children:[
+      { n:"options.nix", kind:"opt", bucket:"ai", note:"ai.* + mcp types", from:["home/ai/options.nix"] },
+      { n:"lib.nix", kind:"home", bucket:"ai", from:["home/ai/lib.nix"] },
+      { n:"opencode.nix", kind:"home", bucket:"ai", from:["home/ai/opencode.nix"] },
+      { n:"copilot-cli.nix", kind:"home", bucket:"ai", from:["home/ai/copilot-cli.nix"] },
+      { n:"aider.nix", kind:"home", bucket:"ai", from:["home/ai/aider.nix"] },
+      { n:"secrets.nix", kind:"home", bucket:"ai", from:["home/ai/secrets.nix"] },
+    ]},
+    { n:"agents/skills.nix", kind:"home", bucket:"skills", note:"`skills.extra` + deploy ~/.agents/skills", from:["home/skills/*"] },
+    { n:"virtualization/libvirt.nix", kind:"nixos", bucket:"virt", from:["virtualization/*"] },
+    { n:"gaming/wine.nix", kind:"nixos", bucket:"wine", from:["wine/*"] },
+    { n:"work/", kind:"dir", note:"→ work (wsl host)", children:[
+      { n:"azure.nix", kind:"nixos", bucket:"work", from:["work/*"] },
+      { n:"gcm.nix", kind:"home", bucket:"work", note:"git-credential-manager", from:["home/{work,wsl}/*"] },
+      { n:"paths.nix", kind:"home", bucket:"work", from:["home/work/*"] },
+    ]},
+    { n:"wsl/", kind:"dir", children:[
+      { n:"nixos-wsl.nix", kind:"nixos", bucket:"wsl", from:["wsl/*"] },
+      { n:"nix-ld.nix", kind:"nixos", bucket:"wsl", from:["wsl/*"] },
+      { n:"secret-service.nix", kind:"both", bucket:"wsl", note:"pass-secret-service, gpg/pass", from:["wsl/*","home/wsl/*"] },
+    ]},
+    { n:"openclaw/node.nix", kind:"nixos", bucket:"openclaw", note:"openclaw.* options + service", from:["openclaw-node/*"] },
+    { n:"packages/neovim.nix", kind:"pkg", bucket:"dev", note:"overlay pkgs.nvim + kulala pin", from:["overlays/kulala-nvim.nix"] },
+    { n:"hosts/", kind:"dir", open:true, children:[
+      { n:"euler.nix", kind:"host", note:"base·hardware·nvidia·i3·dev·ai·syncthing·virt·mounts·wireguard·samba", from:["hosts/euler/*"] },
+      { n:"euler/_hardware.nix", kind:"host", note:"fileSystems (ignored via _)", from:["hosts/euler/hardware-configuration.nix"] },
+      { n:"laplace.nix", kind:"host", note:"framework-13·hardware·sway·dev·ai·syncthing", from:["hosts/laplace/*"] },
+      { n:"laplace/_hardware.nix", kind:"host" },
+      { n:"nixos.nix", kind:"host", note:"WSL·base·dev·ai·work·wsl·syncthing", from:["hosts/nixos/*"] },
+    ]},
+  ]},
+  { n:"pkgs/", kind:"dir", open:true, note:"callPackage sources — OUTSIDE import tree", children:[
+    { n:"neovim/", kind:"pkg", from:["modules.old.d/neovim/*"] },
+    { n:"niri/", kind:"pkg", note:"DEFERRED (#3)", from:["niri/*"] },
+  ]},
+  { n:"wrappers/", kind:"dir", open:true, note:"nix-wrapper-modules — single source for WM helper config (#2)", children:[
+    { n:"kitty/", kind:"wrap" }, { n:"tmux/", kind:"wrap" }, { n:"yazi/", kind:"wrap" },
+    { n:"pi/", kind:"wrap", note:"pi flavours + extensions" }, { n:"sesh/", kind:"wrap" },
+    { n:"rofi/", kind:"wrap", note:"config baked in (#2)" }, { n:"waybar/", kind:"wrap", note:"(#2)" },
+    { n:"dunst/", kind:"wrap", note:"(#2)" }, { n:"swaylock/", kind:"wrap", note:"(#2)" }, { n:"swayidle/", kind:"wrap", note:"(#2)" },
+    { n:"noctalia/", kind:"wrap", note:"DEFERRED (#3)" }, { n:"dms/", kind:"wrap", note:"DEFERRED (#3)" },
+  ]},
+];
+
+const HOSTS = ["euler","laplace","nixos·wsl"];
+const MATRIX = [
+  ["base",[1,1,1]],["hardware",[1,1,0]],["nvidia",[1,0,0]],["mounts",[1,0,0]],["wireguard",[1,0,0]],
+  ["samba",[1,0,0]],["syncthing",[1,1,1]],["virt",[1,0,0]],["dev",[1,1,1]],["desktop-core",[1,1,0]],
+  ["desktop-x11",[1,0,0]],["desktop-wayland",[0,1,0]],["i3",[1,0,0]],["sway",[0,1,0]],["niri",[0,1,0]],
+  ["wine",[1,0,0]],["skills",[1,1,1]],["ai",[1,1,1]],["work",[0,0,1]],["wsl",[0,0,1]],
+];
+const MAP = [
+  ["system / base", [
+    ["core/{default,flakes}.nix","system/nix.nix"],["core/locale.nix","system/locale.nix"],
+    ["core/fonts.nix","system/fonts.nix"],["core/{user,options}.nix","system/users.nix (username)"],
+    ["core/ssh.nix","system/ssh.nix"],["core/gpg.nix","system/gpg.nix"],
+    ["core/programs.nix","shell/tools.nix + system/*"],["nixos-tools, nix-index-database","system/nix-tools.nix"],
+  ]],
+  ["shell", [
+    ["home/base/shells.nix","shell/{bash,fish,nushell}.nix"],["home/base/common-programs.nix","shell/tools.nix"],
+    ["home/base/starship.nix","shell/prompt.nix"],["home/{zellij,tmux,yazi,navi}/*","shell/*.nix"],
+  ]],
+  ["network", [
+    ["network/default.nix","network/manager.nix"],["core/wireguard.nix","network/wireguard.nix (+secret)"],
+    ["hosts/euler mounts","network/mounts.nix (+secret)"],["syncthing/*","network/syncthing.nix"],
+    ["secrets/default.nix","flake/secrets.nix + per-feature decls (#5)"],
+  ]],
+  ["hardware", [
+    ["hosts/* bootloader","hardware/boot.nix"],["hosts/euler nvidia-gpu.nix","hardware/gpu/nvidia.nix"],
+    ["hosts/euler audio/bluetooth","hardware/{audio,bluetooth}.nix"],["wm/* xkb","hardware/input.nix (shared)"],
+  ]],
+  ["desktop & WMs", [
+    ["wm/all.nix","desktop/{core,x11,wayland}.nix"],["wm/sway.nix + home/sway/*","desktop/wm/sway.nix"],
+    ["wm/niri.nix + niri/*","desktop/wm/niri.nix + pkgs/niri/ (DEFERRED #3)"],["wm/{gnome,hyprland}, kde/*","desktop/wm/*.nix"],
+    ["home/wm-common/default.nix","desktop/core.nix (gtk/cursor)"],
+    ["home/wm-common/{rofi,waybar,dunst,swaylock,swayidle}.nix","DROPPED — wrappers/* (#2)"],
+    ["userland/*, office/*, desktop/*, wallpapers/*","desktop/apps/*.nix"],
+    ["core/firefox + home/zen-browser/*","browsers/{firefox,zen}.nix"],
+  ]],
+  ["development", [
+    ["home/base/git.nix","development/git.nix"],["dev/tooling.nix (clojure)","development/clojure.nix"],
+    ["dev/tooling.nix (nodejs)","development/javascript.nix"],["dev/programs.nix (gcc/cmake)","development/cpp.nix"],
+    ["modules.old.d/neovim/*","pkgs/neovim/ + development/editors/neovim.nix"],["home/{worktrunk,helix}/*","development/*"],
+  ]],
+  ["ai · agents · misc", [
+    ["home/ai/*","ai/*.nix"],["home/skills/*","agents/skills.nix"],["virtualization/*","virtualization/libvirt.nix"],
+    ["wine/*","gaming/wine.nix"],["work/* + home/work/*","work/*.nix"],["wsl/* + home/wsl/*","wsl/*.nix"],
+    ["openclaw-node/*","openclaw/node.nix"],["steam/, wm-pkgs/ (empty)","dropped"],
+  ]],
+  ["packages & wrappers", [
+    ["wrappers/{kitty,tmux,yazi,pi}","wrappers/* (unchanged)"],
+    ["{rofi,waybar,dunst,swaylock,swayidle,sesh,dms,noctalia}/*","wrappers/* (moved)"],["overlays/*","flake/overlays.nix"],
+  ]],
+];
+
+// ---- tree render ----
+const kindClass = { dir:"k-dir", flake:"k-flake", nixos:"k-nixos", home:"k-home", both:"k-both", pkg:"k-pkg", wrap:"k-wrap", opt:"k-opt", host:"k-host" };
+const dotClass  = { dir:"b-dir", flake:"b-flake", nixos:"b-nixos", home:"b-home", both:"b-both", pkg:"b-pkg", wrap:"b-wrap", opt:"b-opt", host:"b-host" };
+function renderNode(node) {
+  const li=document.createElement("li"); li.className="node";
+  const row=document.createElement("div"); row.className="row";
+  const hasKids=node.children&&node.children.length;
+  const caret=document.createElement("span"); caret.className="caret"; caret.textContent=hasKids?(node.open?"▾":"▸"):"";
+  row.appendChild(caret);
+  const dot=document.createElement("span"); dot.className="dot "+(dotClass[node.kind]||"b-dir"); dot.style.alignSelf="center"; row.appendChild(dot);
+  const name=document.createElement("span"); name.className="name "+(node.kind==="dir"?"dir":"")+" "+(kindClass[node.kind]||""); name.textContent=node.n; row.appendChild(name);
+  if(node.bucket){ const b=document.createElement("span"); b.className="bucket"; b.textContent=node.bucket; row.appendChild(b); }
+  if(node.note){ const t=document.createElement("span"); t.className="note"; t.textContent=node.note; row.appendChild(t); }
+  li.appendChild(row);
+  if(node.from&&node.from.length){ const f=document.createElement("div"); f.className="from"; f.style.paddingLeft="40px"; f.textContent=node.from.join("  ·  "); li.appendChild(f); }
+  if(hasKids){ const ul=document.createElement("ul"); if(!node.open) ul.classList.add("hidden"); node.children.forEach(c=>ul.appendChild(renderNode(c))); li.appendChild(ul); row.classList.add("tw"); row.addEventListener("click",()=>{ ul.classList.toggle("hidden"); caret.textContent=ul.classList.contains("hidden")?"▸":"▾"; }); }
+  return li;
+}
+function setAll(open){ document.querySelectorAll("#tree ul").forEach(ul=>ul.classList.toggle("hidden",!open)); document.querySelectorAll("#tree .caret").forEach(c=>{ if(c.textContent) c.textContent=open?"▾":"▸"; }); }
+const treeRoot=document.getElementById("tree"); TREE.forEach(n=>treeRoot.appendChild(renderNode(n)));
+
+(function(){ let h="<table><thead><tr><th>bucket</th>"+HOSTS.map(x=>`<th>${x}</th>`).join("")+"</tr></thead><tbody>"; MATRIX.forEach(([b,c])=>{ h+=`<tr><td class="bk">${b}</td>`+c.map(v=>v?`<td class="y">●</td>`:`<td class="n">·</td>`).join("")+"</tr>"; }); document.getElementById("matrix").innerHTML=h+"</tbody></table>"; })();
+(function(){ let h=""; MAP.forEach(([g,rows])=>{ h+=`<h3>${g}</h3><table><thead><tr><th>old</th><th>new</th></tr></thead><tbody>`; rows.forEach(([o,nw])=>{ h+=`<tr><td class="from" style="color:var(--overlay1)">${o}</td><td><code>${nw}</code></td></tr>`; }); h+="</tbody></table>"; }); document.getElementById("mapping").innerHTML=h; })();
+</script>
+</body>
+</html>
