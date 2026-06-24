@@ -52,7 +52,7 @@
 
       gtk = {
         enable = true;
-        theme = {
+        gtk4.theme = {
           name = "catppuccin-mocha-mauve-standard+default";
           package = pkgs.catppuccin-gtk.override {
             accents = [ "mauve" ];
