@@ -44,6 +44,20 @@
         bat
         jq # used bare in the tmux worktrunk popup + general CLI JSON
         sd # used by the normalize-json navi cheat
+        # modern-unix CLI set (was modules/core/programs.nix pre-dendritic)
+        htop
+        btop
+        gojq
+        yq
+        glow
+        dust
+        duf
+        procs
+        xh
+        hyperfine
+        tokei
+        sqlite
+        parallel
       ];
     };
 }
