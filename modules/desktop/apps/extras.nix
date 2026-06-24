@@ -8,6 +8,7 @@
         vlc
         calibre
         kvirc
+        evtest
       ];
     };
 }
