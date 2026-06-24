@@ -19,6 +19,25 @@
         secrets.gpg_key.sopsFile = ./gpg-key.enc.yaml;
       };
 
+      # sops-nix's upstream activation does `systemctl restart --user sops-nix`,
+      # but that user unit is only linked later in activation (linkGeneration /
+      # reloadSystemd). On a host's first ever switch the unit doesn't exist yet,
+      # so the restart fails with "Unit sops-nix.service not found" and aborts the
+      # whole Home-Manager activation (exit 5) — which is what breaks switching on
+      # a fresh WSL host. Install the secrets synchronously instead (the exact
+      # thing the unit's ExecStart does), which has no user-session dependency and
+      # runs before importGpgKey. The WantedBy=default.target service still handles
+      # re-decryption on login. Skip on boot activation, when the runtime dir
+      # (and thus the secrets symlink target) doesn't exist yet.
+      home.activation.sops-nix = lib.mkForce ''
+        if [ -d "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}" ]; then
+          ${lib.concatStringsSep " " (lib.toList config.systemd.user.services.sops-nix.Service.ExecStart)} \
+            || echo "sops-nix: secret activation failed; will retry via systemd (default.target)"
+        else
+          echo "Runtime dir not present (boot activation); sops-nix loads via default.target."
+        fi
+      '';
+
       home.activation.importGpgKey = lib.hm.dag.entryAfter [ "sops-nix" ] ''
         if [ -f "${config.sops.secrets.gpg_key.path}" ]; then
           ${pkgs.gnupg}/bin/gpg --batch --import ${config.sops.secrets.gpg_key.path} 2>/dev/null || true

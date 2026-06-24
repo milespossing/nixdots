@@ -1,9 +1,14 @@
-{ inputs, config, ... }:
+{
+  inputs,
+  config,
+  ...
+}:
 {
   flake.modules.nixos.wsl =
-    { pkgs, ... }:
+    { pkgs, lib, ... }:
     {
       imports = [ inputs.nixos-wsl.nixosModules.wsl ];
+      nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
       wsl = {
         enable = true;

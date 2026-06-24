@@ -1,7 +1,7 @@
-{ mkHost, ... }:
+{ config, mkHost, ... }:
 {
   # WSL work host.
-  flake.nixosConfigurations.nixos = mkHost {
+  flake.nixosConfigurations.hilbert = mkHost {
     buckets = [
       "base"
       "dev"
@@ -13,8 +13,8 @@
     ];
     modules = [
       {
-        networking.hostName = "nixos";
-        programs.nh.flake = "/home/miles/.config/nixos";
+        networking.hostName = "hilbert";
+        programs.nh.flake = "/home/${config.username}/.config/nixdots";
         system.stateVersion = "26.05";
       }
     ];
