@@ -37,6 +37,15 @@ in
     waybar = import ../../wrappers/waybar/waybar.nix;
     yazi = import ../../wrappers/yazi/yazi.nix;
 
+    # noctalia desktop shell — base package from the noctalia flake input
+    # (resolved per-system via the wrap-time pkgs, like hunk/worktrunk).
+    noctalia =
+      { pkgs, ... }:
+      {
+        imports = [ ../../wrappers/noctalia/noctalia.nix ];
+        package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      };
+
     # tmux launches the wrapped yazi + worktrunk. With no overlay we thread the
     # registry packages in explicitly (built against the same wrap-time pkgs).
     tmux =
