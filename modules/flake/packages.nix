@@ -24,6 +24,7 @@
       app = drv: bin: {
         type = "app";
         program = "${drv}/bin/${bin}";
+        meta.description = "miles's fennel/lua neovim configuration";
       };
     in
     {

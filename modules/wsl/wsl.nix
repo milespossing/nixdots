@@ -10,6 +10,10 @@
       imports = [ inputs.nixos-wsl.nixosModules.wsl ];
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
+      # WSL manages /etc/resolv.conf itself; systemd-resolved (enabled globally
+      # in network/manager.nix) would conflict, so turn it off on WSL.
+      services.resolved.enable = lib.mkForce false;
+
       wsl = {
         enable = true;
         defaultUser = config.username;
@@ -47,6 +51,9 @@
     {
       programs.gpg.enable = true;
       programs.password-store.enable = true;
+      # Adopt HM's new default (PASSWORD_STORE_DIR unset => ~/.password-store),
+      # matching gpg-bootstrap.nix which initializes $HOME/.password-store.
+      programs.password-store.settings = { };
       fonts.fontconfig.enable = true;
       home.packages = with pkgs; [
         wsl-open

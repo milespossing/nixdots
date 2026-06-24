@@ -73,12 +73,12 @@ let
       optional = true;
     }) pluginSets.opt;
 
-  neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
+  neovimConfig = {
     inherit plugins;
 
     # Injected into the generated init.lua after provider setup.
     # Plugins are already on the packpath at this point (set via --cmd flags).
-    customLuaRC = ''
+    luaRcContent = ''
       vim.opt.rtp:prepend("${configDir}")
       dofile("${configDir}/init.lua")
     '';
@@ -144,7 +144,7 @@ in
 pkgs.wrapNeovimUnstable neovim-unwrapped (
   neovimConfig
   // {
-    wrapperArgs = neovimConfig.wrapperArgs ++ [
+    wrapperArgs = [
       "--prefix"
       "PATH"
       ":"
