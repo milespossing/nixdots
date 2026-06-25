@@ -42,7 +42,6 @@
       environment.systemPackages = [
         pkgs.libsecret
         pkgs.zathura
-        (config.flake.wrappers.pi-coding-agent-wsl.wrap { inherit pkgs; }) # WSL/work pi (base + WSL-specific extensions)
       ];
     };
 

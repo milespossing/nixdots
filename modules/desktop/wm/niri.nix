@@ -50,7 +50,7 @@ in
 
       home.packages = [
         (flakeCfg.flake.wrappers.rofi.wrap { inherit pkgs; })
-        (flakeCfg.flake.wrappers.swaylock-effects.wrap { inherit pkgs; })
+        (flakeCfg.flake.wrappers.swaylock.wrap { inherit pkgs; })
         (flakeCfg.flake.wrappers.noctalia.wrap { inherit pkgs; })
       ];
 

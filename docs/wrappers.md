@@ -11,7 +11,7 @@ behind it, what got dropped on the way here, and where to go next.
 - **There is no wrapper overlay** (we chose "Variant B"): `pkgs.<n>` stays
   vanilla upstream; nothing is shadowed.
 - The flake-parts module auto-exposes every wrapper as
-  `packages.<system>.<n>` — `nix build/run .#kitty`, `.#pi-coding-agent-wsl`, …
+  `packages.<system>.<n>` — `nix build/run .#kitty`, `.#pi-wsl`, …
 - `nix flake check` builds every host toplevel (`modules/flake/checks.nix`).
 
 ## Why Variant B (registry, no overlay)
@@ -53,9 +53,17 @@ modules/flake/packages.nix     # nvim (callPackage) + pi-upstream; everything el
   `_module.args` from `wrappers.nix`, because the overlay is gone and a wrapper
   module can't see `config.flake`. This is the manual unification Variant B
   trades for.
-- **pi variant chain**: composed at the **module level** — `pi-coding-agent-{base,desktop,wsl}`
-  import `wrappers/pi/baseline.nix` + extension modules; the `extensions`/`runtimePkgs`
-  lists accumulate, so each variant is a single flat wrapper (not a wrapper-of-a-wrapper).
+- **pi variant chain**: composed at the **module level** in `modules/ai/pi.nix` —
+  `pi-desktop`/`pi-wsl` share one inline wrapper module (a `mkPi extNames` helper)
+  rather than wrapping a base wrapper, so each variant is a single flat wrapper
+  (not a wrapper-of-a-wrapper). Each pins `pi-coding-agent` via `pkgs.extend`
+  of `overlays/pi-coding-agent.nix` (self-contained; no global nixpkgs mutation).
+- **pi extensions**: declared as pure-data specs in `pi.extensions.<name>`
+  (one file per extension under `modules/ai/extensions/`), built lazily by
+  `flake.lib.buildPiExtension pkgs spec` at wrap-time — so extensions never
+  become `packages.*` outputs. A debug handle lives at
+  `legacyPackages.<system>.piExtensions.<name>` (hidden from `nix flake show`).
+  See the `pi-extensions` skill.
 - **`runtimePkgs` for self-contained wrappers** (`tmux`→`jq`, `waybar`→`blueman`/`pavucontrol`,
   `yazi`→`zellij`/`git`, `pi`→its CLI baseline). These tools are *appended* to the
   wrapper's PATH (a global install still wins), so the wrapper works standalone
@@ -112,14 +120,14 @@ Ranked by value to this repo.
    PATH deps and bundle them. This is the single most underused capability.
 2. **`.wrap` at the consumption site** for one-off host tweaks without new
    registry entries, e.g. a host adding one pi extension:
-   `config.flake.wrappers.pi-coding-agent-desktop.wrap { inherit pkgs; extensions = [ … ]; }`
+   `config.flake.wrappers.pi-desktop.wrap { inherit pkgs; extensions = [ … ]; }`
    (lists accumulate).
-3. **A `pi.extensions.extra` option** (mirroring the existing `skills.extra`
-   convention) so hosts add pi extensions declaratively instead of needing a new
-   `flake.wrappers.pi-coding-agent-*` variant.
-4. **`perSystem.wrappers.control_type = "exclude"`** to drop intermediate pi
-   variants (`pi-coding-agent`, `pi-coding-agent-base`) from the built
-   `packages.*` set, keeping `nix flake check` lean.
+3. **A per-host `pi.extensions` opt-in list** (mirroring `skills.extra`) so a
+   host can activate a declared-but-unlisted extension (e.g. a work-only one)
+   without editing the shared `desktopExtensions`/`wslExtensions` sets in
+   `modules/ai/pi.nix`. *(Done for the desktop/wsl split; per-host extras TBD.)*
+4. **`perSystem.wrappers.control_type = "exclude"`** to drop wrappers from the
+   built `packages.*` set, keeping `nix flake check` lean.
 5. **`aliases`** (symlinkScript option) to expose convenience binary names from a
    wrapper (e.g. worktrunk as `git-wt`).
 6. **CI**: wire `nix flake check` into `.github/` now that `flake.checks` exists.

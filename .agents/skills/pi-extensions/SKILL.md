@@ -1,184 +1,197 @@
 ---
 name: pi-extensions
-description: Use when the user wants to add, package, update, or remove a pi-coding-agent extension — e.g. "add the npm package X as a pi extension", "package this pi extension", "bump the pi-wsl-images extension". Covers the overlays/pi-extensions registry, the wrappers/pi bundle, and host wiring. Do not load for general pi usage, MCP servers, or other agents (opencode/copilot/crush/aider).
+description: Use when the user wants to add, package, update, or remove a pi-coding-agent extension — e.g. "add the npm package X as a pi extension", "package this pi extension", "bump the pi-wsl-images extension". Covers the modules/ai/extensions registry, the pi-desktop / pi-wsl wrappers, and host wiring. Do not load for general pi usage, MCP servers, or other agents (opencode/copilot/crush/aider).
 metadata:
   author: miles
-  repo: ~/.config/nixos
-  version: "1.1"
+  repo: ~/.config/nixdots
+  version: "2.0"
 ---
 
 # Packaging pi extensions in the nixos flake
 
-In this repo, "a pi extension" is a Nix derivation whose output is an
+In this repo a "pi extension" is a Nix derivation whose output is an
 unpacked pi-package directory (a `package.json` with a `pi` manifest,
-plus its `src/`, `skills/`, `prompts/`, `themes/` …). The pi wrapper
-loads each one with a `--extension <store-path>` flag.
+plus its `src/`, `skills/`, `prompts/`, `themes/`, …). The pi wrappers
+load each one with a `--extension <store-path>` flag.
 
-There are exactly three files involved. Touch only what the task needs:
+The pattern is **declarative specs, built lazily**:
 
-| File                                       | Role                                                            |
-| ------------------------------------------ | --------------------------------------------------------------- |
-| `overlays/pi-extensions/default.nix`       | The registry. Builds each extension into `pkgs.piExtensions.*`. |
-| `wrappers/pi/pi-wsl.nix`                    | The bundle. Lists which extensions ship in `pi-coding-agent-wsl` / `nix run .#pi-wsl`. |
-| `flake.nix` (`my.ai.pi.extensions`)        | Per-host opt-in for the installed pi (separate from the `-wsl` bundle). |
+- An extension is declared as **pure data** in the `pi.extensions.<name>`
+  namespace — one file per extension under `modules/ai/extensions/`.
+  Nothing here is a flake `packages.*` output (no pollution).
+- Derivations are built on demand by `flake.lib.buildPiExtension pkgs spec`
+  at **wrapper wrap-time**, using the wrapper's own pkgs.
+- For debugging, every built extension is also exposed at
+  `legacyPackages.<system>.piExtensions.<name>` — buildable, but hidden
+  from `nix flake show`.
 
-Local (git/in-tree, not-on-npm) extensions additionally live under
-`wrappers/pi/extensions/<name>/` and are registered in
-`wrappers/pi/module.nix`'s overlay.
+| File / dir | Role |
+| ---------- | ---- |
+| `modules/ai/extensions/registry.nix` | The engine: declares the `pi.extensions` option, defines `flake.lib.buildPiExtension`, and exposes the `legacyPackages.piExtensions` debug handle. |
+| `modules/ai/extensions/<name>.nix` | One spec per extension: `pi.extensions.<name> = { … };`. Dropping a file makes the extension *available*. |
+| `modules/ai/extensions/_local/<name>/` | Source for local (non-npm) extensions. `_local` keeps it out of the import tree. |
+| `modules/ai/pi.nix` | The `pi-desktop` / `pi-wsl` wrappers + their extension *sets* + per-host install gating. Listing a name in a variant makes it *active*. |
+
+> Note `registry.nix` is **not** named `_lib.nix` — import-tree skips
+> any `/_` path, so the engine must have a plain name to load.
+
+## The spec schema (`pi.extensions.<name>`)
+
+```nix
+{
+  pname   = "@scope/pkg";          # npm package name (required)
+  version = "1.2.3";
+  hash    = "sha512-…";            # SRI of the npm tarball (registry dist.integrity)
+
+  # optional, escalate only as needed:
+  vendor  = [ { dir = "typebox"; pname = "typebox"; version = "…"; hash = "…"; } ];
+  build   = { pkgs, lib, fetchNpm, src, meta, passthru, ... }: drv;   # full escape hatch
+  meta    = { platforms = lib.platforms.linux; };                      # merged into drv.meta
+}
+```
+
+`buildPiExtension` picks the shape:
+
+- **simple** — `pname`/`version`/`hash` → unpack the tarball.
+- **vendored** — add `vendor = [ … ]` to drop extra tarballs into
+  `node_modules/<dir>` (for packages that ship without a lockfile).
+- **bespoke** — set `build` to a function returning the derivation. Use
+  for `buildNpmPackage` + lockfile installs, `substituteInPlace`
+  hotfixes, or local (non-npm) extensions. It receives `fetchNpm`
+  (a `{pname;version;hash;}: tarball` helper) and `src` (the main
+  tarball, lazy — leave `hash = ""` if unused).
 
 ## Procedure: add an npm-published extension
 
-This is the common case (e.g. `@scope/pkg-name` on npmjs.com).
-
-### 1. Fetch the package metadata
-
-Get the latest version and the SRI integrity hash straight from the
-registry — `dist.integrity` is already in the `sha512-…` SRI format that
-`fetchurl` wants, so no `nix-prefetch` round-trip is needed:
+### 1. Fetch metadata
 
 ```bash
-PKG='@milespossing/pi-copilot-discovery'
+PKG='@scope/pkg-name'
 curl -s "https://registry.npmjs.org/$PKG" \
   | jq -r '.["dist-tags"].latest as $v
            | "version: \($v)\nhash:    \(.versions[$v].dist.integrity)\ndeps:    \(.versions[$v].dependencies)\npi:      \(.versions[$v].pi)"'
 ```
 
-Note:
+- **`pi`** — confirm a `pi` manifest exists, else it isn't a pi extension.
+- **`deps`** — `null` → simple spec. Deps present → either `vendor` the
+  few runtime ones by hand, or use a `build` with `buildNpmPackage`
+  (fetch the upstream `package-lock.json` via `pkgs.fetchurl` from
+  `raw.githubusercontent.com/.../v<version>/package-lock.json`).
 
-- **`deps`** — if it prints `null` (no runtime deps), omit `npmDepsHash`
-  below (the simple, fast path). If it lists deps, see "Extensions with
-  npm deps".
-- **`pi`** — confirm the package actually has a `pi` manifest
-  (`extensions`/`skills`/`prompts`/`themes`). If it's missing, the package
-  isn't a pi extension and pi won't load anything from it.
+### 2. Security audit (mandatory)
 
-### 2. Perform a brief security audit (mandatory)
+Quick supply-chain review before packaging: open the repo from the npm
+`repository`/`homepage` fields (no source link = red flag, ask first);
+check reputation/maintenance (license, recent commits, stars, original
+vs fork); scan for risk (`rg` for `child_process`, `exec`, `spawn`,
+`eval`, `fetch`, `writeFile`, `process.env`, `token`, `secret`,
+lifecycle scripts `preinstall`/`install`/`postinstall`). Summarize in
+the final response; **stop and ask** on material risk.
 
-Before editing Nix, do a quick supply-chain review of the requested
-extension:
+### 3. Add the spec file
 
-1. Open the package's GitHub repository from the npm `repository` /
-   `homepage` fields. If npm has no source link, treat that as a red
-   flag and ask before proceeding.
-2. Check reputation and maintenance signals: public repo, license,
-   recent commits/releases, CI, issue state, stars/forks/downloads, and
-   whether the package appears to be an original project or a fork.
-3. Inspect the code/tarball for risky behavior:
-   - lifecycle scripts (`preinstall`, `install`, `postinstall`) or shell
-     execution;
-   - network calls outside the extension's stated purpose;
-   - filesystem writes, secret handling, token logging, or credential
-     storage;
-   - mutation tools and whether they have confirmation/readonly gates;
-   - undeclared runtime dependencies or an unusually large dependency
-     tree.
-4. Run a quick static scan (`rg` for `child_process`, `exec`, `spawn`,
-   `eval`, `Function`, `fetch`, `http`, `writeFile`, `process.env`,
-   `token`, `secret`, lifecycle script names) and, when a lockfile is
-   available, `npm audit --omit=dev` or equivalent.
-5. Summarize the audit in the final response. If you find material risk
-   (obfuscated code, unexplained network/exec, credential exfiltration,
-   abandoned/vulnerable package, no visible source, etc.), **stop and ask
-   the user before packaging it**.
-
-### 3. Register it in the overlay
-
-Add an entry to the `piExtensions` attrset in
-`overlays/pi-extensions/default.nix`, alphabetically near its peers, with
-a comment giving the homepage and a one-line description:
+Create `modules/ai/extensions/<name>.nix`:
 
 ```nix
-# @milespossing/pi-copilot-discovery — dynamic GitHub Copilot model
-# discovery for pi. Replaces pi-ai's static catalog with the live
-# /models list from your Copilot tenant.
-# https://github.com/milespossing/pi-copilot-discovery
-pi-copilot-discovery = mkPiExtensionFromNpm {
-  pname = "@milespossing/pi-copilot-discovery";
-  version = "0.1.0";
-  hash = "sha512-…";  # the dist.integrity from step 1
-};
+{ ... }:
+{
+  # <pname> — one-line description.
+  # <homepage>
+  pi.extensions.<name> = {
+    pname = "@scope/pkg-name";
+    version = "1.2.3";
+    hash = "sha512-…";   # dist.integrity from step 1
+  };
+}
 ```
 
-The attribute name is the unscoped, registry-friendly short name (drop the
-`@scope/`). Add `meta.platforms = lib.platforms.linux;` only for
-WSL/Linux-specific extensions.
+The attr name (`<name>`) is what variant lists and `legacyPackages`
+reference. Add `meta.platforms = lib.platforms.linux;` for WSL/Linux-only
+extensions (and take `{ lib, ... }`).
 
-### 4. Wire it where it should load
+### 4. Activate it on a variant
 
-- To ship it in the WSL bundle (`nix run .#pi-wsl`), add the attr name to
-  the `extensions` list in `wrappers/pi/pi-wsl.nix` with a trailing
-  `# one-line` comment matching the existing style.
-- To enable it on an installed host's pi, add
-  `pkgs.piExtensions.<name>` to that host's `my.ai.pi.extensions` list in
-  `flake.nix`. These two lists are independent — set both if the user
-  wants it everywhere.
+Add the name to `desktopExtensions` and/or `wslExtensions` in
+`modules/ai/pi.nix`. `wslExtensions` already includes all of
+`desktopExtensions`, so desktop-list entries reach both. An extension
+declared but not listed is built only via `legacyPackages` (handy for
+work-only extensions a host opts into later).
 
 ### 5. Format and verify
 
 ```bash
-nix fmt -- overlays/pi-extensions/default.nix wrappers/pi/pi-wsl.nix
-nix build --no-link .#pi-wsl        # builds the bundle = fetches + unpacks the new ext
+git add -N modules/ai/extensions/<name>.nix        # nix only sees tracked files
+nix fmt
+# build just the extension (fast; proves hash + unpack):
+nix build --no-link .#legacyPackages.x86_64-linux.piExtensions.<name>
+# or build the wrapper that carries it:
+nix build --no-link .#pi-wsl      # or .#pi-desktop
 ```
 
-A successful build proves the `hash` is correct and the tarball unpacks.
-If you only touched a host's `my.ai.pi.extensions`, eval that host instead:
-`nix eval .#nixosConfigurations.<host>.config.system.build.toplevel.drvPath`.
-
-To double-check the unpacked layout carries a `pi` manifest:
+Inspect the unpacked layout carries a `pi` manifest:
 
 ```bash
-ext=$(nix-store -q --references "$(nix build --no-link --print-out-paths .#pi-wsl)" \
-        | grep <name> | head -1)
+ext=$(nix build --no-link --print-out-paths .#legacyPackages.x86_64-linux.piExtensions.<name>)
 jq '{name, version, pi}' "$ext/package.json"
 ```
 
-## Extensions with npm deps
+## Extensions with npm deps (lockfile install)
 
-If the metadata step showed runtime `dependencies`, the simple
-`runCommand` unpack won't include `node_modules`. Pass `npmDepsHash` so
-`buildNpmPackage` installs them. Get the hash by building once with a
-fake hash and copying
-the "got:" value from the error (`lib.fakeHash`), then rebuild:
+When a package has real runtime deps and ships (or has on GitHub) a
+`package-lock.json`, use a `build` with `buildNpmPackage`. See
+`modules/ai/extensions/pi-azure-devops.nix` and `pi-web-access.nix` for
+the full pattern: fetch the lock with `pkgs.fetchurl`, `postPatch` it
+into place, `dontNpmBuild`/`dontNpmCheck`, and a custom `installPhase`
+that copies the package dir (pi loads `.ts` via jiti). Get `npmDepsHash`
+by building once with `lib.fakeHash` and copying the "got:" value.
 
-```nix
-my-ext = mkPiExtensionFromNpm {
-  pname = "@scope/my-ext";
-  version = "1.2.3";
-  hash = "sha512-…";       # tarball integrity
-  npmDepsHash = "sha256-…"; # node_modules deps hash
-};
-```
+For a package with one or two deps and **no** lockfile, prefer `vendor`
+(see `rpiv-todo.nix`, `pi-interview.nix`).
 
 ## Local / in-tree extensions (not on npm)
 
-For an extension authored in this repo (no npm publish), follow the
-existing `agent-browser-edge-bridge` pattern:
-
-1. Put sources under `wrappers/pi/extensions/<name>/` with a
+1. Put sources under `modules/ai/extensions/_local/<name>/` with a
    `package.json` (`pi` manifest), `src/`, and a `default.nix` that
    `runCommand`s the filtered fileset into a pi-package layout (set
    `passthru.piExtension = true`).
-2. Register it in `wrappers/pi/module.nix`'s overlay:
-   `piExtensions = (prev.piExtensions or {}) // { <name> = final.callPackage ./extensions/<name> {}; };`
-3. Add it to the bundle / host lists exactly like an npm one.
+2. Add a spec whose `build` callPackages it:
+
+   ```nix
+   pi.extensions.<name> = {
+     pname = "<name>";
+     version = "0.1.0";
+     build = { pkgs, ... }: pkgs.callPackage ./_local/<name> { };
+   };
+   ```
+
+See `agent-browser-edge-bridge.nix` + `_local/agent-browser-edge-bridge/`.
+
+## The wrappers and host wiring
+
+- `modules/ai/pi.nix` defines two first-class wrappers via a shared
+  inline module: `flake.wrappers.pi-desktop` and `flake.wrappers.pi-wsl`
+  (auto-exposed as `.#pi-desktop` / `.#pi-wsl`). Each pins
+  `pi-coding-agent` via `pkgs.extend` of `overlays/pi-coding-agent.nix`
+  (self-contained; no global nixpkgs mutation), adds a `runtimePkgs`
+  CLI baseline, appends `modules/ai/AGENTS.md`, and builds its extension
+  set into `--extension` flags.
+- **Install gating is strict "ai AND <platform>"**: `modules/ai/pi.nix`
+  declares `pi.enable` in the always-imported `base` HM bucket; the `ai`
+  bucket sets `pi.enable = true`; the `desktop-core` bucket installs
+  `pi-desktop` and the `wsl` bucket installs `pi-wsl`, both guarded by
+  `lib.mkIf config.pi.enable`. So a host gets pi-desktop only with
+  ai+desktop, pi-wsl only with ai+wsl.
 
 ## Updating or removing an extension
 
-- **Bump a version:** re-run step 1 for the new version, then update both
-  `version` and `hash` in the overlay entry. Rebuild to confirm.
-- **Remove:** delete the overlay entry and every reference to its attr
-  name in `wrappers/pi/pi-wsl.nix` and `flake.nix`. Rebuild.
+- **Bump:** re-run step 1, update `version` + `hash` in the spec file,
+  rebuild.
+- **Remove:** delete `modules/ai/extensions/<name>.nix` and remove the
+  name from the variant lists in `modules/ai/pi.nix`. Rebuild.
 
-## Reference: how the wiring fits together
+## Validate
 
-- `mkPiExtensionFromNpm` (defined in `overlays/pi-extensions/default.nix`)
-  derives the tarball URL from `pname`/`version`, fetches it with the SRI
-  `hash`, and unpacks it (`runCommand`) or runs `buildNpmPackage` when
-  `npmDepsHash` is set.
-- `wrappers/pi/module.nix` turns the `extensions` list into repeated
-  `--extension <path>` flags on the wrapped pi binary.
-- `wrappers/pi/pi.nix` is the baseline wrap (runtime PATH tools);
-  `pi-wsl.nix` is a second `.wrap` that only adds the extension bundle.
-- The `my.ai.pi.extensions` option (in `modules/home/ai/options.nix`,
-  consumed by `modules/home/ai/pi.nix`) re-wraps `pkgs.pi-coding-agent`
-  with the host's chosen extensions.
+```bash
+nix build --no-link .#pi-desktop .#pi-wsl
+nix eval --raw .#nixosConfigurations.<host>.config.system.build.toplevel.drvPath
+```

@@ -1,10 +1,9 @@
 { inputs, ... }:
 {
   # nvim (a callPackage, not a wrapper) plus the raw version-pinned upstream pi.
-  # The wrapped tools (kitty, tmux, yazi, hunk, worktrunk, pi-coding-agent-*, …)
-  # are exposed automatically as `packages.<system>.<name>` by the flake.wrappers
-  # registry in modules/flake/wrappers.nix — e.g. `nix run .#kitty`,
-  # `nix build .#pi-coding-agent-wsl`.
+  # The wrapped tools (tmux, yazi, hunk, worktrunk, pi-desktop, pi-wsl, …) are
+  # exposed automatically as `packages.<system>.<name>` by each feature's
+  # `flake.wrappers` entry — e.g. `nix run .#tmux`, `nix build .#pi-wsl`.
   perSystem =
     { system, ... }:
     let
