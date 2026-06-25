@@ -12,6 +12,10 @@
       programs.git.settings.credential = {
         helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
         useHttpPath = true;
+        # The powerbi Azure DevOps org disables PAT creation
+        # (DisablePatCreationPolicyViolation). Use the OAuth access token
+        # directly instead of exchanging it for a PAT.
+        azreposCredentialType = "oauth";
       };
 
       # PathInstaller-managed tools install to ~/.config/<tool>/CurrentVersion
