@@ -43,6 +43,18 @@ let
       config,
       ...
     }:
+    let
+      # Pi labels CLI-loaded extensions by the *last path segment*, not the
+      # package.json `name`. A raw store path shows as
+      # `<hash>-pi-ext-pi-interview-0.8.7`; routing each through a linkFarm
+      # makes the path `<farm>/pi-interview`, so pi displays the clean name.
+      extFarm = pkgs.linkFarm "pi-extensions" (
+        lib.mapAttrsToList (name: drv: {
+          inherit name;
+          path = drv;
+        }) (lib.genAttrs extNames (n: outer.flake.lib.buildPiExtension pkgs outer.pi.extensions.${n}))
+      );
+    in
     {
       imports = [ wlib.modules.default ];
 
@@ -82,8 +94,10 @@ let
           agent-browser # headless browser automation CLI for agents
         ];
 
-        # Build the selected registry specs with the wrap-time pkgs.
-        extensions = map (n: outer.flake.lib.buildPiExtension pkgs outer.pi.extensions.${n}) extNames;
+        # Build the selected registry specs with the wrap-time pkgs. Routed
+        # through `extFarm` so each `--extension` path ends in the clean
+        # registry name (see extFarm note above) rather than a store hash.
+        extensions = map (n: "${extFarm}/${n}") extNames;
 
         # Ship the wrapper-local instructions inside the derivation, then
         # append them via CLI. Avoids taking over ~/.pi/agent just to provide
