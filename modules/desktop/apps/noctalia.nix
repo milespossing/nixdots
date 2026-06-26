@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   flake.wrappers.noctalia =
     {
@@ -306,5 +307,13 @@
         states = { };
         version = 2;
       };
+    };
+
+  flake.modules.homeManager.noctalia =
+    { pkgs, ... }:
+    {
+      home.packages = [
+        (config.flake.wrappers.noctalia.wrap { inherit pkgs; })
+      ];
     };
 }

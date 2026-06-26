@@ -1,82 +1,44 @@
-{ config, inputs, ... }:
+# let
+#   color-picker = pkgs.writeShellScript "niri-color-picker" ''
+#     ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -p)" -t ppm - \
+#       | ${pkgs.imagemagick}/bin/magick - -format '%[pixel:p{0,0}]' txt:- \
+#       | tail -1 | grep -oP '#[0-9a-fA-F]+' | ${pkgs.wl-clipboard}/bin/wl-copy
+#     ${pkgs.libnotify}/bin/notify-send "Color Picker" "$(${pkgs.wl-clipboard}/bin/wl-paste)"
+#   '';
+#
+#   cliphist-cmd = "${pkgs.cliphist}/bin/cliphist list | rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
+# in
+{ config, lib, ... }:
 let
-  # The flake-parts config — captured so the inner home-manager module (which
-  # shadows `config` with the HM config to reach `config.lib.niri.actions`) can
-  # still reach the wrappers registry and sibling buckets.
-  flakeCfg = config;
+  flake = config.flake;
 in
 {
-  # niri (scrollable-tiling wayland) — euler's WM. Pulls the wayland layer
-  # (→ desktop-core) and the niri-flake NixOS module; the matching home-manager
-  # bucket carries the KDL settings via niri-flake's `programs.niri.settings`.
-  flake.modules.nixos.niri =
-    { pkgs, ... }:
+  flake.wrappers.niri =
     {
-      imports = [
-        flakeCfg.flake.modules.nixos.desktop-wayland
-        inputs.niri.nixosModules.niri
-      ];
-
-      programs.niri.enable = true;
-
-      # X11 apps under niri + screencast portal.
-      environment.systemPackages = [ pkgs.xwayland-satellite ];
-      xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-    };
-
-  flake.modules.homeManager.niri =
-    {
-      pkgs,
       config,
+      wlib,
+      pkgs,
       ...
     }:
-    let
-      color-picker = pkgs.writeShellScript "niri-color-picker" ''
-        ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -p)" -t ppm - \
-          | ${pkgs.imagemagick}/bin/magick - -format '%[pixel:p{0,0}]' txt:- \
-          | tail -1 | grep -oP '#[0-9a-fA-F]+' | ${pkgs.wl-clipboard}/bin/wl-copy
-        ${pkgs.libnotify}/bin/notify-send "Color Picker" "$(${pkgs.wl-clipboard}/bin/wl-paste)"
-      '';
-
-      cliphist-cmd = "${pkgs.cliphist}/bin/cliphist list | rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
-    in
     {
-      imports = [
-        flakeCfg.flake.modules.homeManager.desktop-wayland
-      ];
-      # NB: niri-flake's NixOS module auto-injects its home-manager module into
-      # every user, so `programs.niri.settings` + `config.lib.niri.actions` are
-      # already available here — importing homeModules.config would double-declare.
+      imports = [ wlib.wrapperModules.niri ];
 
-      home.packages = [
-        (flakeCfg.flake.wrappers.rofi.wrap { inherit pkgs; })
-        (flakeCfg.flake.wrappers.swaylock.wrap { inherit pkgs; })
-        (flakeCfg.flake.wrappers.noctalia.wrap { inherit pkgs; })
-      ];
+      env = {
+        XDG_SESSION_TYPE = "wayland";
+        NIXOS_OZONE_WL = "1";
+        ELECTRON_OZONE_PLATFORM_HINT = "auto";
+        DISPLAY = ":0";
+      };
 
-      programs.niri.settings = {
-        prefer-no-csd = true;
-        screenshot-path = "~/Pictures/Screenshots/Screenshot %Y-%m-%d %H-%M-%S.png";
-        hotkey-overlay.skip-at-startup = true;
-
-        environment = {
-          XDG_SESSION_TYPE = "wayland";
-          NIXOS_OZONE_WL = "1";
-          ELECTRON_OZONE_PLATFORM_HINT = "auto";
-          DISPLAY = ":0";
-        };
-
+      settings = {
+        prefer-no-csd = { };
+        screenshot-path = "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png";
+        hotkey-overlay.skip-at-startup = { };
         input = {
           keyboard.xkb.layout = "us";
-          focus-follows-mouse.enable = true;
-          warp-mouse-to-focus.enable = true;
-          workspace-auto-back-and-forth = true;
-        };
-
-        cursor = {
-          size = 24;
-          hide-when-typing = true;
-          hide-after-inactive-ms = 5000;
+          focus-follows-mouse = { };
+          warp-mouse-to-focus = { };
+          workspace-auto-back-and-forth = { };
         };
 
         layout = {
@@ -95,21 +57,24 @@ in
             { proportion = 1.0; }
           ];
           default-column-width.proportion = 0.5;
-          focus-ring.enable = false;
+          focus-ring = {
+            width = 0.5;
+          };
           border = {
-            enable = true;
-            width = 2;
-            active.color = "#cba6f7";
-            inactive.color = "#585b70";
-            urgent.color = "#f38ba8";
+            width = 0.5;
+            active-color = "#cba6f7";
+            inactive-color = "#585b70";
+            urgent-color = "#f38ba8";
           };
           shadow = {
-            enable = true;
+            on = { };
             softness = 12;
             spread = 5;
-            offset = {
-              x = 0;
-              y = 5;
+            offset = _: {
+              params = {
+                x = 0;
+                y = 5;
+              };
             };
             draw-behind-window = false;
             color = "#1a1a2ecc";
@@ -121,89 +86,84 @@ in
 
         animations = {
           slowdown = 1.0;
-          workspace-switch.kind.spring = {
-            damping-ratio = 1.0;
-            stiffness = 800;
-            epsilon = 0.0001;
+          workspace-switch.spring = _: {
+            props = {
+              damping-ratio = 1.0;
+              stiffness = 800;
+              epsilon = 0.0001;
+            };
           };
-          window-open.kind.easing = {
+          window-open = {
             duration-ms = 200;
             curve = "ease-out-expo";
           };
-          window-close.kind.easing = {
+          window-close = {
             duration-ms = 150;
             curve = "ease-out-quad";
           };
-          horizontal-view-movement.kind.spring = {
-            damping-ratio = 1.0;
-            stiffness = 800;
-            epsilon = 0.0001;
+          horizontal-view-movement.spring = _: {
+            props = {
+              damping-ratio = 1.0;
+              stiffness = 800;
+              epsilon = 0.0001;
+            };
           };
-          window-movement.kind.spring = {
-            damping-ratio = 1.0;
-            stiffness = 800;
-            epsilon = 0.0001;
+          window-movement.spring = _: {
+            props = {
+              damping-ratio = 1.0;
+              stiffness = 800;
+              epsilon = 0.0001;
+            };
           };
-          window-resize.kind.spring = {
-            damping-ratio = 1.0;
-            stiffness = 800;
-            epsilon = 0.0001;
+          window-resize.spring = _: {
+            props = {
+              damping-ratio = 1.0;
+              stiffness = 800;
+              epsilon = 0.0001;
+            };
           };
-          config-notification-open-close.kind.spring = {
-            damping-ratio = 0.6;
-            stiffness = 1000;
-            epsilon = 0.001;
+          config-notification-open-close.spring = _: {
+            props = {
+              damping-ratio = 0.6;
+              stiffness = 1000;
+              epsilon = 0.001;
+            };
           };
         };
 
-        # Startup daemons. The bar (noctalia) lives here too; clipboard
-        # watchers + polkit agent + xwayland-satellite round out the session.
         spawn-at-startup = [
-          {
-            command = [
-              "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
-              ":0"
-            ];
-          }
-          {
-            command = [
-              "nm-applet"
-              "--indicator"
-            ];
-          }
-          {
-            command = [
-              "${pkgs.wl-clipboard}/bin/wl-paste"
-              "--type"
-              "text"
-              "--watch"
-              "${pkgs.cliphist}/bin/cliphist"
-              "store"
-            ];
-          }
-          {
-            command = [
-              "${pkgs.wl-clipboard}/bin/wl-paste"
-              "--type"
-              "image"
-              "--watch"
-              "${pkgs.cliphist}/bin/cliphist"
-              "store"
-            ];
-          }
-          { command = [ "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1" ]; }
-          { command = [ "noctalia" ]; }
+          [
+            "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
+            ":0"
+          ]
+          [
+            "nm-applet"
+            "--indicator"
+          ]
+          [
+            "${pkgs.wl-clipboard}/bin/wl-paste"
+            "--type"
+            "text"
+            "--watch"
+            "${pkgs.cliphist}/bin/cliphist"
+            "store"
+          ]
+          [
+            "${pkgs.wl-clipboard}/bin/wl-paste"
+            "--type"
+            "image"
+            "--watch"
+            "${pkgs.cliphist}/bin/cliphist"
+            "store"
+          ]
+          [ "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1" ]
+          [ (lib.getExe (flake.wrappers.noctalia.wrap { inherit pkgs; })) ]
         ];
 
         window-rules = [
           {
             matches = [ { } ];
-            geometry-corner-radius = {
-              top-left = 10.0;
-              top-right = 10.0;
-              bottom-right = 10.0;
-              bottom-left = 10.0;
-            };
+            geometry-corner-radius = 10;
             clip-to-geometry = true;
           }
           {
@@ -251,133 +211,147 @@ in
         # sorts workspaces by key); `name` is the friendly handle referenced by
         # window-rules' open-on-workspace. Host modules pin them to outputs.
         workspaces = {
-          "1-main".name = "main";
-          "2-browser".name = "browser";
-          "3-dev".name = "dev";
-          "4-chat".name = "chat";
-          "5-media".name = "media";
+          "1-main" = { };
+          "2-browser" = { };
+          "3-dev" = { };
+          "4-chat" = { };
+          "5-media" = { };
         };
 
-        binds = with config.lib.niri.actions; {
-          # Launch
-          "Mod+Return".action = spawn "kitty";
-          "Mod+E".action = spawn "kitty" "-e" "yazi";
-          "Mod+D".action = spawn "rofi" "-show" "drun" "-show-icons";
+        binds =
+          let
+            kitty = lib.getExe (flake.wrappers.kitty.wrap { inherit pkgs; });
+            rofi = lib.getExe (flake.wrappers.rofi.wrap { inherit pkgs; });
+            basicAction = a: { "${a}" = { }; };
+            action = a: v: { "${a}" = v; };
+            columnWidth = s: action "set-column-width" s;
+            columnHeight = s: action "set-window-height" s;
+          in
+          {
+            "Mod+Return".spawn = kitty;
+            "Mod+E".spawn = [
+              kitty
+              "-e"
+              "yazi"
+            ];
+            "Mod+D".spawn = [
+              rofi
+              "-show"
+              "drun"
+              "-show-icons"
+            ];
 
-          # Window management
-          "Mod+Q".action = close-window;
-          "Mod+Shift+E".action = quit;
-          "Mod+V".action = toggle-window-floating;
-          "Mod+F".action = maximize-column;
-          "Mod+Shift+F".action = fullscreen-window;
+            # Nav
+            "Mod+H" = basicAction "focus-column-left";
+            "Mod+L" = basicAction "focus-column-right";
+            "Mod+K" = basicAction "focus-window-up";
+            "Mod+J" = basicAction "focus-window-down";
 
-          # Column sizing
-          "Mod+R".action = switch-preset-column-width;
-          "Mod+Minus".action = set-column-width "-10%";
-          "Mod+Equal".action = set-column-width "+10%";
-          "Mod+Shift+Minus".action = set-window-height "-10%";
-          "Mod+Shift+Equal".action = set-window-height "+10%";
+            # Window Management
+            "Mod+Q" = basicAction "close-window";
+            "Mod+Shift+E" = basicAction "quit";
+            "Mod+V" = basicAction "toggle-window-floating";
+            "Mod+F" = basicAction "maximize-column";
+            "Mod+Shift+F" = basicAction "fullscreen-window";
+            "Mod+Comma" = basicAction "consume-or-expel-window-left";
+            "Mod+Period" = basicAction "consume-or-expel-window-right";
 
-          # Focus
-          "Mod+Left".action = focus-column-left;
-          "Mod+Right".action = focus-column-right;
-          "Mod+Up".action = focus-window-up;
-          "Mod+Down".action = focus-window-down;
-          "Mod+H".action = focus-column-left;
-          "Mod+L".action = focus-column-right;
-          "Mod+K".action = focus-window-up;
-          "Mod+J".action = focus-window-down;
+            # Workspaces
+            "Mod+1" = action "focus-workspace" 1;
+            "Mod+2" = action "focus-workspace" 2;
+            "Mod+3" = action "focus-workspace" 3;
+            "Mod+4" = action "focus-workspace" 4;
+            "Mod+5" = action "focus-workspace" 5;
+            "Mod+6" = action "focus-workspace" 6;
+            "Mod+7" = action "focus-workspace" 7;
+            "Mod+8" = action "focus-workspace" 8;
+            "Mod+9" = action "focus-workspace" 9;
 
-          # Move
-          "Mod+Ctrl+Left".action = move-column-left;
-          "Mod+Ctrl+Right".action = move-column-right;
-          "Mod+Ctrl+H".action = move-column-left;
-          "Mod+Ctrl+L".action = move-column-right;
-          "Mod+Shift+K".action = move-window-up;
-          "Mod+Shift+J".action = move-window-down;
+            "Mod+Shift+1" = action "move-column-to-workspace" 1;
+            "Mod+Shift+2" = action "move-column-to-workspace" 2;
+            "Mod+Shift+3" = action "move-column-to-workspace" 3;
+            "Mod+Shift+4" = action "move-column-to-workspace" 4;
+            "Mod+Shift+5" = action "move-column-to-workspace" 5;
+            "Mod+Shift+6" = action "move-column-to-workspace" 6;
+            "Mod+Shift+7" = action "move-column-to-workspace" 7;
+            "Mod+Shift+8" = action "move-column-to-workspace" 8;
+            "Mod+Shift+9" = action "move-column-to-workspace" 9;
 
-          # Absorb / expel
-          "Mod+Comma".action = consume-or-expel-window-left;
-          "Mod+Period".action = consume-or-expel-window-right;
+            # Column sizing
+            "Mod+R" = basicAction "switch-preset-column-width";
+            "Mod+Minus" = columnWidth "-10%";
+            "Mod+Equal" = columnWidth "+10%";
+            "Mod+Shift+Minus" = columnHeight "-10%";
+            "Mod+Shift+Equal" = columnHeight "+10%";
+            "Mod+Tab".focus-workspace-down = { };
+            "Mod+Shift+Tab".focus-workspace-up = { };
 
-          # Workspaces
-          "Mod+1".action = focus-workspace 1;
-          "Mod+2".action = focus-workspace 2;
-          "Mod+3".action = focus-workspace 3;
-          "Mod+4".action = focus-workspace 4;
-          "Mod+5".action = focus-workspace 5;
-          "Mod+6".action = focus-workspace 6;
-          "Mod+7".action = focus-workspace 7;
-          "Mod+8".action = focus-workspace 8;
-          "Mod+9".action = focus-workspace 9;
-
-          "Mod+Shift+1".action.move-column-to-workspace = 1;
-          "Mod+Shift+2".action.move-column-to-workspace = 2;
-          "Mod+Shift+3".action.move-column-to-workspace = 3;
-          "Mod+Shift+4".action.move-column-to-workspace = 4;
-          "Mod+Shift+5".action.move-column-to-workspace = 5;
-          "Mod+Shift+6".action.move-column-to-workspace = 6;
-          "Mod+Shift+7".action.move-column-to-workspace = 7;
-          "Mod+Shift+8".action.move-column-to-workspace = 8;
-          "Mod+Shift+9".action.move-column-to-workspace = 9;
-
-          "Mod+Tab".action = focus-workspace-down;
-          "Mod+Shift+Tab".action = focus-workspace-up;
-
-          "Mod+X" = {
-            repeat = false;
-            action = toggle-overview;
+            "Mod+X" = _: {
+              props.repeat = false;
+              content.toggle-overview = { };
+            };
+            "Mod+T".toggle-column-tabbed-display = { };
+            "Mod+Shift+H".focus-monitor-left = { };
+            "Mod+Shift+L".focus-monitor-right = { };
+            "Mod+Shift+Slash".show-hotkey-overlay = { };
           };
-          "Mod+T".action = toggle-column-tabbed-display;
+      };
+    };
 
-          # Screenshots (these niri actions take optional args, so they're set
-          # via .action.<name> rather than the magic-leaf helpers).
-          "Print".action.screenshot = { };
-          "Mod+Print".action.screenshot-screen = { };
-          "Mod+S".action.screenshot-window = { };
+  # NixOS side: pull in the wayland layer (greetd + tuigreet live there), then
+  # install the *wrapped* niri into the system profile. That package ships the
+  # wayland-session .desktop, the niri-session helper, and a niri.service whose
+  # ExecStart points back at the wrapped binary (so NIRI_CONFIG — and thus the
+  # whole config, including this host's outputs — applies). Putting it in
+  # systemPackages is what makes the session show up in the greeter
+  # (/run/current-system/sw/share/wayland-sessions).
+  flake.modules.nixos.niri =
+    { config, pkgs, ... }:
+    {
+      imports = [ flake.modules.nixos.desktop-wayland ];
 
-          # Clipboard & utilities
-          "Mod+Shift+V".action = spawn-sh cliphist-cmd;
-          "Mod+Shift+C".action = spawn "${color-picker}";
-
-          # Media keys
-          "XF86AudioMute" = {
-            allow-when-locked = true;
-            action = spawn "pamixer" "-t";
-          };
-          "XF86AudioRaiseVolume" = {
-            allow-when-locked = true;
-            action = spawn "pamixer" "-i" "5";
-          };
-          "XF86AudioLowerVolume" = {
-            allow-when-locked = true;
-            action = spawn "pamixer" "-d" "5";
-          };
-          "XF86AudioPlay" = {
-            allow-when-locked = true;
-            action = spawn "playerctl" "play-pause";
-          };
-          "XF86AudioNext" = {
-            allow-when-locked = true;
-            action = spawn "playerctl" "next";
-          };
-          "XF86AudioPrev" = {
-            allow-when-locked = true;
-            action = spawn "playerctl" "previous";
-          };
-
-          # Monitors
-          "Mod+Shift+H".action = focus-monitor-left;
-          "Mod+Shift+L".action = focus-monitor-right;
-          "Mod+Ctrl+Shift+H".action = move-column-to-monitor-left;
-          "Mod+Ctrl+Shift+L".action = move-column-to-monitor-right;
-
-          "Mod+Escape" = {
-            allow-inhibiting = false;
-            action = toggle-keyboard-shortcuts-inhibit;
-          };
-          "Mod+Shift+Slash".action = show-hotkey-overlay;
+      options.desktop = {
+        outputs = lib.mkOption {
+          type = lib.types.attrsOf lib.types.anything;
+          default = { };
+          description = "Per-host niri output (monitor) configuration.";
+        };
+        workspaces = lib.mkOption {
+          type = lib.types.attrsOf lib.types.anything;
+          default = { };
+          description = "Per-host niri named-workspace pinning.";
         };
       };
+
+      config = {
+        environment.systemPackages = [
+          pkgs.xwayland-satellite
+          (flake.wrappers.niri.wrap {
+            inherit pkgs;
+            settings = {
+              outputs = config.desktop.outputs;
+              workspaces = config.desktop.workspaces;
+            };
+          })
+        ];
+        xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+        # niri spawns polkit-gnome at startup; it needs the polkit daemon.
+        security.polkit.enable = true;
+      };
+    };
+
+  flake.modules.homeManager.niri =
+    { pkgs, ... }:
+    {
+      imports = [
+        flake.modules.homeManager.desktop-wayland
+      ];
+
+      # niri itself comes from the system profile (above). The session shell
+      # (noctalia bar) and the lock screen are per-user.
+      home.packages = [
+        (flake.wrappers.swaylock.wrap { inherit pkgs; })
+        (flake.wrappers.noctalia.wrap { inherit pkgs; })
+      ];
     };
 }

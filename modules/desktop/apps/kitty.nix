@@ -1,3 +1,4 @@
+{ self, config, ... }:
 {
   flake.wrappers.kitty =
     {
@@ -47,5 +48,13 @@
         "kitty_mod+3" = "goto_layout fat";
         "kitty_mod+4" = "goto_layout grid";
       };
+    };
+
+  flake.modules.nixos.desktop-core =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [
+        (config.flake.wrappers.kitty.wrap { inherit pkgs; })
+      ];
     };
 }
