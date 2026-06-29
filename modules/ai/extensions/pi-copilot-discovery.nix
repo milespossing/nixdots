@@ -6,7 +6,7 @@
   # https://github.com/milespossing/pi-copilot-discovery
   pi.extensions.pi-copilot-discovery = {
     pname = "@milespossing/pi-copilot-discovery";
-    version = "0.3.0";
-    hash = "sha256-M2gH4kffX+juLvILbcaqFF+shus1rWpSeh37cxz1VDk=";
+    version = "0.3.1";
+    hash = "sha512-VCFmwQse7lE549m7wuZddABlMqhQsFkDY9JIuSzYSRoK0kdbY7R1rSato3uXsSgGcLjsv+JU/iJxI+Nq2mSVEg==";
   };
 }

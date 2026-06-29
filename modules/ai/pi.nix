@@ -22,6 +22,7 @@ let
     "rpiv-ask-user-question" # structured questionnaire for the model
     "edb-agent-steer" # steer / queue / discard / edit mid-turn messages
     "pi-interview" # interview-mode extension
+    "pi-copilot-discovery" # dynamic GitHub Copilot model discovery
   ];
   wslExtensions = desktopExtensions ++ [
     "pi-wsl-images" # Alt+V image paste from the Windows clipboard
