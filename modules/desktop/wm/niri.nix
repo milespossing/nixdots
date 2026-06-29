@@ -253,6 +253,7 @@ in
             "Mod+V" = basicAction "toggle-window-floating";
             "Mod+F" = basicAction "maximize-column";
             "Mod+Shift+F" = basicAction "fullscreen-window";
+            "Mod+C" = basicAction "center-column";
             "Mod+Comma" = basicAction "consume-or-expel-window-left";
             "Mod+Period" = basicAction "consume-or-expel-window-right";
 
@@ -293,6 +294,7 @@ in
             "Mod+T".toggle-column-tabbed-display = { };
             "Mod+Shift+H".focus-monitor-left = { };
             "Mod+Shift+L".focus-monitor-right = { };
+            "Mod+Shift+S" = basicAction "screenshot";
             "Mod+Shift+Slash".show-hotkey-overlay = { };
           };
       };
@@ -341,7 +343,7 @@ in
     };
 
   flake.modules.homeManager.niri =
-    { pkgs, ... }:
+    { pkgs, lib, ... }:
     {
       imports = [
         flake.modules.homeManager.desktop-wayland
@@ -353,5 +355,18 @@ in
         (flake.wrappers.swaylock.wrap { inherit pkgs; })
         (flake.wrappers.noctalia.wrap { inherit pkgs; })
       ];
+
+      # Live-apply config changes to a running niri after `nixos-rebuild
+      # switch`. niri only watches the immutable store path it was started
+      # with, so it never auto-reloads. The wrapped niri.service ships an
+      # ExecReload that runs `niri msg action load-config-file` against the
+      # freshly-built config, so we just trigger a reload once per switch
+      # (guarded so it's a no-op when no niri session is running). Runs after
+      # the user daemon picks up the new unit definition.
+      home.activation.reloadNiri = lib.hm.dag.entryAfter [ "reloadSystemd" ] ''
+        if ${lib.getExe' pkgs.systemd "systemctl"} --user is-active --quiet niri.service; then
+          run ${lib.getExe' pkgs.systemd "systemctl"} --user reload niri.service || true
+        fi
+      '';
     };
 }
