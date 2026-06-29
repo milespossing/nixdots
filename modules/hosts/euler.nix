@@ -9,6 +9,7 @@
       "gaming"
       "printing3d"
       "media-production"
+      "protonmail"
       "qmk"
       "dev"
       "ai"
