@@ -11,7 +11,6 @@
         inherit system;
         config.allowUnfree = true;
         overlays = [
-          (import ../../overlays/kulala-nvim.nix)
           (import ../../overlays/pi-coding-agent.nix)
           (final: _prev: {
             nvim = final.callPackage ../../pkgs/neovim {
