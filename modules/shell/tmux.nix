@@ -11,10 +11,15 @@
       imports = [ wlib.wrapperModules.tmux ];
       package = pkgs.tmux;
 
-      # Self-contained: the worktrunk popup pipes through `jq`. runtimePkgs is
-      # appended to PATH, so a global jq still wins but the wrapper never depends
-      # on one being installed.
-      runtimePkgs = [ pkgs.jq ];
+      # Self-contained: the worktrunk popup pipes through `jq`, and the sesh
+      # popups (`bind b` / `bind C-w`) plus the `sesh last` bind shell out to
+      # `sesh`. runtimePkgs is appended to PATH, so a globally-installed one
+      # (shell/sesh.nix puts sesh in the core shell) still wins, but the wrapper
+      # never depends on either being present.
+      runtimePkgs = [
+        pkgs.jq
+        pkgs.sesh
+      ];
 
       prefix = "C-a";
       sourceSensible = true;
@@ -87,6 +92,12 @@
           sesh list -i | gum filter --no-strip-ansi --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡'
         )\""
 
+        # sesh's recommended binds. With `detach-on-destroy off` (set below) the
+        # default prefix-L breaks once a detached session is destroyed, so route
+        # it through `sesh last`. prefix-x kills the pane without the y/n prompt.
+        bind -N "last session (via sesh)" L run-shell "sesh last"
+        bind x kill-pane
+
         bind C-w display-popup -E -w 40% "wt switch --no-cd -x \'sesh connect {{ worktree_path }}\' \"$(
           wt list --format json | jq \'map(.branch).[]\' -r | gum filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a branch' --height 50
         )\""
@@ -125,6 +136,11 @@
         # legacy xterm modifyOtherKeys format. Tools like pi parse the
         # csi-u form to disambiguate modified keys reliably.
         set -g extended-keys-format csi-u
+
+        # sesh workflow: keep the client attached when a session it just left is
+        # destroyed, so `sesh` / `sesh last` can switch to another session
+        # instead of dropping you out of tmux entirely.
+        set -g detach-on-destroy off
 
         # Status bar position
         set -g status-position top
